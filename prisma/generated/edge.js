@@ -152,7 +152,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\generated",
+      "value": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -166,11 +166,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "..",

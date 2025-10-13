@@ -1,18 +1,25 @@
 
+import { GraphQLJSONObject } from "graphql-type-json";
+
 export const resolvers = {
+    JSON: GraphQLJSONObject,
     Query: {
-        async works(parent, args, contextValue){
-            console.log(args);
+        async works(_, { ids, filter, pagination }, { dataSources }){
+            await dataSources.db.getMany("work", ids, filter, pagination);
+        },
 
-            if(args.pagination) {
-                console.log(await contextValue.prisma.work.findMany({skip: 1, take: 3}));
-
-                return await contextValue.prisma.work.findMany({skip: 1, take: 3});
-            }
-
-            if(args.ids){
-                return await contextValue.prisma.appointment.findMany({where: {id: {in: args.ids.map(e => parseInt(e))}}});
-            }
+        async work(_, { id }, { dataSources }) {
+            return await dataSources.db.getOne("work", id);
         }
+    },
+    Mutation: {
+        async updateWork(_, { id, data }, { dataSources }) {         
+            return await dataSources.db.updateOne("work", id, data);
+        },
+
+        async updateWorks(_, { ids, data }, { dataSources }) {
+            return await dataSources.db.updateMany("work", ids, data);
+        }
+
     }
 }

@@ -6,9 +6,7 @@ import { typeDefs } from './schema.js';
 import { resolvers } from './resolvers.js';
 
 // db
-import { PrismaClient } from '../prisma/generated/client.js';
-import { withAccelerate } from "@prisma/extension-accelerate";
-
+import DatabaseSource from './data-sources.js';
 
 const server = new ApolloServer({ typeDefs, resolvers });
 const { url } = await startStandaloneServer(
@@ -17,7 +15,9 @@ const { url } = await startStandaloneServer(
         listen: {port: 4000},
         context: async () => {
             return {
-                prisma: new PrismaClient().$extends(withAccelerate())
+                dataSources: {
+                    db: new DatabaseSource()
+                }
             }
         }
     }
