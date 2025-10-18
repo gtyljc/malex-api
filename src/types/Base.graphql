@@ -1,0 +1,32 @@
+
+"""
+    Public scalars, objects, interfaces, enums...
+"""
+
+# -------- scalars
+
+scalar JSON
+
+
+# -------- to extend
+
+type Query
+
+type Mutation
+
+
+# -------- inputs
+
+input Pagination {
+    perPage: Int!
+    page: Int!
+}
+
+
+# -------- interfaces
+
+interface MutationBaseResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}

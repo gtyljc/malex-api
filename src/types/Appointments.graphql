@@ -1,0 +1,68 @@
+
+
+# -------- type
+
+type Appointment {
+    id: Int!
+    name: String!
+    surname: String!
+    address: String!
+    job_desc: String!
+    bwt: BestWayToTouch!
+}
+
+enum BestWayToTouch {
+    WHATSAPP
+    PHONE
+    TEXT
+}
+
+
+# -------- query
+
+extend type Query {
+    appointment(id: ID!): Appointment!
+    appointments(ids: [ID], filter: JSON, pagination: Pagination): [Appointment]!
+}
+
+
+# -------- mutation
+
+input AppointmentCreateInput {
+    name: String!
+    surname: String!
+    address: String!
+    job_desc: String!
+    bwt: BestWayToTouch!
+}
+
+input AppointmentUpdateInput {
+    name: String
+    surname: String
+    address: String
+    job_desc: String
+    bwt: BestWayToTouch
+}
+
+type AppointmentMutationResponse implements MutationBaseResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    appointment: Appointment!
+}
+
+type AppointmentsMutationResponse implements MutationBaseResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    appointment: [Appointment]!
+}
+
+extend type Mutation {
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentMutationResponse!
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentsMutationResponse!
+    deleteAppointment(id: ID!): AppointmentMutationResponse!
+    deleteManyAppointments(ids: [ID]!): AppointmentsMutationResponse!
+    createAppointment(data: AppointmentCreateInput!): AppointmentMutationResponse! 
+}
+

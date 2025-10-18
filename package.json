@@ -12,17 +12,20 @@
   "type": "module",
   "dependencies": {
     "@apollo/server": "^5.0.0",
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.1.1",
+    "@graphql-tools/schema": "^10.0.25",
     "@prisma/client": "^6.17.1",
     "@prisma/extension-accelerate": "^2.0.2",
+    "dotenv": "^17.2.3",
     "graphql": "^16.11.0",
+    "graphql-config": "^5.1.5",
     "graphql-type-json": "^0.3.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
     "@graphql-eslint/eslint-plugin": "^4.4.0",
     "eslint": "^9.37.0",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.4.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.17.1"
   }
