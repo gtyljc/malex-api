@@ -21,7 +21,7 @@ const { url } = await startStandaloneServer(
             return {
                 dataSources: {
                     db: new DatabaseSource(),
-                    imgCloudAPI: new CloudflareImagesStorageAPI(process.env.CLOUDFLARE_API_TOKEN, process.env.CLOUDFLARE_ACCOUNT_ID);
+                    imgCloudAPI: new CloudflareImagesStorageAPI(process.env.CLOUDFLARE_API_TOKEN, process.env.CLOUDFLARE_ACCOUNT_ID)
                 }
             }
         }

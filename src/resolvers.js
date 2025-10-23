@@ -1,116 +1,194 @@
 
 import { GraphQLJSONObject } from "graphql-type-json";
 
-function mutationErrorResponse(field, data, code, message){
+function mutationErrorResponse(message, code){
     return {
         code,
         message,
         success: false,
-        [field]: data
+        data: null
     }
 }
 
-function mutationSuccessResponse(field, data){
+function mutationSuccessResponse(data){
     return {
         code: 200,
         message: "Success",
         success: true,
-        [field]: data
+        data
     }
 }
 
-function mutationResponse(result, typename){ // result => db result
+// if the key action of mutation is mutation of DB
+function mutationBasedOnDBResponse(result){ // result => db result
 
-    // bad response
+    // bad response from DB
     if (result instanceof Error){
-        return mutationErrorResponse(typename, result, result.message, 500);
+        return mutationErrorResponse(result.message.replace(/[\n\r\t]+/g, ''), 500);
     }
     
-    return mutationSuccessResponse(typename, result);
+    return mutationSuccessResponse(result);
 }
 
-class BaseQueryResolvers {
-    constructor(modelname) {
-        this[modelname] = async (_, { id }, { dataSources }) => {
-            return await dataSources.db.getOne(modelname, id);
-        }
+// if the key action of mutation is mutation inside of external REST API
+function mutationBasedOnRESTResponse(result){ // result => object (converted from JSON)
 
-        this[modelname + "s"] = async (_, { ids, filter, pagination }, { dataSources }) => {
-            return await dataSources.db.getMany(modelname, ids, filter, pagination);
-        }
+    // bad response from external REST API
+    if (!result.success){
+        return mutationErrorResponse(result.message, result.code);
+    }
+
+    return mutationSuccessResponse(result);
+}
+
+class ResolversManager {
+    // !!! if you want to use resolvers in high-definied object use "resolvers" property !!!
+
+    #resolvers = {};
+
+    addResolver(name, func){
+        this[name] = func; // to be polymorphismable
+        this.#resolvers[name] = func;
+    }
+
+    get resolvers(){
+        return this.#resolvers;
     }
 }
 
-class BaseMutationResolvers {
-    constructor(modelname) { 
-        this.marker = modelname.charAt(0).toUpperCase() + modelname.slice(1);
+class BaseQueryResolvers extends ResolversManager{   
+    constructor(modelname) {
+        super();
+
+        // get single object
+        this.addResolver(
+            modelname,
+            async (_, { id }, { dataSources }) => {
+                return await dataSources.db.getOne(modelname, id);
+            },
+        )
+
+        // get many objects
+        this.addResolver(
+            modelname + "s",
+            async (_, { ids, filter, pagination }, { dataSources }) => {
+                return await dataSources.db.getMany(modelname, ids, filter, pagination);
+            }
+        )
+    }
+}
+
+class BaseMutationResolvers extends ResolversManager {
+    // Methods params and their response
+    // updateOne (id, )
+
+    // names of resolvers
+    #updateOneName;
+    #updateManyName;
+    #deleteOneName;
+    #deleteManyName;
+    #createName;
+
+    constructor(modelname) {
+        super();
+
+        this._marker = modelname.charAt(0).toUpperCase() + modelname.slice(1); // how resolvers were marked
+
+        // configurate names
+        this.#updateOneName = `update${this._marker}`;
+        this.#updateManyName = `updateMany${this._marker}s`;
+        this.#deleteOneName = `delete${this._marker}`;
+        this.#deleteManyName = `deleteMany${this._marker}s`;
+        this.#createName = `create${this._marker}`
 
         // update one
-        this[`update${this.marker}`] = async (_, {id, data}, { dataSources }) => {
-            return mutationResponse(
-                await dataSources.db.updateOne(modelname, id, data),
-                modelname
-            );
-        }
+        this.addResolver(
+            this.#updateOneName, 
+            async (_, {id, data}, { dataSources }) => {
+                return mutationBasedOnDBResponse(
+                    await dataSources.db.updateOne(modelname, id, data)
+                );
+            }
+        )
 
         // update many
-        this[`updateMany${this.marker}s`] = async (_, { ids, data }, { dataSources }) => {
-            return mutationResponse(
-                await dataSources.db.updateMany(modelname, ids, data),
-                modelname + "s"
-            );
-        }
+        this.addResolver(
+            this.#updateManyName,
+            async (_, { ids, data }, { dataSources }) => {
+                return mutationBasedOnDBResponse(
+                    await dataSources.db.updateMany(modelname, ids, data)
+                );
+            }
+        )
 
         // delete one
-        this[`delete${this.marker}`] = async (_, { id }, { dataSources }) => {
-            return mutationResponse(
-                await dataSources.db.deleteOne(modelname, id),
-                modelname
-            );
-        }
+        this.addResolver(
+            this.#deleteOneName,
+            async (_, { id }, { dataSources }) => {
+                return mutationBasedOnDBResponse(
+                    await dataSources.db.deleteOne(modelname, id)
+                );
+            }
+        )
 
         // delete many
-        this[`deleteMany${this.marker}s`] = async (_, { ids }, { dataSources }) => {
-            return mutationResponse(
-                await dataSources.db.deleteMany(modelname, ids),
-                modelname + "s"
-            );
-        }
+        this.addResolver(
+            this.#deleteManyName,
+            async (_, { ids }, { dataSources }) => {
+                return mutationBasedOnDBResponse(
+                    await dataSources.db.deleteMany(modelname, ids)
+                );
+            }
+        )
 
         // create instance of model
-        this[`create${this.marker}`]  = async (_, { data }, { dataSources }) => {
-            return mutationResponse(
-                await dataSources.db.deleteMany(modelname, data),
-                modelname + "s"
-            );
-        }
+        this.addResolver(
+            this.#createName,
+            async (_, { data }, { dataSources }) => {
+                return mutationBasedOnDBResponse(
+                    await dataSources.db.create(modelname, data)
+                );
+            }
+        )
     }
 }
 
-class WorksMutationResolvers extends BaseMutationResolvers {
-    constructor() {
+class ImagesUploadSupportResolvers extends BaseMutationResolvers {
+    #startUploadName;
+    
+    constructor(modelname) {
+        super(modelname);
 
-        // init parent
-        super("work");
+        this.#startUploadName = `upload${this._marker}Image`;
 
-        this[`update${this.marker}`] = async (...args) => {
-            const contextValue = args[2];
+        this.addResolver(
+            this.#startUploadName,
+            async (_, { img_id }, { dataSources }) => {
+                const r = await dataSources.imgCloudAPI.directUpload(img_id);
 
-            await contextValue.imgCloudAPI.upload()
-
-            return await super[`update${this.marker}`](...args);
-        }
+                if (r.success){
+                    return mutationBasedOnDBResponse(
+                        {
+                            id: r.data.id,
+                            url: r.data.uploadURL
+                        }
+                    )
+                }
+                
+                return mutationBasedOnRESTResponse(r);
+            }
+        )
     }
 }
 
 export default {
     JSON: GraphQLJSONObject,
     Query: {
-        ...new WorksMutationResolvers("work"),
-        ...new BaseQueryResolvers("appointment")
+        ...new BaseQueryResolvers("work").resolvers,
+        ...new BaseQueryResolvers("appointment").resolvers
     },
     Mutation: {
-        ...new WorksMutationResolvers("work"),
-        ...new BaseMutationResolvers("appointment")
+        ...new ImagesUploadSupportResolvers("work").resolvers,
+        ...new BaseMutationResolvers("appointment").resolvers
     }
 }

@@ -2,6 +2,12 @@
 
 # -------- type
 
+enum BestWayToTouch {
+    WHATSAPP
+    PHONE
+    TEXT
+}
+
 type Appointment {
     id: Int!
     name: String!
@@ -11,17 +17,11 @@ type Appointment {
     bwt: BestWayToTouch!
 }
 
-enum BestWayToTouch {
-    WHATSAPP
-    PHONE
-    TEXT
-}
-
 
 # -------- query
 
 extend type Query {
-    appointment(id: ID!): Appointment!
+    appointment(id: ID!): Appointment
     appointments(ids: [ID], filter: JSON, pagination: Pagination): [Appointment]!
 }
 
@@ -34,6 +34,7 @@ input AppointmentCreateInput {
     address: String!
     job_desc: String!
     bwt: BestWayToTouch!
+    number: String!
 }
 
 input AppointmentUpdateInput {
@@ -44,25 +45,25 @@ input AppointmentUpdateInput {
     bwt: BestWayToTouch
 }
 
-type AppointmentMutationResponse implements MutationBaseResponse {
+type AppointmentResponse implements BaseMutationResponse {
     code: String!
     success: Boolean!
     message: String!
-    appointment: Appointment!
+    data: Appointment
 }
 
-type AppointmentsMutationResponse implements MutationBaseResponse {
+type AppointmentItemsResponse implements BaseMutationResponse {
     code: String!
     success: Boolean!
     message: String!
-    appointment: [Appointment]!
+    data: [Appointment]
 }
 
 extend type Mutation {
-    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentMutationResponse!
-    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentsMutationResponse!
-    deleteAppointment(id: ID!): AppointmentMutationResponse!
-    deleteManyAppointments(ids: [ID]!): AppointmentsMutationResponse!
-    createAppointment(data: AppointmentCreateInput!): AppointmentMutationResponse! 
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponse!
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentItemsResponse!
+    deleteAppointment(id: ID!): AppointmentResponse!
+    deleteManyAppointments(ids: [ID]!): AppointmentItemsResponse!
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponse! 
 }
 

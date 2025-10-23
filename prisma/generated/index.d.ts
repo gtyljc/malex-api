@@ -2076,6 +2076,7 @@ export namespace Prisma {
 
   export type WorkMinAggregateOutputType = {
     id: number | null
+    img_url: string | null
     img_id: string | null
     category: $Enums.CategoryChoice | null
     timestamp: Date | null
@@ -2083,6 +2084,7 @@ export namespace Prisma {
 
   export type WorkMaxAggregateOutputType = {
     id: number | null
+    img_url: string | null
     img_id: string | null
     category: $Enums.CategoryChoice | null
     timestamp: Date | null
@@ -2090,7 +2092,7 @@ export namespace Prisma {
 
   export type WorkCountAggregateOutputType = {
     id: number
-    img_urls: number
+    img_url: number
     img_id: number
     category: number
     timestamp: number
@@ -2108,6 +2110,7 @@ export namespace Prisma {
 
   export type WorkMinAggregateInputType = {
     id?: true
+    img_url?: true
     img_id?: true
     category?: true
     timestamp?: true
@@ -2115,6 +2118,7 @@ export namespace Prisma {
 
   export type WorkMaxAggregateInputType = {
     id?: true
+    img_url?: true
     img_id?: true
     category?: true
     timestamp?: true
@@ -2122,7 +2126,7 @@ export namespace Prisma {
 
   export type WorkCountAggregateInputType = {
     id?: true
-    img_urls?: true
+    img_url?: true
     img_id?: true
     category?: true
     timestamp?: true
@@ -2217,7 +2221,7 @@ export namespace Prisma {
 
   export type WorkGroupByOutputType = {
     id: number
-    img_urls: string[]
+    img_url: string
     img_id: string
     category: $Enums.CategoryChoice
     timestamp: Date
@@ -2244,7 +2248,7 @@ export namespace Prisma {
 
   export type WorkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    img_urls?: boolean
+    img_url?: boolean
     img_id?: boolean
     category?: boolean
     timestamp?: boolean
@@ -2252,7 +2256,7 @@ export namespace Prisma {
 
   export type WorkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    img_urls?: boolean
+    img_url?: boolean
     img_id?: boolean
     category?: boolean
     timestamp?: boolean
@@ -2260,7 +2264,7 @@ export namespace Prisma {
 
   export type WorkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    img_urls?: boolean
+    img_url?: boolean
     img_id?: boolean
     category?: boolean
     timestamp?: boolean
@@ -2268,20 +2272,20 @@ export namespace Prisma {
 
   export type WorkSelectScalar = {
     id?: boolean
-    img_urls?: boolean
+    img_url?: boolean
     img_id?: boolean
     category?: boolean
     timestamp?: boolean
   }
 
-  export type WorkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "img_urls" | "img_id" | "category" | "timestamp", ExtArgs["result"]["work"]>
+  export type WorkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "img_url" | "img_id" | "category" | "timestamp", ExtArgs["result"]["work"]>
 
   export type $WorkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Work"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      img_urls: string[]
+      img_url: string
       img_id: string
       category: $Enums.CategoryChoice
       timestamp: Date
@@ -2709,7 +2713,7 @@ export namespace Prisma {
    */
   interface WorkFieldRefs {
     readonly id: FieldRef<"Work", 'Int'>
-    readonly img_urls: FieldRef<"Work", 'String[]'>
+    readonly img_url: FieldRef<"Work", 'String'>
     readonly img_id: FieldRef<"Work", 'String'>
     readonly category: FieldRef<"Work", 'CategoryChoice'>
     readonly timestamp: FieldRef<"Work", 'DateTime'>
@@ -3109,7 +3113,7 @@ export namespace Prisma {
 
   export const WorkScalarFieldEnum: {
     id: 'id',
-    img_urls: 'img_urls',
+    img_url: 'img_url',
     img_id: 'img_id',
     category: 'category',
     timestamp: 'timestamp'
@@ -3308,7 +3312,7 @@ export namespace Prisma {
     OR?: WorkWhereInput[]
     NOT?: WorkWhereInput | WorkWhereInput[]
     id?: IntFilter<"Work"> | number
-    img_urls?: StringNullableListFilter<"Work">
+    img_url?: StringFilter<"Work"> | string
     img_id?: StringFilter<"Work"> | string
     category?: EnumCategoryChoiceFilter<"Work"> | $Enums.CategoryChoice
     timestamp?: DateTimeFilter<"Work"> | Date | string
@@ -3316,7 +3320,7 @@ export namespace Prisma {
 
   export type WorkOrderByWithRelationInput = {
     id?: SortOrder
-    img_urls?: SortOrder
+    img_url?: SortOrder
     img_id?: SortOrder
     category?: SortOrder
     timestamp?: SortOrder
@@ -3324,18 +3328,18 @@ export namespace Prisma {
 
   export type WorkWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    img_urls?: string[]
+    img_url?: string
     img_id?: string
     AND?: WorkWhereInput | WorkWhereInput[]
     OR?: WorkWhereInput[]
     NOT?: WorkWhereInput | WorkWhereInput[]
     category?: EnumCategoryChoiceFilter<"Work"> | $Enums.CategoryChoice
     timestamp?: DateTimeFilter<"Work"> | Date | string
-  }, "id" | "img_urls" | "img_id">
+  }, "id" | "img_url" | "img_id">
 
   export type WorkOrderByWithAggregationInput = {
     id?: SortOrder
-    img_urls?: SortOrder
+    img_url?: SortOrder
     img_id?: SortOrder
     category?: SortOrder
     timestamp?: SortOrder
@@ -3351,7 +3355,7 @@ export namespace Prisma {
     OR?: WorkScalarWhereWithAggregatesInput[]
     NOT?: WorkScalarWhereWithAggregatesInput | WorkScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Work"> | number
-    img_urls?: StringNullableListFilter<"Work">
+    img_url?: StringWithAggregatesFilter<"Work"> | string
     img_id?: StringWithAggregatesFilter<"Work"> | string
     category?: EnumCategoryChoiceWithAggregatesFilter<"Work"> | $Enums.CategoryChoice
     timestamp?: DateTimeWithAggregatesFilter<"Work"> | Date | string
@@ -3432,22 +3436,22 @@ export namespace Prisma {
   }
 
   export type WorkCreateInput = {
-    img_urls?: WorkCreateimg_urlsInput | string[]
-    img_id: string
+    img_url: string
+    img_id?: string
     category: $Enums.CategoryChoice
     timestamp?: Date | string
   }
 
   export type WorkUncheckedCreateInput = {
     id?: number
-    img_urls?: WorkCreateimg_urlsInput | string[]
-    img_id: string
+    img_url: string
+    img_id?: string
     category: $Enums.CategoryChoice
     timestamp?: Date | string
   }
 
   export type WorkUpdateInput = {
-    img_urls?: WorkUpdateimg_urlsInput | string[]
+    img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3455,7 +3459,7 @@ export namespace Prisma {
 
   export type WorkUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    img_urls?: WorkUpdateimg_urlsInput | string[]
+    img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3463,14 +3467,14 @@ export namespace Prisma {
 
   export type WorkCreateManyInput = {
     id?: number
-    img_urls?: WorkCreateimg_urlsInput | string[]
-    img_id: string
+    img_url: string
+    img_id?: string
     category: $Enums.CategoryChoice
     timestamp?: Date | string
   }
 
   export type WorkUpdateManyMutationInput = {
-    img_urls?: WorkUpdateimg_urlsInput | string[]
+    img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3478,7 +3482,7 @@ export namespace Prisma {
 
   export type WorkUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    img_urls?: WorkUpdateimg_urlsInput | string[]
+    img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3642,14 +3646,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
   export type EnumCategoryChoiceFilter<$PrismaModel = never> = {
     equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
     in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
@@ -3670,7 +3666,7 @@ export namespace Prisma {
 
   export type WorkCountOrderByAggregateInput = {
     id?: SortOrder
-    img_urls?: SortOrder
+    img_url?: SortOrder
     img_id?: SortOrder
     category?: SortOrder
     timestamp?: SortOrder
@@ -3682,6 +3678,7 @@ export namespace Prisma {
 
   export type WorkMaxOrderByAggregateInput = {
     id?: SortOrder
+    img_url?: SortOrder
     img_id?: SortOrder
     category?: SortOrder
     timestamp?: SortOrder
@@ -3689,6 +3686,7 @@ export namespace Prisma {
 
   export type WorkMinOrderByAggregateInput = {
     id?: SortOrder
+    img_url?: SortOrder
     img_id?: SortOrder
     category?: SortOrder
     timestamp?: SortOrder
@@ -3740,15 +3738,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type WorkCreateimg_urlsInput = {
-    set: string[]
-  }
-
-  export type WorkUpdateimg_urlsInput = {
-    set?: string[]
-    push?: string | string[]
   }
 
   export type EnumCategoryChoiceFieldUpdateOperationsInput = {

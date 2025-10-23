@@ -15,18 +15,39 @@ type Query
 type Mutation
 
 
+# -------- interfaces
+
+interface BaseMutationResponse {
+    """
+        All mutation responses must include data field
+        with a type of modified entity (item or list of items)
+        and it must not have a not-nullable modifier
+    """
+
+    code: String!
+    message: String!
+    success: Boolean!
+}
+
+
+# -------- objects
+
+type UploadImageURL { 
+    id: ID!
+    url: String!
+}
+
+type UploadImageResponse implements BaseMutationResponse {
+    code: String!
+    message: String!
+    success: Boolean!
+    data: UploadImageURL
+}
+
+
 # -------- inputs
 
 input Pagination {
     perPage: Int!
     page: Int!
-}
-
-
-# -------- interfaces
-
-interface MutationBaseResponse {
-    code: String!
-    success: Boolean!
-    message: String!
 }

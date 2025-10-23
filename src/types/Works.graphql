@@ -1,6 +1,6 @@
 
 
-# -------- type
+# -------- object
 
 enum WorkCategory {
     ASSEMBLING
@@ -19,7 +19,7 @@ type Work {
 # -------- query
 
 extend type Query {
-    work(id: ID!): Work!
+    work(id: ID!): Work
     works(ids: [ID], filter: JSON, pagination: Pagination): [Work]!
 }
 
@@ -27,7 +27,6 @@ extend type Query {
 # -------- mutation
 
 input WorkCreateInput {
-    img_urls: [String]!
     img_id: ID!
     category: WorkCategory!
 }
@@ -38,24 +37,26 @@ input WorkUpdateInput {
     category: WorkCategory
 }
 
-type WorkMutationResponse implements MutationBaseResponse {
+type WorkResponse implements BaseMutationResponse {
     code: String!
     success: Boolean!
     message: String!
-    work: Work!
+    resource: String!
+    data: Work
 }
 
-type WorksMutationResponse implements MutationBaseResponse {
+type WorkItemResponse implements BaseMutationResponse {
     code: String!
     success: Boolean!
     message: String!
-    work: [Work]!
+    data: [Work]
 }
 
 extend type Mutation {
-    updateWork(id: ID!, data: WorkUpdateInput): WorkMutationResponse!
-    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorksMutationResponse!
-    deleteWork(id: ID!): WorkMutationResponse!
-    deleteManyWorks(ids: [ID]!): WorksMutationResponse!
-    createWork(data:  WorkCreateInput): WorkMutationResponse! 
+    updateWork(id: ID!, data: WorkUpdateInput): WorkResponse!
+    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkItemResponse!
+    deleteWork(id: ID!): WorkResponse!
+    deleteManyWorks(ids: [ID]!): WorkItemResponse!
+    createWork(data: WorkCreateInput): WorkResponse! 
+    uploadWorkImage(img_id: ID!): UploadImageResponse!
 }

@@ -1,21 +1,40 @@
 
 // db
 import { PrismaClient } from '../prisma/generated/client.js';
-import { withAccelerate } from "@prisma/extension-accelerate";
 
 class PaginationError extends Error {
     name="PaginationError"
     message="Each request on massive of objects must include pagination!"
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export class DatabaseSource {
-    // all methods expect id in String format
+    // all methods expect ALL ids in String format;
+    // every method of this class must use "#sendQuery" instead of 
+    // direct interaction with DB
 
     RECONNECTION_DELAY = 1; // seconds
+    #isConnectionEstablished = false;
 
     constructor (){
-        this.isConnectionEstablished;
-        this.prisma = new PrismaClient().$extends(withAccelerate());
+        this.prisma = new PrismaClient(
+            { log: [{"level": "error", emit:"event"}] }
+        );
+    
+        // in case of lost connection
+        this.prisma.$on(
+            'error', 
+            (event) => { 
+                event.code == "P1001" && this.#establishConnection()
+            }
+        )
+    }
+
+    #connected() {
+        this.#isConnectionEstablished = true;
     }
 
     // infinite loop, that will not stop until connection will be established
@@ -23,8 +42,8 @@ export class DatabaseSource {
         while (true) {
             try {
                 this.prisma.$connect().then(
-                    () => this.isConnectionEstablished = true
-                ); // trying
+                    () => this.#connected()
+                ); // trying to connect
 
                 break
             }
@@ -32,7 +51,7 @@ export class DatabaseSource {
                 if (error.code == "P1001") {
                     console.log("Can't reach the database");
 
-                    setTimeout(() => {}, this.RECONNECTION_DELAY);
+                    sleep(this.RECONNECTION_DELAY);
                 }
                 else {
                     throw error;
@@ -42,24 +61,22 @@ export class DatabaseSource {
     }
 
     async #sendQuery(query, method, model){
-        try {
-            return await this.prisma[model][method](query);   
-        }
-        catch (error) {
-            if (error.code == "P1001") {
-                this.#establishConnection()
-            }
-            else {
+        let r;
 
-                // safe error raising
-                return error;
-            }
+        // silent error cathing
+        try{
+            r = await this.prisma[model][method](query);   
         }
+        catch (e) {
+            r = e;
+        }
+        
+        return r;
     }
 
-    // you can get an array of objects that has specified at ids array id
+    // you can get an array of objects that has specified id at ids array
     // or you can get a massive of objects that are suitable for specified filter,
-    // in this case you should use pagination
+    // in this case you must use pagination, in other case it will throw an error
     async #many(query, method, model, ids, filter, pagination){
    
         // get objects by specified ids
@@ -152,11 +169,13 @@ export class DatabaseSource {
     }
 
     async create(model, data) {
-        return await this.prisma[model].create({data})
+        return await this.#sendQuery({data}, "create", model)
     }
 }
 
 export class CloudflareImagesStorageAPI {
+    // id param in methods => image id, that was earlier generated with nanoid
+
     RETURN_TEMPLATE = {
         data: null, // list or single object (can be null)
         success: null, // boolean
@@ -165,17 +184,18 @@ export class CloudflareImagesStorageAPI {
     };
     #token;
     #account_id;
+    #CLOUDFLARE_API_URL;
 
     constructor(token, account_id){
         this.#token = token;
         this.#account_id = account_id;
-        this.CLOUDFLARE_API_URL = `https://api.cloudflare.com/client/v4/accounts/${this.#account_id}/images/v1` // without endpoints
+        this.#CLOUDFLARE_API_URL = `https://api.cloudflare.com/client/v4/accounts/${this.#account_id}/images` // without endpoints and API version
     }
 
-    async #send(endpoint, method, body=null){
+    async #send(method, { body = null, endpoint = null, version=1} = {}){ // version => API version
         const r = await (
             await fetch(
-                this.CLOUDFLARE_API_URL + `/${endpoint}`,
+                this.#CLOUDFLARE_API_URL + `/v${version}` + (endpoint ? `/${endpoint}`: ""),
                 {
                     method, 
                     headers: {"Authorization": `Bearer ${this.#token}`}, // via TOKEN
@@ -203,20 +223,35 @@ export class CloudflareImagesStorageAPI {
         return this.RETURN_TEMPLATE;
     }
 
-    async uploadImage(img) { // file instance
+    async uploadImage(id, { creator = null, file = null, url = null, requireSignedURLs = false } = {}) { // file instance 
         const body = new FormData();
 
         // setup and insert image into request    
-        body.append("file", img);
+        file && body.append("file", file);
+        id && body.append("id", id);   
+        url && body.append("url", url);
+        creator && body.append("creator", creator);
+        body.append("requireSignedURLs", requireSignedURLs);
 
-        return await this.#send("POST", body)
+        return await this.#send("POST", body);
     }
 
-    async deleteImage(img_id) {
-        return await this.#send(img_id, "DELETE")
+    async deleteImage(id) {
+        return await this.#send("DELETE", { endpoint: id })
     }
 
-    async imageInfo(img_id) {
-        return await this.#send(img_id, "GET")
+    async imageInfo(id) {
+        return await this.#send("GET", {endpoint: id})
+    }
+
+    async directUpload(id, { creator = null, expiry = null, requireSignedURLs = false } = {}) { // expiry => ISO-8601 string
+        const body = new FormData();
+
+        id && body.append("id", id);
+        expiry && body.append("url", expiry);
+        creator && body.append("creator", creator);
+        body.append("requireSignedURLs", requireSignedURLs);
+        
+        return await this.#send("POST", {endpoint: "direct_upload", body, version:2})
     }
 }
