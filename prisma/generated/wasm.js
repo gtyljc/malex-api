@@ -100,7 +100,8 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   job_desc: 'job_desc',
   bwt: 'bwt',
   number: 'number',
-  duration: 'duration'
+  duration: 'duration',
+  date: 'date'
 };
 
 exports.Prisma.WorkScalarFieldEnum = {
@@ -152,7 +153,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\generated",
+      "value": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -166,7 +167,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -188,13 +189,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nmodel Appointment {\n  id       Int       @id @default(autoincrement())\n  name     String    @db.VarChar(50)\n  surname  String    @db.VarChar(50)\n  address  String    @db.VarChar(255)\n  job_desc String\n  bwt      BwtChoice\n  number   String?   @unique @db.VarChar(20)\n  duration Int       @default(1) // hours\n\n  @@map(\"appointment\")\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        Int            @id @default(autoincrement())\n  img_url   String         @unique @db.VarChar(2800)\n  img_id    String         @unique @default(\"\") @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now())\n\n  @@map(\"work\")\n}\n",
-  "inlineSchemaHash": "31ded317a90c717be13bd61a262d72c0e28c5a174119e5e628f7a2a6bdc88d48",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nmodel Appointment {\n  id       Int       @id @default(autoincrement())\n  name     String    @db.VarChar(50)\n  surname  String    @db.VarChar(50)\n  address  String    @db.VarChar(255)\n  job_desc String\n  bwt      BwtChoice\n  number   String?   @unique @db.VarChar(20)\n  duration Int       @default(1) // hours\n  date     DateTime  @unique\n\n  @@map(\"appointment\")\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        Int            @id @default(autoincrement())\n  img_url   String         @unique @db.VarChar(2800)\n  img_id    String         @unique @default(\"\") @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now())\n\n  @@map(\"work\")\n}\n",
+  "inlineSchemaHash": "92a8c28901970c52131d0a2b7f3e657de04db29eb454b7b28df6678eea8753e3",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":\"appointment\"},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"work\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"appointment\"},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"work\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

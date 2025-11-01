@@ -1,6 +1,6 @@
 
 
-# -------- type
+# -------- object
 
 enum BestWayToTouch {
     WHATSAPP
@@ -15,6 +15,9 @@ type Appointment {
     address: String!
     job_desc: String!
     bwt: BestWayToTouch!
+    number: String!
+    date: String!
+    duration: Floar!
 }
 
 
@@ -22,7 +25,7 @@ type Appointment {
 
 extend type Query {
     appointment(id: ID!): Appointment
-    appointments(ids: [ID], filter: JSON, pagination: Pagination): [Appointment]!
+    appointments(ids: [ID], filter: JSON, pagination: Pagination, sort: Sort): [Appointment]!
 }
 
 
@@ -35,6 +38,7 @@ input AppointmentCreateInput {
     job_desc: String!
     bwt: BestWayToTouch!
     number: String!
+    date: String!
 }
 
 input AppointmentUpdateInput {
@@ -43,6 +47,9 @@ input AppointmentUpdateInput {
     address: String
     job_desc: String
     bwt: BestWayToTouch
+    number: String
+    date: String
+    duration: Float
 }
 
 type AppointmentResponse implements BaseMutationResponse {

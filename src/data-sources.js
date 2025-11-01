@@ -8,7 +8,7 @@ class PaginationError extends Error {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export class DatabaseSource {
@@ -27,7 +27,7 @@ export class DatabaseSource {
         // in case of lost connection
         this.prisma.$on(
             'error', 
-            (event) => { 
+            (event) => {
                 event.code == "P1001" && this.#establishConnection()
             }
         )
@@ -41,9 +41,7 @@ export class DatabaseSource {
     async #establishConnection() {
         while (true) {
             try {
-                this.prisma.$connect().then(
-                    () => this.#connected()
-                ); // trying to connect
+                this.prisma.$connect().then(() => this.#connected()); // trying to connect
 
                 break
             }

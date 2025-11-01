@@ -1013,6 +1013,7 @@ export namespace Prisma {
     bwt: $Enums.BwtChoice | null
     number: string | null
     duration: number | null
+    date: Date | null
   }
 
   export type AppointmentMaxAggregateOutputType = {
@@ -1024,6 +1025,7 @@ export namespace Prisma {
     bwt: $Enums.BwtChoice | null
     number: string | null
     duration: number | null
+    date: Date | null
   }
 
   export type AppointmentCountAggregateOutputType = {
@@ -1035,6 +1037,7 @@ export namespace Prisma {
     bwt: number
     number: number
     duration: number
+    date: number
     _all: number
   }
 
@@ -1058,6 +1061,7 @@ export namespace Prisma {
     bwt?: true
     number?: true
     duration?: true
+    date?: true
   }
 
   export type AppointmentMaxAggregateInputType = {
@@ -1069,6 +1073,7 @@ export namespace Prisma {
     bwt?: true
     number?: true
     duration?: true
+    date?: true
   }
 
   export type AppointmentCountAggregateInputType = {
@@ -1080,6 +1085,7 @@ export namespace Prisma {
     bwt?: true
     number?: true
     duration?: true
+    date?: true
     _all?: true
   }
 
@@ -1178,6 +1184,7 @@ export namespace Prisma {
     bwt: $Enums.BwtChoice
     number: string | null
     duration: number
+    date: Date
     _count: AppointmentCountAggregateOutputType | null
     _avg: AppointmentAvgAggregateOutputType | null
     _sum: AppointmentSumAggregateOutputType | null
@@ -1208,6 +1215,7 @@ export namespace Prisma {
     bwt?: boolean
     number?: boolean
     duration?: boolean
+    date?: boolean
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1219,6 +1227,7 @@ export namespace Prisma {
     bwt?: boolean
     number?: boolean
     duration?: boolean
+    date?: boolean
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1230,6 +1239,7 @@ export namespace Prisma {
     bwt?: boolean
     number?: boolean
     duration?: boolean
+    date?: boolean
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectScalar = {
@@ -1241,9 +1251,10 @@ export namespace Prisma {
     bwt?: boolean
     number?: boolean
     duration?: boolean
+    date?: boolean
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "surname" | "address" | "job_desc" | "bwt" | "number" | "duration", ExtArgs["result"]["appointment"]>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "surname" | "address" | "job_desc" | "bwt" | "number" | "duration" | "date", ExtArgs["result"]["appointment"]>
 
   export type $AppointmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Appointment"
@@ -1257,6 +1268,7 @@ export namespace Prisma {
       bwt: $Enums.BwtChoice
       number: string | null
       duration: number
+      date: Date
     }, ExtArgs["result"]["appointment"]>
     composites: {}
   }
@@ -1688,6 +1700,7 @@ export namespace Prisma {
     readonly bwt: FieldRef<"Appointment", 'BwtChoice'>
     readonly number: FieldRef<"Appointment", 'String'>
     readonly duration: FieldRef<"Appointment", 'Int'>
+    readonly date: FieldRef<"Appointment", 'DateTime'>
   }
     
 
@@ -3105,7 +3118,8 @@ export namespace Prisma {
     job_desc: 'job_desc',
     bwt: 'bwt',
     number: 'number',
-    duration: 'duration'
+    duration: 'duration',
+    date: 'date'
   };
 
   export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
@@ -3194,20 +3208,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'CategoryChoice'
-   */
-  export type EnumCategoryChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryChoice'>
-    
-
-
-  /**
-   * Reference to a field of type 'CategoryChoice[]'
-   */
-  export type ListEnumCategoryChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryChoice[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -3218,6 +3218,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CategoryChoice'
+   */
+  export type EnumCategoryChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryChoice'>
+    
+
+
+  /**
+   * Reference to a field of type 'CategoryChoice[]'
+   */
+  export type ListEnumCategoryChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryChoice[]'>
     
 
 
@@ -3250,6 +3264,7 @@ export namespace Prisma {
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
     number?: StringNullableFilter<"Appointment"> | string | null
     duration?: IntFilter<"Appointment"> | number
+    date?: DateTimeFilter<"Appointment"> | Date | string
   }
 
   export type AppointmentOrderByWithRelationInput = {
@@ -3261,11 +3276,13 @@ export namespace Prisma {
     bwt?: SortOrder
     number?: SortOrderInput | SortOrder
     duration?: SortOrder
+    date?: SortOrder
   }
 
   export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     number?: string
+    date?: Date | string
     AND?: AppointmentWhereInput | AppointmentWhereInput[]
     OR?: AppointmentWhereInput[]
     NOT?: AppointmentWhereInput | AppointmentWhereInput[]
@@ -3275,7 +3292,7 @@ export namespace Prisma {
     job_desc?: StringFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
     duration?: IntFilter<"Appointment"> | number
-  }, "id" | "number">
+  }, "id" | "number" | "date">
 
   export type AppointmentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -3286,6 +3303,7 @@ export namespace Prisma {
     bwt?: SortOrder
     number?: SortOrderInput | SortOrder
     duration?: SortOrder
+    date?: SortOrder
     _count?: AppointmentCountOrderByAggregateInput
     _avg?: AppointmentAvgOrderByAggregateInput
     _max?: AppointmentMaxOrderByAggregateInput
@@ -3305,6 +3323,7 @@ export namespace Prisma {
     bwt?: EnumBwtChoiceWithAggregatesFilter<"Appointment"> | $Enums.BwtChoice
     number?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     duration?: IntWithAggregatesFilter<"Appointment"> | number
+    date?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   }
 
   export type WorkWhereInput = {
@@ -3369,6 +3388,7 @@ export namespace Prisma {
     bwt: $Enums.BwtChoice
     number?: string | null
     duration?: number
+    date: Date | string
   }
 
   export type AppointmentUncheckedCreateInput = {
@@ -3380,6 +3400,7 @@ export namespace Prisma {
     bwt: $Enums.BwtChoice
     number?: string | null
     duration?: number
+    date: Date | string
   }
 
   export type AppointmentUpdateInput = {
@@ -3390,6 +3411,7 @@ export namespace Prisma {
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentUncheckedUpdateInput = {
@@ -3401,6 +3423,7 @@ export namespace Prisma {
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentCreateManyInput = {
@@ -3412,6 +3435,7 @@ export namespace Prisma {
     bwt: $Enums.BwtChoice
     number?: string | null
     duration?: number
+    date: Date | string
   }
 
   export type AppointmentUpdateManyMutationInput = {
@@ -3422,6 +3446,7 @@ export namespace Prisma {
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentUncheckedUpdateManyInput = {
@@ -3433,6 +3458,7 @@ export namespace Prisma {
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkCreateInput = {
@@ -3536,6 +3562,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -3550,6 +3587,7 @@ export namespace Prisma {
     bwt?: SortOrder
     number?: SortOrder
     duration?: SortOrder
+    date?: SortOrder
   }
 
   export type AppointmentAvgOrderByAggregateInput = {
@@ -3566,6 +3604,7 @@ export namespace Prisma {
     bwt?: SortOrder
     number?: SortOrder
     duration?: SortOrder
+    date?: SortOrder
   }
 
   export type AppointmentMinOrderByAggregateInput = {
@@ -3577,6 +3616,7 @@ export namespace Prisma {
     bwt?: SortOrder
     number?: SortOrder
     duration?: SortOrder
+    date?: SortOrder
   }
 
   export type AppointmentSumOrderByAggregateInput = {
@@ -3646,14 +3686,7 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type EnumCategoryChoiceFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
-    in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
-    notIn?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
-    not?: NestedEnumCategoryChoiceFilter<$PrismaModel> | $Enums.CategoryChoice
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -3661,7 +3694,17 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type EnumCategoryChoiceFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryChoiceFilter<$PrismaModel> | $Enums.CategoryChoice
   }
 
   export type WorkCountOrderByAggregateInput = {
@@ -3706,20 +3749,6 @@ export namespace Prisma {
     _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -3740,12 +3769,12 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type EnumCategoryChoiceFieldUpdateOperationsInput = {
-    set?: $Enums.CategoryChoice
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type EnumCategoryChoiceFieldUpdateOperationsInput = {
+    set?: $Enums.CategoryChoice
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -3792,6 +3821,17 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -3876,34 +3916,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumCategoryChoiceFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
-    in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
-    notIn?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
-    not?: NestedEnumCategoryChoiceFilter<$PrismaModel> | $Enums.CategoryChoice
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedEnumCategoryChoiceWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
-    in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
-    notIn?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
-    not?: NestedEnumCategoryChoiceWithAggregatesFilter<$PrismaModel> | $Enums.CategoryChoice
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumCategoryChoiceFilter<$PrismaModel>
-    _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -3916,6 +3928,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCategoryChoiceFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryChoiceFilter<$PrismaModel> | $Enums.CategoryChoice
+  }
+
+  export type NestedEnumCategoryChoiceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryChoiceWithAggregatesFilter<$PrismaModel> | $Enums.CategoryChoice
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCategoryChoiceFilter<$PrismaModel>
+    _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
   }
 
 

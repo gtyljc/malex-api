@@ -23,6 +23,7 @@ model Appointment {
   bwt      BwtChoice
   number   String?   @unique @db.VarChar(20)
   duration Int       @default(1) // hours
+  date     DateTime  @unique
 
   @@map("appointment")
 }

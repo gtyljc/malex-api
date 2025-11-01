@@ -128,7 +128,8 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   job_desc: 'job_desc',
   bwt: 'bwt',
   number: 'number',
-  duration: 'duration'
+  duration: 'duration',
+  date: 'date'
 };
 
 exports.Prisma.WorkScalarFieldEnum = {

@@ -16,12 +16,15 @@ const server = new ApolloServer({ typeDefs, resolvers });
 const { url } = await startStandaloneServer(
     server,
     {
-        listen: {port: 4000},
+        listen: {port: 2000},
         context: async () => {
             return {
                 dataSources: {
                     db: new DatabaseSource(),
-                    imgCloudAPI: new CloudflareImagesStorageAPI(process.env.CLOUDFLARE_API_TOKEN, process.env.CLOUDFLARE_ACCOUNT_ID)
+                    imgCloudAPI: new CloudflareImagesStorageAPI(
+                        process.env.CLOUDFLARE_API_TOKEN, 
+                        process.env.CLOUDFLARE_ACCOUNT_ID
+                    )
                 }
             }
         }

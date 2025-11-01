@@ -45,9 +45,22 @@ type UploadImageResponse implements BaseMutationResponse {
 }
 
 
+# -------- enums
+
+enum Order {
+    ASC
+    DESC
+}
+
+
 # -------- inputs
 
 input Pagination {
     perPage: Int!
     page: Int!
+}
+
+input Sort {
+    field: String!
+    order: Order!
 }
