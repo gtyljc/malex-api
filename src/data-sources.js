@@ -28,6 +28,8 @@ export class DatabaseSource {
         this.prisma.$on(
             'error', 
             (event) => {
+                console.log(event);
+
                 event.code == "P1001" && this.#establishConnection()
             }
         )
@@ -41,6 +43,8 @@ export class DatabaseSource {
     async #establishConnection() {
         while (true) {
             try {
+                console.log("Can't reach the database");
+
                 this.prisma.$connect().then(() => this.#connected()); // trying to connect
 
                 break
@@ -96,7 +100,7 @@ export class DatabaseSource {
             }
 
             // pagination params
-            const skip = pagination.perPage * pagination.page;
+            const skip = pagination.perPage * (pagination.page - 1);
             const take = pagination.perPage;
 
             let r = await this.#sendQuery(
@@ -111,18 +115,17 @@ export class DatabaseSource {
             )
 
             if (!(r instanceof Error)){
-                const total = this.prisma[model].count()
+                const total = await this.prisma[model].count();
 
                 r = {
-                    ...r, 
-                    total, 
+                    data: r,
+                    total,
                     pageInfo: {
                         hasNextPage: total - (skip + take) > 0,
                         hasPreviousPage: skip - take > 0
                     }
                 }
             }
-
             return r;
         }
 
@@ -151,11 +154,11 @@ export class DatabaseSource {
     }
 
     async updateMany(model, ids, data) {
-        return await this.#many({data: data}, "updateMany", model, ids)
+        return await this.#many({ data }, "updateMany", model, ids)
     }
 
     async updateOne(model, id, data) {
-        return await this.#one({data: data}, "update", model, id)
+        return await this.#one({ data }, "update", model, id)
     }
 
     async deleteMany(model, ids) {
@@ -167,7 +170,7 @@ export class DatabaseSource {
     }
 
     async create(model, data) {
-        return await this.#sendQuery({data}, "create", model)
+        return await this.#sendQuery({ data }, "create", model)
     }
 }
 
@@ -239,7 +242,7 @@ export class CloudflareImagesStorageAPI {
     }
 
     async imageInfo(id) {
-        return await this.#send("GET", {endpoint: id})
+        return await this.#send("GET", { endpoint: id })
     }
 
     async directUpload(id, { creator = null, expiry = null, requireSignedURLs = false } = {}) { // expiry => ISO-8601 string

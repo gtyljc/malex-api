@@ -1,0 +1,96 @@
+
+"""
+    Public scalars, objects, interfaces, enums...
+"""
+
+# -------- scalars
+
+scalar JSONObject
+scalar URL
+scalar PhoneNumber
+scalar DateTimeISO
+scalar PositiveInt
+scalar PositiveFloat
+
+
+# -------- to extend
+
+type Query
+
+type Mutation {
+    startUploadImage(img_id: ID!): StartUploadImageResponseType
+    finalizeUploadImage(img_id: ID!): FinalizeUploudImageResponseType
+}
+
+
+# -------- interfaces
+
+interface BaseMutationResponseInterface {
+    """
+        All mutation responses must include data field
+        with a type of modified entity (item or list of items)
+        and it must not have a not-nullable modifier
+    """
+
+    code: String!
+    message: String!
+    success: Boolean!
+}
+
+interface PaginatedInterface {
+    total: Int!
+    pageInfo: PageInfoType!
+}
+
+
+# -------- objects
+
+type StartUploadImageType { 
+    id: ID!
+    url: URL!
+}
+
+type FinalizeUploadImageType {
+    id: ID!
+    urls: [URL]!
+}
+
+type StartUploadImageResponseType implements BaseMutationResponseInterface {
+    code: String!
+    message: String!
+    success: Boolean!
+    data: StartUploadImageType
+}
+
+type FinalizeUploudImageResponseType implements BaseMutationResponseInterface {
+    code: String!
+    message: String!
+    success: Boolean!
+    data: FinalizeUploadImageType
+}
+
+type PageInfoType {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+}
+
+
+# -------- enums
+
+enum OrderEnum {
+    ASC
+    DESC
+}
+
+
+# -------- inputs
+
+input PaginationInput {
+    perPage: PositiveInt!
+    page: PositiveInt!
+}
+
+input SortInput {
+    field: String!
+    order: OrderEnum!
+}

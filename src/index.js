@@ -7,7 +7,7 @@ import resolvers from './resolvers.js';
 import dotenv from "dotenv";
 
 // db
-import {DatabaseSource, CloudflareImagesStorageAPI} from './data-sources.js';
+import { DatabaseSource, CloudflareImagesStorageAPI } from './data-sources.js';
 
 // parse .env
 dotenv.config();

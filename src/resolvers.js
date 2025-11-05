@@ -1,5 +1,16 @@
 
-import { GraphQLJSONObject } from "graphql-type-json";
+import { 
+    JSONObjectResolver, 
+    DateTimeISOResolver,
+    PhoneNumberResolver,
+    URLResolver,
+    PositiveIntResolver,
+    PositiveFloatResolver
+} from "graphql-scalars";
+
+function capitalize(string){
+    return string.charAt(0).toUpperCase() + string.slice(1)
+}
 
 function mutationErrorResponse(message, code){
     return {
@@ -41,24 +52,42 @@ function mutationBasedOnRESTResponse(result){ // result => object (converted fro
     return mutationSuccessResponse(result);
 }
 
-class ResolversManager {
+class ResolversUnionsManager {
     // !!! if you want to use resolvers in high-definied object use "resolvers" property !!!
 
     #resolvers = {};
+    #unions = {};
+
+    constructor(modelname){
+        this._marker = capitalize(modelname); // how resolvers will be marked
+    }
 
     addResolver(name, func){
-        this[name] = func; // to be polymorphismable
         this.#resolvers[name] = func;
+    }
+
+    addUnion(name, object){
+        this.#unions[name] = object;
     }
 
     get resolvers(){
         return this.#resolvers;
     }
+
+    get unions(){
+        return this.#unions
+    }
 }
 
-class BaseQueryResolvers extends ResolversManager{   
+class BaseQueryResolvers extends ResolversUnionsManager {
+    
+    // name of types that could be (because they will used at 
+    // union specified in constructor) returned at " get many" request
+    #getManyName = "";
+    #getManyPaginatedName = "";
+
     constructor(modelname) {
-        super();
+        super(modelname);
 
         // get single object
         this.addResolver(
@@ -71,14 +100,37 @@ class BaseQueryResolvers extends ResolversManager{
         // get many objects
         this.addResolver(
             modelname + "s",
-            async (_, { ids, filter, pagination }, { dataSources }) => {
+            async (_, { ids, filter, pagination, sort }, { dataSources }) => {
                 return await dataSources.db.getMany(modelname, ids, filter, pagination);
+            }
+        )
+
+        this.#getManyName = `${this._marker}ItemsType`;
+        this.#getManyPaginatedName = `${this._marker}ItemsPaginatedType`;
+
+        const getManyUnionResolver = (obj) => {
+
+            // with pagination
+            if (obj.data){
+                return this.#getManyPaginatedName
+            }
+
+            // without pagination
+            if (obj.items){
+                return this.#getManyName
+            }
+        }
+
+        this.addUnion(
+            `${this._marker}ItemsUnion`,
+            {
+                __resolveType: getManyUnionResolver
             }
         )
     }
 }
 
-class BaseMutationResolvers extends ResolversManager {
+class BaseMutationResolvers extends ResolversUnionsManager {
     // Methods params and their response
     // updateOne (id, )
 
@@ -90,9 +142,7 @@ class BaseMutationResolvers extends ResolversManager {
     #createName;
 
     constructor(modelname) {
-        super();
-
-        this._marker = modelname.charAt(0).toUpperCase() + modelname.slice(1); // how resolvers were marked
+        super(modelname);
 
         // configurate names
         this.#updateOneName = `update${this._marker}`;
@@ -154,15 +204,11 @@ class BaseMutationResolvers extends ResolversManager {
 }
 
 class ImagesUploadSupportResolvers extends BaseMutationResolvers {
-    #startUploadName;
-    
     constructor(modelname) {
         super(modelname);
 
-        this.#startUploadName = `upload${this._marker}Image`;
-
         this.addResolver(
-            this.#startUploadName,
+           "startUploadImage",
             async (_, { img_id }, { dataSources }) => {
                 const r = await dataSources.imgCloudAPI.directUpload(img_id);
 
@@ -178,17 +224,59 @@ class ImagesUploadSupportResolvers extends BaseMutationResolvers {
                 return mutationBasedOnRESTResponse(r);
             }
         )
+
+        this.addResolver(
+            "finalizeUploadImage",
+            async (_, { img_id }, { dataSources }) => {
+                const r = await dataSources.imgCloudAPI.imageInfo(img_id);
+
+                if (r.success){
+                    return mutationBasedOnDBResponse(
+                        {
+                            id: r.data.id,
+                            urls: r.data.variants
+                        }
+                    )
+                }
+                
+                return mutationBasedOnRESTResponse(r);
+            }
+        )
     }
 }
 
+// modelnames config
+const WORK_MODELNAME = "work";
+const APPOINTMENT_MODELNAME = "appointment";
+
+const workQuery = new BaseQueryResolvers(WORK_MODELNAME);
+const appointmentQuery = new BaseQueryResolvers(APPOINTMENT_MODELNAME);
+const workMutation = new ImagesUploadSupportResolvers(WORK_MODELNAME);
+const appointmentMutation = new BaseMutationResolvers(APPOINTMENT_MODELNAME);
+
 export default {
-    JSON: GraphQLJSONObject,
+
+    // scalars
+    JSONObject: JSONObjectResolver,
+    URL: URLResolver,
+    PhoneNumber: PhoneNumberResolver,
+    DateTimeISO: DateTimeISOResolver,
+    PositiveInt: PositiveIntResolver,
+    PositiveFloat: PositiveFloatResolver,
+
+    // unions
+    ...workQuery.unions,
+    ...appointmentQuery.unions,
+
+    // get requests
     Query: {
-        ...new BaseQueryResolvers("work").resolvers,
-        ...new BaseQueryResolvers("appointment").resolvers
+        ...workQuery.resolvers,
+        ...appointmentQuery.resolvers
     },
+
+    // update requests
     Mutation: {
-        ...new ImagesUploadSupportResolvers("work").resolvers,
-        ...new BaseMutationResolvers("appointment").resolvers
+        ...workMutation.resolvers,
+        ...appointmentMutation.resolvers
     }
 }

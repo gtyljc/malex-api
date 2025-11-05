@@ -134,7 +134,7 @@ exports.Prisma.AppointmentScalarFieldEnum = {
 
 exports.Prisma.WorkScalarFieldEnum = {
   id: 'id',
-  img_url: 'img_url',
+  img_urls: 'img_urls',
   img_id: 'img_id',
   category: 'category',
   timestamp: 'timestamp'

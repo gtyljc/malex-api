@@ -36,7 +36,7 @@ enum CategoryChoice {
 
 model Work {
     id        Int            @id @default(autoincrement())
-    img_url  String          @unique @db.VarChar(2800)
+    img_urls  String[]       @db.VarChar(2800)
     img_id    String         @unique @db.VarChar(50) @default("")
     category  CategoryChoice
     timestamp DateTime       @default(now())

@@ -1,0 +1,82 @@
+
+
+# -------- object
+
+enum WorkCategoryEnum {
+    ASSEMBLING
+    MOUNTING
+    PLUMBING
+}
+
+type WorkType {
+    id: Int!
+    img_urls: [URL]!
+    img_id: ID!
+    category: WorkCategoryEnum!
+    timestamp: DateTimeISO!
+}
+
+type WorkItemsType {
+    items: [WorkType]!
+}
+
+type WorkItemsPaginatedType implements PaginatedInterface {
+    data: [WorkType]!
+    total: Int!
+    pageInfo: PageInfoType!
+}
+
+union WorkItemsUnion = WorkItemsType | WorkItemsPaginatedType
+
+
+# -------- query
+
+extend type Query {
+    work(id: ID!): WorkType
+    works(
+        ids: [ID], 
+        filter: JSONObject, 
+        pagination: PaginationInput
+        sort: SortInput    
+    ): WorkItemsUnion!
+}
+
+
+# -------- mutation
+
+input WorkCreateInput {
+    img_id: ID!
+    img_urls: [URL]!
+    category: WorkCategoryEnum!
+    timestamp: DateTimeISO!
+}
+
+input WorkUpdateInput {
+    img_id: ID
+    img_urls: [URL]
+    category: WorkCategoryEnum
+    timestamp: DateTimeISO
+}
+
+type WorkResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
+    resource: String!
+    data: WorkType
+}
+
+type WorkItemResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
+    data: [WorkType]
+}
+
+extend type Mutation {
+    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType!
+    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkItemResponseType!
+    deleteWork(id: ID!): WorkResponseType!
+    deleteManyWorks(ids: [ID]!): WorkItemResponseType!
+    createWork(data: WorkCreateInput): WorkResponseType! 
+}

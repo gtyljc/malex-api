@@ -8,6 +8,6 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const typesArray = loadFilesSync(`${__dirname}/types/**/*.graphql`);
+const typesArray = loadFilesSync(`${__dirname}/schemas/**/*.graphql`);
 
 export default mergeTypeDefs(typesArray);

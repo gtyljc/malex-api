@@ -1,0 +1,93 @@
+
+
+# -------- object
+
+enum BestWayToTouchEnum {
+    WHATSAPP
+    PHONE
+    TEXT
+}
+
+type AppointmentType {
+    id: ID!
+    name: String!
+    surname: String!
+    address: String!
+    job_desc: String!
+    bwt: BestWayToTouchEnum!
+    number: PhoneNumber!
+    date: DateTimeISO!
+    duration: PositiveFloat!
+}
+
+type AppointmentItemsType {
+    items: [AppointmentType]!
+}
+
+type AppointmentItemsPaginatedType implements PaginatedInterface {
+    data: [AppointmentType]!
+    total: Int!
+    pageInfo: PageInfoType!
+}
+
+union AppointmentItemsUnion = AppointmentItemsType | AppointmentItemsPaginatedType
+
+
+# -------- query
+
+extend type Query {
+    appointment(id: ID!): AppointmentType
+    appointments(
+        ids: [ID], 
+        filter: JSONObject, 
+        pagination: PaginationInput, 
+        sort: SortInput
+    ): AppointmentItemsUnion!
+}
+
+
+# -------- mutation
+
+input AppointmentCreateInput {
+    name: String!
+    surname: String!
+    address: String!
+    job_desc: String!
+    bwt: BestWayToTouchEnum!
+    number: PhoneNumber!
+    date: DateTimeISO!
+}
+
+input AppointmentUpdateInput {
+    name: String
+    surname: String
+    address: String
+    job_desc: String
+    bwt: BestWayToTouchEnum
+    number: PhoneNumber
+    date: DateTimeISO
+    duration: PositiveFloat
+}
+
+type AppointmentResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
+    data: AppointmentType
+}
+
+type AppointmentItemsResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
+    data: [AppointmentType]
+}
+
+extend type Mutation {
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentItemsResponseType!
+    deleteAppointment(id: ID!): AppointmentResponseType!
+    deleteManyAppointments(ids: [ID]!): AppointmentItemsResponseType!
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! 
+}
+
