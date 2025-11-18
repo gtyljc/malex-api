@@ -1,12 +1,7 @@
 
 
-# -------- object
 
-enum BestWayToTouchEnum {
-    WHATSAPP
-    PHONE
-    TEXT
-}
+# --------  types
 
 type AppointmentType {
     id: ID!
@@ -20,33 +15,40 @@ type AppointmentType {
     duration: PositiveFloat!
 }
 
-type AppointmentItemsType {
-    items: [AppointmentType]!
-}
-
-type AppointmentItemsPaginatedType implements PaginatedInterface {
+type AppointmentResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
     data: [AppointmentType]!
-    total: Int!
-    pageInfo: PageInfoType!
+    pagination: PaginationType
 }
-
-union AppointmentItemsUnion = AppointmentItemsType | AppointmentItemsPaginatedType
 
 
 # -------- query
 
 extend type Query {
-    appointment(id: ID!): AppointmentType
+    appointment(id: ID!): AppointmentResponseType!
     appointments(
         ids: [ID], 
         filter: JSONObject, 
         pagination: PaginationInput, 
         sort: SortInput
-    ): AppointmentItemsUnion!
+    ): AppointmentResponseType!
 }
 
 
 # -------- mutation
+
+extend type Mutation {
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType!
+    deleteAppointment(id: ID!): AppointmentResponseType!
+    deleteManyAppointments(ids: [ID]!): AppointmentResponseType!
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! 
+}
+
+
+# --------  inputs
 
 input AppointmentCreateInput {
     name: String!
@@ -69,25 +71,11 @@ input AppointmentUpdateInput {
     duration: PositiveFloat
 }
 
-type AppointmentResponseType implements BaseMutationResponseInterface {
-    code: String!
-    success: Boolean!
-    message: String!
-    data: AppointmentType
-}
 
-type AppointmentItemsResponseType implements BaseMutationResponseInterface {
-    code: String!
-    success: Boolean!
-    message: String!
-    data: [AppointmentType]
-}
+# --------  enums
 
-extend type Mutation {
-    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
-    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentItemsResponseType!
-    deleteAppointment(id: ID!): AppointmentResponseType!
-    deleteManyAppointments(ids: [ID]!): AppointmentItemsResponseType!
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! 
+enum BestWayToTouchEnum {
+    WHATSAPP
+    PHONE
+    TEXT
 }
-

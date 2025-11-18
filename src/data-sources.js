@@ -1,14 +1,71 @@
 
 // db
-import { PrismaClient } from '../prisma/generated/client.js';
-
-class PaginationError extends Error {
-    name="PaginationError"
-    message="Each request on massive of objects must include pagination!"
-}
+import { Prisma } from '../prisma/generated/client.js';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function formatMutationSuccessResponse(data){
+    return {
+        code: 200, 
+        message: "Success",
+        success: true,
+        data
+    }
+}
+
+export function formatMutationFailureResponse(code, data){
+    return {
+        code,
+        message: "Query failure! Read more at logs.",
+        success: false,
+        data
+    }
+}
+
+export class DatabaseConnectionStatus {
+    // must be as an argument of each instance of class DatabaseSource
+
+    #RECONNECTION_DELAY = 10000; // miliseconds
+    isTryingToConnect = false;
+
+    constructor(prisma){
+        this.prisma = prisma
+    }
+
+    // infinite loop, that will not stop until connection will be established
+    async establishConnection() {
+
+        // block parallel two or more working methods
+        if (this.isTryingToConnect) return;
+
+        this.isTryingToConnect = true;
+
+        while (this.isTryingToConnect) {
+            try {
+                await this.prisma.$connect(); // trying to connect
+                
+                console.log("Connection established!");
+
+                this.isTryingToConnect = false;
+
+                break
+            }
+            catch (error) {
+                if (error instanceof Prisma.PrismaClientInitializationError) {
+                    console.log("Can't reach the database! Trying to reconnect...");
+
+                    // delay
+                    await sleep(this.#RECONNECTION_DELAY);
+                }
+                else {
+
+                    throw error;
+                }
+            }
+        }
+    }
 }
 
 export class DatabaseSource {
@@ -16,173 +73,198 @@ export class DatabaseSource {
     // every method of this class must use "#sendQuery" instead of 
     // direct interaction with DB
 
-    RECONNECTION_DELAY = 1; // seconds
-    #isConnectionEstablished = false;
+    // #MAX_QUERY_RECURSION_DEPTH = 5;
+    #DEFAULT_PAGINATION = {
+        perPage: 10,
+        page: 1
+    }
+    #errorCases;
 
-    constructor (){
-        this.prisma = new PrismaClient(
-            { log: [{"level": "error", emit:"event"}] }
-        );
-    
-        // in case of lost connection
-        this.prisma.$on(
-            'error', 
-            (event) => {
-                console.log(event);
+    constructor (prisma, connectionStatus){
+        this.prisma = prisma;
+        this.connectionStatus = connectionStatus;
+        this.#errorCases = [
 
-                event.code == "P1001" && this.#establishConnection()
-            }
-        )
+            // in case of lost connection to DB
+            async (error) => {
+                error instanceof Prisma.PrismaClientInitializationError &&
+                await this.connectionStatus.establishConnection()
+            },
+        ];
     }
 
-    #connected() {
-        this.#isConnectionEstablished = true;
-    }
+    // silent error cathing; returns array where first value is the result of query
+    // (in case of error will return empty array or empty single object)
+    // and the second value means that request to DB was successfull (true or false).
+    async #sendQuery(model, method, query = {}){
+        // if (recursionDepth != 0) {
+        //     try {
+        //         const data = await this.prisma[model][method](query);
+                
+        //         // format response
+        //         return [ data, true ];
+        //     }
+        //     catch (error) {
+        //         console.log(error);
 
-    // infinite loop, that will not stop until connection will be established
-    async #establishConnection() {
-        while (true) {
-            try {
-                console.log("Can't reach the database");
+        //         // going through cases
+        //         for (let func of this.#errorCases){
+        //             await func(error);
+        //         }
 
-                this.prisma.$connect().then(() => this.#connected()); // trying to connect
+        //         // return this.#sendQuery(model, method, query, recursionDepth - 1);
+        //     }
+        // }
 
-                break
-            }
-            catch (error) {
-                if (error.code == "P1001") {
-                    console.log("Can't reach the database");
-
-                    sleep(this.RECONNECTION_DELAY);
-                }
-                else {
-                    throw error;
-                }
-            }
+        try {
+            const data = await this.prisma[model][method](query);
+            
+            // format response
+            return [ data, true ];
         }
-    }
+        catch (error) {
+            console.log(error);
 
-    async #sendQuery(query, method, model){
-        let r;
+            // going through cases
+            for (let func of this.#errorCases){
+                await func(error);
+            }
 
-        // silent error cathing
-        try{
-            r = await this.prisma[model][method](query);   
-        }
-        catch (e) {
-            r = e;
+            // return this.#sendQuery(model, method, query, recursionDepth - 1);
         }
         
-        return r;
-    }
-
-    // you can get an array of objects that has specified id at ids array
-    // or you can get a massive of objects that are suitable for specified filter,
-    // in this case you must use pagination, in other case it will throw an error
-    async #many(query, method, model, ids, filter, pagination){
-   
-        // get objects by specified ids
-        if(ids) {
-            return await this.#sendQuery(
-                {
-                    where: {id: { in: ids.map(e => parseInt(e))}}, 
-                    ...query
-                }, method, model
-            );
-        }
-
-        // get objects by filter
-        if(filter) {
-
-            // if pagination param wasn't specified
-            if (!pagination) {
-                return new PaginationError();
-            }
-
-            // pagination params
-            const skip = pagination.perPage * (pagination.page - 1);
-            const take = pagination.perPage;
-
-            let r = await this.#sendQuery(
-                {
-                    ...query,
-                    ...filter,
-                    skip,
-                    take
-                },
-                method, 
-                model
-            )
-
-            if (!(r instanceof Error)){
-                const total = await this.prisma[model].count();
-
-                r = {
-                    data: r,
-                    total,
-                    pageInfo: {
-                        hasNextPage: total - (skip + take) > 0,
-                        hasPreviousPage: skip - take > 0
-                    }
-                }
-            }
-            return r;
-        }
-
+        // // which type of method was used ("Many" or "One")
+        // return method.includes("Many") ? [ [], false ]: [ {}, false ];
 
         return [];
     }
 
-    // if the target is interaction with only one object
-    async #one(query, method, model, _id){
-        return await this.#sendQuery(
+    // get an array of objects that has specified id at ids array
+    async #manyByIds(model, method, query, ids){
+        const [ data, status ] = await this.#sendQuery(
+            model,
+            method,
+            {
+                where: {id: { in: ids.map(e => parseInt(e))}}, 
+                ...query
+            }
+        );
+
+        return (
+            status ? formatMutationSuccessResponse({ items: data }): 
+            formatMutationFailureResponse(500, data)
+        ) 
+    }
+    
+    // get a massive of objects that are suitable for specified filter 
+    // and then paginate the DB response; returns same answer as #sendQuery
+    async #manyByFilter(model, method, query, filter, pagination){
+
+        // pagination params
+        const skip = pagination.perPage * (pagination.page - 1);
+        const take = pagination.perPage;
+
+        const [ rData, rStatus ] = await this.#sendQuery(
+            model,
+            method,
             {
                 ...query,
-                where: {id: parseInt(_id)} 
-            }, 
+                ...filter,
+                skip,
+                take
+            }
+        );
+        const [ cData, cStatus ] = await this.#sendQuery(model, "count");
+        const endData = {
+            code: (cStatus & rStatus) ? 200: 500,
+            success: cStatus & rStatus,
+            message: (cStatus & rStatus) ? "Success": "Query failure! Read more at logs.",
+            data: rData,
+            pagination: {
+                total: cData,
+                pageInfo: {
+                    hasNextPage: this.total - (skip + take) > 0,
+                    hasPreviousPage: skip - take > 0
+                }
+            }
+        }
+
+        return endData;
+    }
+
+    // decider which method should be use: manyByIds or manyByFilter
+    async #many(model, method, query, ids, filter, pagination){
+        let r = [];
+
+        // get objects by specified ids
+        if(ids) {
+            r = await this.#manyByIds(model, method, query, ids);
+        }
+
+        // get objects by filter
+        if(filter) {
+            r = await this.#manyByFilter(model, method, query, filter, pagination)
+        }
+
+        console.log(r);
+
+        return r;
+    }
+
+    // if the target is interaction with only one object
+    async #one(model, method, query, id){
+        id =  parseInt(id);
+
+        return await this.#sendQuery(
+            model,
             method,
-            model
+            { ...query, where: { id } }
         );
     }
 
-    async getMany(model, ids, filter, pagination) {
-        return await this.#many({}, "findMany", model, ids, filter, pagination)
+    async getMany(model, { ids = null, filter = null, pagination = null, sort = null }) {
+        return await this.#many(
+            model, 
+            "findMany", 
+            { ...(sort ? { orderBy: { [sort.field]: sort.order.toLowerCase() } }: {}) }, // add sort if necessary
+            ids, 
+            filter, 
+            !pagination ? this.#DEFAULT_PAGINATION: pagination,
+            sort
+        )
     }
 
-    async getOne(model, id) {
-        return await this.#one({}, "findFirst", model, id)
+    async getOne(model, { id }) {
+        return await this.#one(model, "findFirst", {}, id)
     }
 
-    async updateMany(model, ids, data) {
-        return await this.#many({ data }, "updateMany", model, ids)
+    async updateMany(model, { ids, data }) {
+        return this.#many( model, "updateMany", { data }, ids);
     }
 
-    async updateOne(model, id, data) {
-        return await this.#one({ data }, "update", model, id)
+    async updateOne(model, { id, data }) {
+        return await this.#one(model, "update", { data }, id);
     }
 
-    async deleteMany(model, ids) {
-        return await this.#many({}, "deleteMany", model, ids)
+    async deleteMany(model, { ids }) {
+        return await this.#many(model, "deleteMany", {}, ids);
     }
 
-    async deleteOne(model, id) {
-        return await this.#one({}, "delete", model, id)
+    async deleteOne(model, { id }) {
+        return await this.#one(model, "delete", {}, id);
     }
 
-    async create(model, data) {
-        return await this.#sendQuery({ data }, "create", model)
+    async create(model, { data }) {
+        const [ _data, status ] = await this.#sendQuery(model, "create", { data });
+
+        return (
+            status ? formatMutationSuccessResponse(_data): 
+            formatMutationFailureResponse(500, _data)
+        )
     }
 }
 
 export class CloudflareImagesStorageAPI {
-    // id param in methods => image id, that was earlier generated with nanoid
-
-    RETURN_TEMPLATE = {
-        data: null, // list or single object (can be null)
-        success: null, // boolean
-        code: null, // HTTP Response code
-        message: null // Error message or just "success" in case of 200 code
-    };
     #token;
     #account_id;
     #CLOUDFLARE_API_URL;
@@ -206,22 +288,14 @@ export class CloudflareImagesStorageAPI {
         ).json(); // already converted to js object
 
 
-        if (r.success){
-            this.RETURN_TEMPLATE["code"] = 200;
-            this.RETURN_TEMPLATE["message"] = "Success";
-            this.RETURN_TEMPLATE["success"] = true;
-            this.RETURN_TEMPLATE["data"] = r.result;
-        }
-        else {
-            const er = r.errors[0];
-
-            this.RETURN_TEMPLATE["code"] = er["code"];
-            this.RETURN_TEMPLATE["message"] = er["message"];
-            this.RETURN_TEMPLATE["success"] = false;
-            this.RETURN_TEMPLATE["data"] = null;
-        }
-
-        return this.RETURN_TEMPLATE;
+        return (
+            r.success ? formatMutationSuccessResponse(r.result): 
+            formatMutationFailureResponse(
+                r.errors[0]["code"],
+                r.errors[0]["message"],
+                {}
+            )
+        )
     }
 
     async uploadImage(id, { creator = null, file = null, url = null, requireSignedURLs = false } = {}) { // file instance 

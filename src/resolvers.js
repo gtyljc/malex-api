@@ -7,49 +7,10 @@ import {
     PositiveIntResolver,
     PositiveFloatResolver
 } from "graphql-scalars";
+import { formatMutationSuccessResponse } from "./data-sources.js";
 
 function capitalize(string){
     return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
-function mutationErrorResponse(message, code){
-    return {
-        code,
-        message,
-        success: false,
-        data: null
-    }
-}
-
-function mutationSuccessResponse(data){
-    return {
-        code: 200,
-        message: "Success",
-        success: true,
-        data
-    }
-}
-
-// if the key action of mutation is mutation of DB
-function mutationBasedOnDBResponse(result){ // result => db result
-
-    // bad response from DB
-    if (result instanceof Error){
-        return mutationErrorResponse(result.message.replace(/[\n\r\t]+/g, ''), 500);
-    }
-    
-    return mutationSuccessResponse(result);
-}
-
-// if the key action of mutation is mutation inside of external REST API
-function mutationBasedOnRESTResponse(result){ // result => object (converted from JSON)
-
-    // bad response from external REST API
-    if (!result.success){
-        return mutationErrorResponse(result.message, result.code);
-    }
-
-    return mutationSuccessResponse(result);
 }
 
 class ResolversUnionsManager {
@@ -80,51 +41,20 @@ class ResolversUnionsManager {
 }
 
 class BaseQueryResolvers extends ResolversUnionsManager {
-    
-    // name of types that could be (because they will used at 
-    // union specified in constructor) returned at " get many" request
-    #getManyName = "";
-    #getManyPaginatedName = "";
-
     constructor(modelname) {
         super(modelname);
 
         // get single object
         this.addResolver(
             modelname,
-            async (_, { id }, { dataSources }) => {
-                return await dataSources.db.getOne(modelname, id);
-            },
+            async (_, { id }, { dataSources }) => await dataSources.db.getOne(modelname, { id })
         )
 
         // get many objects
         this.addResolver(
             modelname + "s",
-            async (_, { ids, filter, pagination, sort }, { dataSources }) => {
-                return await dataSources.db.getMany(modelname, ids, filter, pagination);
-            }
-        )
-
-        this.#getManyName = `${this._marker}ItemsType`;
-        this.#getManyPaginatedName = `${this._marker}ItemsPaginatedType`;
-
-        const getManyUnionResolver = (obj) => {
-
-            // with pagination
-            if (obj.data){
-                return this.#getManyPaginatedName
-            }
-
-            // without pagination
-            if (obj.items){
-                return this.#getManyName
-            }
-        }
-
-        this.addUnion(
-            `${this._marker}ItemsUnion`,
-            {
-                __resolveType: getManyUnionResolver
+            async (_, { ids, filter, pagination, sort }, { dataSources }) => { 
+                return await dataSources.db.getMany(modelname, { ids, filter, pagination, sort });
             }
         )
     }
@@ -154,51 +84,31 @@ class BaseMutationResolvers extends ResolversUnionsManager {
         // update one
         this.addResolver(
             this.#updateOneName, 
-            async (_, {id, data}, { dataSources }) => {
-                return mutationBasedOnDBResponse(
-                    await dataSources.db.updateOne(modelname, id, data)
-                );
-            }
+            async (_, { id, data }, { dataSources }) => await dataSources.db.updateOne(modelname, { id, data })
         )
 
         // update many
         this.addResolver(
             this.#updateManyName,
-            async (_, { ids, data }, { dataSources }) => {
-                return mutationBasedOnDBResponse(
-                    await dataSources.db.updateMany(modelname, ids, data)
-                );
-            }
+            async (_, { ids, data }, { dataSources }) => await dataSources.db.updateMany(modelname, { ids, data })
         )
 
         // delete one
         this.addResolver(
             this.#deleteOneName,
-            async (_, { id }, { dataSources }) => {
-                return mutationBasedOnDBResponse(
-                    await dataSources.db.deleteOne(modelname, id)
-                );
-            }
+            async (_, { id }, { dataSources }) => await dataSources.db.deleteOne(modelname, { id })
         )
 
         // delete many
         this.addResolver(
             this.#deleteManyName,
-            async (_, { ids }, { dataSources }) => {
-                return mutationBasedOnDBResponse(
-                    await dataSources.db.deleteMany(modelname, ids)
-                );
-            }
+            async (_, { ids }, { dataSources }) => await dataSources.db.deleteMany(modelname, { ids })
         )
 
         // create instance of model
         this.addResolver(
             this.#createName,
-            async (_, { data }, { dataSources }) => {
-                return mutationBasedOnDBResponse(
-                    await dataSources.db.create(modelname, data)
-                );
-            }
+            async (_, { data }, { dataSources }) => await dataSources.db.create(modelname, { data })
         )
     }
 }
@@ -213,7 +123,7 @@ class ImagesUploadSupportResolvers extends BaseMutationResolvers {
                 const r = await dataSources.imgCloudAPI.directUpload(img_id);
 
                 if (r.success){
-                    return mutationBasedOnDBResponse(
+                    return formatMutationSuccessResponse(
                         {
                             id: r.data.id,
                             url: r.data.uploadURL
@@ -221,7 +131,7 @@ class ImagesUploadSupportResolvers extends BaseMutationResolvers {
                     )
                 }
                 
-                return mutationBasedOnRESTResponse(r);
+                return r;
             }
         )
 
@@ -231,7 +141,7 @@ class ImagesUploadSupportResolvers extends BaseMutationResolvers {
                 const r = await dataSources.imgCloudAPI.imageInfo(img_id);
 
                 if (r.success){
-                    return mutationBasedOnDBResponse(
+                    return formatMutationSuccessResponse(
                         {
                             id: r.data.id,
                             urls: r.data.variants
@@ -239,7 +149,7 @@ class ImagesUploadSupportResolvers extends BaseMutationResolvers {
                     )
                 }
                 
-                return mutationBasedOnRESTResponse(r);
+                return r;
             }
         )
     }

@@ -7,20 +7,29 @@ import resolvers from './resolvers.js';
 import dotenv from "dotenv";
 
 // db
-import { DatabaseSource, CloudflareImagesStorageAPI } from './data-sources.js';
+import { 
+    DatabaseSource, 
+    CloudflareImagesStorageAPI, 
+    DatabaseConnectionStatus
+} from './data-sources.js';
+import { PrismaClient } from '../prisma/generated/index.js';
 
 // parse .env
 dotenv.config();
 
-const server = new ApolloServer({ typeDefs, resolvers });
+// db config
+const prisma = new PrismaClient();
+const connectionStatus = new DatabaseConnectionStatus(prisma);
+
+const server = new ApolloServer({ typeDefs, resolvers, dataSources: () => ({ db: new DatabaseSource()}) });
 const { url } = await startStandaloneServer(
     server,
     {
-        listen: {port: 2000},
+        listen: { port: 2000 },
         context: async () => {
             return {
                 dataSources: {
-                    db: new DatabaseSource(),
+                    db: new DatabaseSource(prisma, connectionStatus),
                     imgCloudAPI: new CloudflareImagesStorageAPI(
                         process.env.CLOUDFLARE_API_TOKEN, 
                         process.env.CLOUDFLARE_ACCOUNT_ID

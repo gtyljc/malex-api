@@ -1,6 +1,6 @@
 
 """
-    Public scalars, objects, interfaces, enums...
+    Public scalars, types, interfaces, enums...
 """
 
 # -------- scalars
@@ -37,13 +37,8 @@ interface BaseMutationResponseInterface {
     success: Boolean!
 }
 
-interface PaginatedInterface {
-    total: Int!
-    pageInfo: PageInfoType!
-}
 
-
-# -------- objects
+# -------- types
 
 type StartUploadImageType { 
     id: ID!
@@ -68,6 +63,12 @@ type FinalizeUploudImageResponseType implements BaseMutationResponseInterface {
     success: Boolean!
     data: FinalizeUploadImageType
 }
+
+type PaginationType {
+    total: Int!
+    pageInfo: PageInfoType!
+}
+
 
 type PageInfoType {
     hasNextPage: Boolean!

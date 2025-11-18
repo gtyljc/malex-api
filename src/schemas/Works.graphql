@@ -1,12 +1,6 @@
 
 
-# -------- object
-
-enum WorkCategoryEnum {
-    ASSEMBLING
-    MOUNTING
-    PLUMBING
-}
+# -------- types
 
 type WorkType {
     id: Int!
@@ -16,33 +10,39 @@ type WorkType {
     timestamp: DateTimeISO!
 }
 
-type WorkItemsType {
-    items: [WorkType]!
-}
-
-type WorkItemsPaginatedType implements PaginatedInterface {
+type WorkResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
     data: [WorkType]!
-    total: Int!
-    pageInfo: PageInfoType!
+    pagination: PaginationType
 }
-
-union WorkItemsUnion = WorkItemsType | WorkItemsPaginatedType
-
 
 # -------- query
 
 extend type Query {
-    work(id: ID!): WorkType
+    work(id: ID!): WorkResponseType!
     works(
         ids: [ID], 
         filter: JSONObject, 
         pagination: PaginationInput
         sort: SortInput    
-    ): WorkItemsUnion!
+    ): WorkResponseType!
 }
 
 
 # -------- mutation
+
+extend type Mutation {
+    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType!
+    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType!
+    deleteWork(id: ID!): WorkResponseType!
+    deleteManyWorks(ids: [ID]!): WorkResponseType!
+    createWork(data: WorkCreateInput): WorkResponseType! 
+}
+
+
+# -------- inputs
 
 input WorkCreateInput {
     img_id: ID!
@@ -58,25 +58,11 @@ input WorkUpdateInput {
     timestamp: DateTimeISO
 }
 
-type WorkResponseType implements BaseMutationResponseInterface {
-    code: String!
-    success: Boolean!
-    message: String!
-    resource: String!
-    data: WorkType
-}
 
-type WorkItemResponseType implements BaseMutationResponseInterface {
-    code: String!
-    success: Boolean!
-    message: String!
-    data: [WorkType]
-}
+# -------- enums
 
-extend type Mutation {
-    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType!
-    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkItemResponseType!
-    deleteWork(id: ID!): WorkResponseType!
-    deleteManyWorks(ids: [ID]!): WorkItemResponseType!
-    createWork(data: WorkCreateInput): WorkResponseType! 
+enum WorkCategoryEnum {
+    ASSEMBLING
+    MOUNTING
+    PLUMBING
 }
