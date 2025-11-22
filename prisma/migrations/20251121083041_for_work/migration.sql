@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "work" ALTER COLUMN "img_id" DROP DEFAULT,
+ALTER COLUMN "img_url" DROP DEFAULT;

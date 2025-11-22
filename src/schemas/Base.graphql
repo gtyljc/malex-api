@@ -18,8 +18,8 @@ scalar PositiveFloat
 type Query
 
 type Mutation {
-    startUploadImage(img_id: ID!): StartUploadImageResponseType
-    finalizeUploadImage(img_id: ID!): FinalizeUploudImageResponseType
+    startImageUpload(img_id: ID!): StartUploadImageResponseType
+    finalizeImageUpload(img_id: ID!): FinalizeUploudImageResponseType
 }
 
 
@@ -47,7 +47,7 @@ type StartUploadImageType {
 
 type FinalizeUploadImageType {
     id: ID!
-    urls: [URL]!
+    url: URL!
 }
 
 type StartUploadImageResponseType implements BaseMutationResponseInterface {

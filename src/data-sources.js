@@ -1,33 +1,40 @@
 
 // db
 import { Prisma } from '../prisma/generated/client.js';
+import { sleep } from "./tools.js";
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+const RESPONSE_TEMPLATE = {
+    code: "",
+    message: "",
+    success: null,
+    data: null
+};
+
+export function formatSResponse(data){    
+    const ins = Object.assign({}, RESPONSE_TEMPLATE);
+
+    ins.data = data;
+    ins.message = "Success";
+    ins.success = true;
+    ins.code = "200";
+
+    return ins;
 }
 
-export function formatMutationSuccessResponse(data){
-    return {
-        code: 200, 
-        message: "Success",
-        success: true,
-        data
-    }
-}
+export function formatFResponse(code, msg){
+    const ins = Object.assign({}, RESPONSE_TEMPLATE);
 
-export function formatMutationFailureResponse(code, data){
-    return {
-        code,
-        message: "Query failure! Read more at logs.",
-        success: false,
-        data
-    }
+    ins.data = [];
+    ins.message = msg;
+    ins.success = false;
+    ins.code = code;
+
+    return ins;
 }
 
 export class DatabaseConnectionStatus {
     // must be as an argument of each instance of class DatabaseSource
 
-    #RECONNECTION_DELAY = 10000; // miliseconds
     isTryingToConnect = false;
 
     constructor(prisma){
@@ -57,7 +64,7 @@ export class DatabaseConnectionStatus {
                     console.log("Can't reach the database! Trying to reconnect...");
 
                     // delay
-                    await sleep(this.#RECONNECTION_DELAY);
+                    await sleep(process.env.DATABASE_RECONNECTION_DELAY);
                 }
                 else {
 
@@ -73,11 +80,6 @@ export class DatabaseSource {
     // every method of this class must use "#sendQuery" instead of 
     // direct interaction with DB
 
-    // #MAX_QUERY_RECURSION_DEPTH = 5;
-    #DEFAULT_PAGINATION = {
-        perPage: 10,
-        page: 1
-    }
     #errorCases;
 
     constructor (prisma, connectionStatus){
@@ -85,42 +87,27 @@ export class DatabaseSource {
         this.connectionStatus = connectionStatus;
         this.#errorCases = [
 
-            // in case of lost connection to DB
+            // in case of lost connection to DB (on start)
             async (error) => {
                 error instanceof Prisma.PrismaClientInitializationError &&
                 await this.connectionStatus.establishConnection()
             },
+
+            // in case of lost connection to DB (during requesting)
+            async (error) => {
+                (error instanceof Prisma.PrismaClientKnownRequestError && error.code == "P1001") &&
+                await this.connectionStatus.establishConnection()
+            }
         ];
     }
 
-    // silent error cathing; returns array where first value is the result of query
-    // (in case of error will return empty array or empty single object)
-    // and the second value means that request to DB was successfull (true or false).
+    // silent error cathing + returns ready to send response
     async #sendQuery(model, method, query = {}){
-        // if (recursionDepth != 0) {
-        //     try {
-        //         const data = await this.prisma[model][method](query);
-                
-        //         // format response
-        //         return [ data, true ];
-        //     }
-        //     catch (error) {
-        //         console.log(error);
-
-        //         // going through cases
-        //         for (let func of this.#errorCases){
-        //             await func(error);
-        //         }
-
-        //         // return this.#sendQuery(model, method, query, recursionDepth - 1);
-        //     }
-        // }
-
         try {
             const data = await this.prisma[model][method](query);
-            
-            // format response
-            return [ data, true ];
+
+            // format response; if the return type is single object => wrap it into array
+            return formatSResponse(data instanceof Array ? data: [ data ]);
         }
         catch (error) {
             console.log(error);
@@ -130,18 +117,13 @@ export class DatabaseSource {
                 await func(error);
             }
 
-            // return this.#sendQuery(model, method, query, recursionDepth - 1);
+            return formatFResponse(500, "Query failed! See more at logs");
         }
-        
-        // // which type of method was used ("Many" or "One")
-        // return method.includes("Many") ? [ [], false ]: [ {}, false ];
-
-        return [];
     }
 
     // get an array of objects that has specified id at ids array
     async #manyByIds(model, method, query, ids){
-        const [ data, status ] = await this.#sendQuery(
+        const data = await this.#sendQuery(
             model,
             method,
             {
@@ -150,10 +132,7 @@ export class DatabaseSource {
             }
         );
 
-        return (
-            status ? formatMutationSuccessResponse({ items: data }): 
-            formatMutationFailureResponse(500, data)
-        ) 
+        return data;
     }
     
     // get a massive of objects that are suitable for specified filter 
@@ -164,7 +143,7 @@ export class DatabaseSource {
         const skip = pagination.perPage * (pagination.page - 1);
         const take = pagination.perPage;
 
-        const [ rData, rStatus ] = await this.#sendQuery(
+        const data = await this.#sendQuery(
             model,
             method,
             {
@@ -174,14 +153,14 @@ export class DatabaseSource {
                 take
             }
         );
-        const [ cData, cStatus ] = await this.#sendQuery(model, "count");
-        const endData = {
-            code: (cStatus & rStatus) ? 200: 500,
-            success: cStatus & rStatus,
-            message: (cStatus & rStatus) ? "Success": "Query failure! Read more at logs.",
-            data: rData,
+        const count = await this.#sendQuery(model, "count");
+        const returnData = {
+            
+            // main part of response
+            ...data,
+
             pagination: {
-                total: cData,
+                total: count.success ? count.data[0]: 1,
                 pageInfo: {
                     hasNextPage: this.total - (skip + take) > 0,
                     hasPreviousPage: skip - take > 0
@@ -189,26 +168,21 @@ export class DatabaseSource {
             }
         }
 
-        return endData;
+        return returnData;
     }
 
     // decider which method should be use: manyByIds or manyByFilter
     async #many(model, method, query, ids, filter, pagination){
-        let r = [];
 
         // get objects by specified ids
         if(ids) {
-            r = await this.#manyByIds(model, method, query, ids);
+            return await this.#manyByIds(model, method, query, ids);
         }
 
         // get objects by filter
         if(filter) {
-            r = await this.#manyByFilter(model, method, query, filter, pagination)
-        }
-
-        console.log(r);
-
-        return r;
+            return await this.#manyByFilter(model, method, query, filter, pagination)
+        } 
     }
 
     // if the target is interaction with only one object
@@ -222,14 +196,15 @@ export class DatabaseSource {
         );
     }
 
+    // can be used in two cases: spefied ids array, specified filter + pagination params
     async getMany(model, { ids = null, filter = null, pagination = null, sort = null }) {
         return await this.#many(
             model, 
             "findMany", 
             { ...(sort ? { orderBy: { [sort.field]: sort.order.toLowerCase() } }: {}) }, // add sort if necessary
             ids, 
-            filter, 
-            !pagination ? this.#DEFAULT_PAGINATION: pagination,
+            filter ? { where: filter }: filter, 
+            pagination,
             sort
         )
     }
@@ -255,12 +230,7 @@ export class DatabaseSource {
     }
 
     async create(model, { data }) {
-        const [ _data, status ] = await this.#sendQuery(model, "create", { data });
-
-        return (
-            status ? formatMutationSuccessResponse(_data): 
-            formatMutationFailureResponse(500, _data)
-        )
+        return await this.#sendQuery(model, "create", { data });
     }
 }
 
@@ -289,8 +259,8 @@ export class CloudflareImagesStorageAPI {
 
 
         return (
-            r.success ? formatMutationSuccessResponse(r.result): 
-            formatMutationFailureResponse(
+            r.success ? formatSResponse(r.result): 
+            formatFResponse(
                 r.errors[0]["code"],
                 r.errors[0]["message"],
                 {}
@@ -327,6 +297,6 @@ export class CloudflareImagesStorageAPI {
         creator && body.append("creator", creator);
         body.append("requireSignedURLs", requireSignedURLs);
         
-        return await this.#send("POST", {endpoint: "direct_upload", body, version:2})
+        return await this.#send("POST", { endpoint: "direct_upload", body, version: 2 })
     }
 }

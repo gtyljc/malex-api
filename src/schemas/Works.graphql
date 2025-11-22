@@ -4,7 +4,7 @@
 
 type WorkType {
     id: Int!
-    img_urls: [URL]!
+    img_url: URL!
     img_id: ID!
     category: WorkCategoryEnum!
     timestamp: DateTimeISO!
@@ -46,14 +46,14 @@ extend type Mutation {
 
 input WorkCreateInput {
     img_id: ID!
-    img_urls: [URL]!
+    img_url: URL!
     category: WorkCategoryEnum!
     timestamp: DateTimeISO!
 }
 
 input WorkUpdateInput {
     img_id: ID
-    img_urls: [URL]
+    img_url: URL
     category: WorkCategoryEnum
     timestamp: DateTimeISO
 }

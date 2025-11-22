@@ -36,10 +36,19 @@ enum CategoryChoice {
 
 model Work {
   id        Int            @id @default(autoincrement())
-  img_urls  String[]       @db.VarChar(2800)
-  img_id    String         @unique @default("") @db.VarChar(50)
+  img_url   String         @db.VarChar(2800)
+  img_id    String         @unique @db.VarChar(50)
   category  CategoryChoice
   timestamp DateTime       @default(now())
 
   @@map("work")
+}
+
+model AdminConfig {
+  id           Int      @id @default(autoincrement())
+  opening_at   DateTime @default(now())
+  closing_at   DateTime @default(now())
+  min_duration Float    @default(0.5)
+
+  @@map("adminConfig")
 }

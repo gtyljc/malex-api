@@ -1,5 +1,27 @@
 
 
+# -------- query
+
+extend type Query {
+    appointment(id: ID!): AppointmentResponseType!
+    appointments(
+        ids: [ID], 
+        filter: JSONObject, 
+        pagination: PaginationInput, 
+        sort: SortInput
+    ): AppointmentResponseType!
+}
+
+
+# -------- mutation
+
+extend type Mutation {
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType!
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType!
+    getAppointmentsInRange(from: DateTimeISO! to: DateTimeISO!): AppointmentResponseType!
+}
+
 
 # --------  types
 
@@ -21,30 +43,6 @@ type AppointmentResponseType implements BaseMutationResponseInterface {
     message: String!
     data: [AppointmentType]!
     pagination: PaginationType
-}
-
-
-# -------- query
-
-extend type Query {
-    appointment(id: ID!): AppointmentResponseType!
-    appointments(
-        ids: [ID], 
-        filter: JSONObject, 
-        pagination: PaginationInput, 
-        sort: SortInput
-    ): AppointmentResponseType!
-}
-
-
-# -------- mutation
-
-extend type Mutation {
-    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
-    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType!
-    deleteAppointment(id: ID!): AppointmentResponseType!
-    deleteManyAppointments(ids: [ID]!): AppointmentResponseType!
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! 
 }
 
 

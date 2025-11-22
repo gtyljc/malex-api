@@ -1,0 +1,37 @@
+
+# -------- query
+
+extend type Query {
+    adminConfig(id: ID!): AdminConfigResponseType!
+}
+
+extend type Mutation {
+    updateAdminConfig(id: ID!, data: AdminConfigUpdateInput): AdminConfigResponseType!
+}
+
+
+# --------  types
+
+type AdminConfigType {
+    id: ID!
+    opening_at: DateTimeISO!
+    closing_at: DateTimeISO!
+    min_duration: PositiveFloat!
+}
+
+type AdminConfigResponseType implements BaseMutationResponseInterface {
+    code: String!
+    success: Boolean!
+    message: String!
+    data: [AdminConfigType]!
+}
+
+
+# --------  inputs
+
+input AdminConfigUpdateInput {
+    id: ID
+    opening_at: DateTimeISO
+    closing_at: DateTimeISO
+    min_duration: PositiveFloat
+}

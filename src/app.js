@@ -2,8 +2,7 @@
 // apollo server
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import typeDefs from './schema.js';
-import resolvers from './resolvers.js';
+import schema from './schema.js';
 import dotenv from "dotenv";
 
 // db
@@ -21,7 +20,14 @@ dotenv.config();
 const prisma = new PrismaClient();
 const connectionStatus = new DatabaseConnectionStatus(prisma);
 
-const server = new ApolloServer({ typeDefs, resolvers, dataSources: () => ({ db: new DatabaseSource()}) });
+const { typeDefs, resolvers } = schema;
+const server = new ApolloServer(
+    { 
+        typeDefs,
+        resolvers, 
+        dataSources: () => ({ db: new DatabaseSource() }) 
+    }
+);
 const { url } = await startStandaloneServer(
     server,
     {
