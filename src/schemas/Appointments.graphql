@@ -19,7 +19,7 @@ extend type Mutation {
     updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
     updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType!
     createAppointment(data: AppointmentCreateInput!): AppointmentResponseType!
-    getAppointmentsInRange(from: DateTimeISO! to: DateTimeISO!): AppointmentResponseType!
+    appointmentsInRange(from: DateTimeISO! to: DateTimeISO!): AppointmentResponseType!
 }
 
 

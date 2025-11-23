@@ -3214,6 +3214,8 @@ export namespace Prisma {
     opening_at: Date | null
     closing_at: Date | null
     min_duration: number | null
+    support_email: string | null
+    phone_number: string | null
   }
 
   export type AdminConfigMaxAggregateOutputType = {
@@ -3221,6 +3223,8 @@ export namespace Prisma {
     opening_at: Date | null
     closing_at: Date | null
     min_duration: number | null
+    support_email: string | null
+    phone_number: string | null
   }
 
   export type AdminConfigCountAggregateOutputType = {
@@ -3228,6 +3232,8 @@ export namespace Prisma {
     opening_at: number
     closing_at: number
     min_duration: number
+    support_email: number
+    phone_number: number
     _all: number
   }
 
@@ -3247,6 +3253,8 @@ export namespace Prisma {
     opening_at?: true
     closing_at?: true
     min_duration?: true
+    support_email?: true
+    phone_number?: true
   }
 
   export type AdminConfigMaxAggregateInputType = {
@@ -3254,6 +3262,8 @@ export namespace Prisma {
     opening_at?: true
     closing_at?: true
     min_duration?: true
+    support_email?: true
+    phone_number?: true
   }
 
   export type AdminConfigCountAggregateInputType = {
@@ -3261,6 +3271,8 @@ export namespace Prisma {
     opening_at?: true
     closing_at?: true
     min_duration?: true
+    support_email?: true
+    phone_number?: true
     _all?: true
   }
 
@@ -3355,6 +3367,8 @@ export namespace Prisma {
     opening_at: Date
     closing_at: Date
     min_duration: number
+    support_email: string
+    phone_number: string
     _count: AdminConfigCountAggregateOutputType | null
     _avg: AdminConfigAvgAggregateOutputType | null
     _sum: AdminConfigSumAggregateOutputType | null
@@ -3381,6 +3395,8 @@ export namespace Prisma {
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
+    support_email?: boolean
+    phone_number?: boolean
   }, ExtArgs["result"]["adminConfig"]>
 
   export type AdminConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3388,6 +3404,8 @@ export namespace Prisma {
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
+    support_email?: boolean
+    phone_number?: boolean
   }, ExtArgs["result"]["adminConfig"]>
 
   export type AdminConfigSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3395,6 +3413,8 @@ export namespace Prisma {
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
+    support_email?: boolean
+    phone_number?: boolean
   }, ExtArgs["result"]["adminConfig"]>
 
   export type AdminConfigSelectScalar = {
@@ -3402,9 +3422,11 @@ export namespace Prisma {
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
+    support_email?: boolean
+    phone_number?: boolean
   }
 
-  export type AdminConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "opening_at" | "closing_at" | "min_duration", ExtArgs["result"]["adminConfig"]>
+  export type AdminConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "opening_at" | "closing_at" | "min_duration" | "support_email" | "phone_number", ExtArgs["result"]["adminConfig"]>
 
   export type $AdminConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AdminConfig"
@@ -3414,6 +3436,8 @@ export namespace Prisma {
       opening_at: Date
       closing_at: Date
       min_duration: number
+      support_email: string
+      phone_number: string
     }, ExtArgs["result"]["adminConfig"]>
     composites: {}
   }
@@ -3841,6 +3865,8 @@ export namespace Prisma {
     readonly opening_at: FieldRef<"AdminConfig", 'DateTime'>
     readonly closing_at: FieldRef<"AdminConfig", 'DateTime'>
     readonly min_duration: FieldRef<"AdminConfig", 'Float'>
+    readonly support_email: FieldRef<"AdminConfig", 'String'>
+    readonly phone_number: FieldRef<"AdminConfig", 'String'>
   }
     
 
@@ -4251,7 +4277,9 @@ export namespace Prisma {
     id: 'id',
     opening_at: 'opening_at',
     closing_at: 'closing_at',
-    min_duration: 'min_duration'
+    min_duration: 'min_duration',
+    support_email: 'support_email',
+    phone_number: 'phone_number'
   };
 
   export type AdminConfigScalarFieldEnum = (typeof AdminConfigScalarFieldEnum)[keyof typeof AdminConfigScalarFieldEnum]
@@ -4509,6 +4537,8 @@ export namespace Prisma {
     opening_at?: DateTimeFilter<"AdminConfig"> | Date | string
     closing_at?: DateTimeFilter<"AdminConfig"> | Date | string
     min_duration?: FloatFilter<"AdminConfig"> | number
+    support_email?: StringFilter<"AdminConfig"> | string
+    phone_number?: StringFilter<"AdminConfig"> | string
   }
 
   export type AdminConfigOrderByWithRelationInput = {
@@ -4516,6 +4546,8 @@ export namespace Prisma {
     opening_at?: SortOrder
     closing_at?: SortOrder
     min_duration?: SortOrder
+    support_email?: SortOrder
+    phone_number?: SortOrder
   }
 
   export type AdminConfigWhereUniqueInput = Prisma.AtLeast<{
@@ -4526,6 +4558,8 @@ export namespace Prisma {
     opening_at?: DateTimeFilter<"AdminConfig"> | Date | string
     closing_at?: DateTimeFilter<"AdminConfig"> | Date | string
     min_duration?: FloatFilter<"AdminConfig"> | number
+    support_email?: StringFilter<"AdminConfig"> | string
+    phone_number?: StringFilter<"AdminConfig"> | string
   }, "id">
 
   export type AdminConfigOrderByWithAggregationInput = {
@@ -4533,6 +4567,8 @@ export namespace Prisma {
     opening_at?: SortOrder
     closing_at?: SortOrder
     min_duration?: SortOrder
+    support_email?: SortOrder
+    phone_number?: SortOrder
     _count?: AdminConfigCountOrderByAggregateInput
     _avg?: AdminConfigAvgOrderByAggregateInput
     _max?: AdminConfigMaxOrderByAggregateInput
@@ -4548,6 +4584,8 @@ export namespace Prisma {
     opening_at?: DateTimeWithAggregatesFilter<"AdminConfig"> | Date | string
     closing_at?: DateTimeWithAggregatesFilter<"AdminConfig"> | Date | string
     min_duration?: FloatWithAggregatesFilter<"AdminConfig"> | number
+    support_email?: StringWithAggregatesFilter<"AdminConfig"> | string
+    phone_number?: StringWithAggregatesFilter<"AdminConfig"> | string
   }
 
   export type AppointmentCreateInput = {
@@ -4688,6 +4726,8 @@ export namespace Prisma {
     opening_at?: Date | string
     closing_at?: Date | string
     min_duration?: number
+    support_email?: string
+    phone_number?: string
   }
 
   export type AdminConfigUncheckedCreateInput = {
@@ -4695,12 +4735,16 @@ export namespace Prisma {
     opening_at?: Date | string
     closing_at?: Date | string
     min_duration?: number
+    support_email?: string
+    phone_number?: string
   }
 
   export type AdminConfigUpdateInput = {
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
+    support_email?: StringFieldUpdateOperationsInput | string
+    phone_number?: StringFieldUpdateOperationsInput | string
   }
 
   export type AdminConfigUncheckedUpdateInput = {
@@ -4708,6 +4752,8 @@ export namespace Prisma {
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
+    support_email?: StringFieldUpdateOperationsInput | string
+    phone_number?: StringFieldUpdateOperationsInput | string
   }
 
   export type AdminConfigCreateManyInput = {
@@ -4715,12 +4761,16 @@ export namespace Prisma {
     opening_at?: Date | string
     closing_at?: Date | string
     min_duration?: number
+    support_email?: string
+    phone_number?: string
   }
 
   export type AdminConfigUpdateManyMutationInput = {
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
+    support_email?: StringFieldUpdateOperationsInput | string
+    phone_number?: StringFieldUpdateOperationsInput | string
   }
 
   export type AdminConfigUncheckedUpdateManyInput = {
@@ -4728,6 +4778,8 @@ export namespace Prisma {
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
+    support_email?: StringFieldUpdateOperationsInput | string
+    phone_number?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -4981,6 +5033,8 @@ export namespace Prisma {
     opening_at?: SortOrder
     closing_at?: SortOrder
     min_duration?: SortOrder
+    support_email?: SortOrder
+    phone_number?: SortOrder
   }
 
   export type AdminConfigAvgOrderByAggregateInput = {
@@ -4993,6 +5047,8 @@ export namespace Prisma {
     opening_at?: SortOrder
     closing_at?: SortOrder
     min_duration?: SortOrder
+    support_email?: SortOrder
+    phone_number?: SortOrder
   }
 
   export type AdminConfigMinOrderByAggregateInput = {
@@ -5000,6 +5056,8 @@ export namespace Prisma {
     opening_at?: SortOrder
     closing_at?: SortOrder
     min_duration?: SortOrder
+    support_email?: SortOrder
+    phone_number?: SortOrder
   }
 
   export type AdminConfigSumOrderByAggregateInput = {

@@ -144,7 +144,9 @@ exports.Prisma.AdminConfigScalarFieldEnum = {
   id: 'id',
   opening_at: 'opening_at',
   closing_at: 'closing_at',
-  min_duration: 'min_duration'
+  min_duration: 'min_duration',
+  support_email: 'support_email',
+  phone_number: 'phone_number'
 };
 
 exports.Prisma.SortOrder = {

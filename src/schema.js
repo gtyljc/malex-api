@@ -3,7 +3,6 @@ import { loadFilesSync } from "@graphql-tools/load-files";
 import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { print } from "graphql";
 
 // path to file
 const __filename = fileURLToPath(import.meta.url);

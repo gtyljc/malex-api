@@ -3,6 +3,7 @@
 
 extend type Query {
     adminConfig(id: ID!): AdminConfigResponseType!
+    contactData: AdminConfigResponseType!
 }
 
 extend type Mutation {
@@ -17,6 +18,8 @@ type AdminConfigType {
     opening_at: DateTimeISO!
     closing_at: DateTimeISO!
     min_duration: PositiveFloat!
+    support_email: EmailAddress!
+    phone_number: PhoneNumber!
 }
 
 type AdminConfigResponseType implements BaseMutationResponseInterface {
@@ -34,4 +37,6 @@ input AdminConfigUpdateInput {
     opening_at: DateTimeISO
     closing_at: DateTimeISO
     min_duration: PositiveFloat
+    support_email: EmailAddress
+    phone_number: PhoneNumber
 }

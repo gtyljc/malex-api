@@ -11,6 +11,7 @@ scalar PhoneNumber
 scalar DateTimeISO
 scalar PositiveInt
 scalar PositiveFloat
+scalar EmailAddress
 
 
 # -------- to extend
@@ -28,8 +29,7 @@ type Mutation {
 interface BaseMutationResponseInterface {
     """
         All mutation responses must include data field
-        with a type of modified entity (item or list of items)
-        and it must not have a not-nullable modifier
+        with a type of modified entity ( always represents an array )
     """
 
     code: String!

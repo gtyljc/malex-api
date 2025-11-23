@@ -7,7 +7,8 @@ import {
     PhoneNumberResolver,
     URLResolver,
     PositiveIntResolver,
-    PositiveFloatResolver
+    PositiveFloatResolver,
+    EmailAddressResolver
 } from "graphql-scalars";
 
 export default {
@@ -17,4 +18,5 @@ export default {
     DateTimeISO: DateTimeISOResolver,
     PositiveInt: PositiveIntResolver,
     PositiveFloat: PositiveFloatResolver,
+    EmailAddress: EmailAddressResolver
 }

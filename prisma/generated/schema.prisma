@@ -45,10 +45,12 @@ model Work {
 }
 
 model AdminConfig {
-  id           Int      @id @default(autoincrement())
-  opening_at   DateTime @default(now())
-  closing_at   DateTime @default(now())
-  min_duration Float    @default(0.5)
+  id            Int      @id @default(autoincrement())
+  opening_at    DateTime @default(now()) @db.Timestamp(0)
+  closing_at    DateTime @default(now()) @db.Timestamp(0)
+  min_duration  Float    @default(0.5)
+  support_email String   @default("support@malexhandy.com")
+  phone_number  String   @default("3474101444")
 
-  @@map("adminConfig")
+  @@map("admin_config")
 }
