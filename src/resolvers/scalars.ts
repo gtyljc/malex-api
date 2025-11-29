@@ -1,5 +1,5 @@
 
-// add not standart scalars to Graphql schema
+// add not standart scalars to GraphQL Schema
 
 import { 
     JSONObjectResolver, 
@@ -10,8 +10,9 @@ import {
     PositiveFloatResolver,
     EmailAddressResolver
 } from "graphql-scalars";
+import * as types from "../types/index.ts";
 
-export default {
+const scalarsResolvers: types.ResolversSchema = {
     JSONObject: JSONObjectResolver,
     URL: URLResolver,
     PhoneNumber: PhoneNumberResolver,
@@ -20,3 +21,5 @@ export default {
     PositiveFloat: PositiveFloatResolver,
     EmailAddress: EmailAddressResolver
 }
+
+export default scalarsResolvers;

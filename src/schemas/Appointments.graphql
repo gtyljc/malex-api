@@ -16,9 +16,9 @@ extend type Query {
 # -------- mutation
 
 extend type Mutation {
-    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType!
-    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType!
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType!
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType! @auth
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType! @auth
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth
     appointmentsInRange(from: DateTimeISO! to: DateTimeISO!): AppointmentResponseType!
 }
 
@@ -26,14 +26,14 @@ extend type Mutation {
 # --------  types
 
 type AppointmentType {
-    id: ID!
-    name: String!
-    surname: String!
-    address: String!
-    job_desc: String!
-    bwt: BestWayToTouchEnum!
-    number: PhoneNumber!
-    date: DateTimeISO!
+    id: ID! @auth
+    name: String! @auth
+    surname: String! @auth
+    address: String! @auth
+    job_desc: String! @auth
+    bwt: BestWayToTouchEnum! @auth
+    number: PhoneNumber! @auth
+    date: DateTimeISO! @auth
     duration: PositiveFloat!
 }
 

@@ -1,7 +1,8 @@
 
 // resolvers for model "Config"
 
-import { BaseQueryResolvers, BaseMutationResolvers } from "./base.js";
+import { BaseQueryResolvers, BaseMutationResolvers } from "./base.ts";
+import * as types from "../types/index.ts";
 
 const __modelname = "adminConfig";
 
@@ -13,8 +14,8 @@ export default {
         
         // returns object with contact data, that includes for instance
         // support email, contact phone number, closing and opening at infos, etc.
-        async contactData(_, __, { dataSources }){
-            return dataSources.db.getOne("adminConfig", { id: 1 });
+        async contactData(_, __, { dataSources: { db } }: types.AppContext){
+            return db.getOne("adminConfig", "1");
         }
     },
     Mutation: {
@@ -22,6 +23,5 @@ export default {
             __modelname,
             { isDeletable: false, isCreatable: false, isIterrable: false }
         ).resolvers,
-        
     }
 }

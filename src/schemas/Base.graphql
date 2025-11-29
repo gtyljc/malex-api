@@ -16,11 +16,16 @@ scalar EmailAddress
 
 # -------- to extend
 
+directive @auth(role: RoleEnum = ADMIN) on FIELD_DEFINITION
+
+
+# -------- to extend
+
 type Query
 
 type Mutation {
-    startImageUpload(img_id: ID!): StartUploadImageResponseType
-    finalizeImageUpload(img_id: ID!): FinalizeUploudImageResponseType
+    startImageUpload(id: ID!): StartUploadImageResponseType!
+    finalizeImageUpload(id: ID!): FinalizeUploudImageResponseType!
 }
 
 
@@ -32,7 +37,7 @@ interface BaseMutationResponseInterface {
         with a type of modified entity ( always represents an array )
     """
 
-    code: String!
+    code: Int!
     message: String!
     success: Boolean!
 }
@@ -81,6 +86,11 @@ type PageInfoType {
 enum OrderEnum {
     ASC
     DESC
+}
+
+enum RoleEnum {
+    ADMIN
+    USER
 }
 
 

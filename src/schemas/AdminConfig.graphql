@@ -2,22 +2,21 @@
 # -------- query
 
 extend type Query {
-    adminConfig(id: ID!): AdminConfigResponseType!
-    contactData: AdminConfigResponseType!
+    adminConfig(id: ID!): AdminConfigResponseType! @auth
 }
 
 extend type Mutation {
-    updateAdminConfig(id: ID!, data: AdminConfigUpdateInput): AdminConfigResponseType!
+    updateAdminConfig(id: ID!, data: AdminConfigUpdateInput): AdminConfigResponseType! @auth
 }
 
 
 # --------  types
 
 type AdminConfigType {
-    id: ID!
+    id: ID! @auth
     opening_at: DateTimeISO!
     closing_at: DateTimeISO!
-    min_duration: PositiveFloat!
+    min_duration: PositiveFloat! @auth
     support_email: EmailAddress!
     phone_number: PhoneNumber!
 }

@@ -3,9 +3,9 @@
 # -------- types
 
 type WorkType {
-    id: Int!
+    id: Int! @auth
     img_url: URL!
-    img_id: ID!
+    img_id: ID! @auth
     category: WorkCategoryEnum!
     timestamp: DateTimeISO!
 }
@@ -34,11 +34,11 @@ extend type Query {
 # -------- mutation
 
 extend type Mutation {
-    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType!
-    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType!
-    deleteWork(id: ID!): WorkResponseType!
-    deleteManyWorks(ids: [ID]!): WorkResponseType!
-    createWork(data: WorkCreateInput): WorkResponseType! 
+    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType! @auth
+    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType! @auth
+    deleteWork(id: ID!): WorkResponseType! @auth
+    deleteManyWorks(ids: [ID]!): WorkResponseType! @auth
+    createWork(data: WorkCreateInput): WorkResponseType! @auth
 }
 
 

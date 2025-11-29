@@ -11,8 +11,8 @@ const __dirname = dirname(__filename);
 const typesArray = loadFilesSync(`${__dirname}/schemas/**/*.graphql`);
 const resolversArray = loadFilesSync(
     [
-        `${__dirname}/resolvers/**/*.js`,
-        `!${__dirname}/resolvers/base.js`, // exclude base.js from search pool
+        `${__dirname}/resolvers/**/*.ts`,
+        `!${__dirname}/resolvers/base.ts`, // exclude base.ts from search pool
     ]
 );
 
