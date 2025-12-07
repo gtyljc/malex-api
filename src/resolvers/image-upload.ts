@@ -1,6 +1,6 @@
 
-import { formatSResponse, formatFResponse } from "../sources.js";
-import * as types from "../types/index.js";
+import { formatSResponse, formatFResponse } from "../sources";
+import * as types from "../types/index";
 import Cloudflare from "cloudflare";
 
 const cloudflareClient = new Cloudflare(

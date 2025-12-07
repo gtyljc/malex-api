@@ -54,3 +54,10 @@ model AdminConfig {
 
     @@map("admin_config")
 }
+
+model Admins {
+    id        Int     @id @default(autoincrement())
+    username  String
+    password  String
+    is_logged Boolean
+}

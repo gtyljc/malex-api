@@ -1,21 +1,23 @@
 
 // others
-import * as types from "./types/index.ts";
+import * as types from "./types/index";
 import { IncomingMessage } from "http";
 
 // apollo server
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import schema from './schema.ts';
+import schema from './schema';
 
 // db
-import { DatabaseSource, DatabaseConnectionStatus } from './sources.ts';
+import { DatabaseSource, DatabaseConnectionStatus } from './sources';
 import { PrismaClient } from '../prisma/generated/client.js';
+
+// load .env file
+process.loadEnvFile();
 
 const prisma = new PrismaClient();
 const connectionStatus = new DatabaseConnectionStatus(prisma);
-const { typeDefs, resolvers } = schema;
-const server = new ApolloServer<types.AppContext>({ typeDefs, resolvers });
+const server = new ApolloServer<types.AppContext>({ schema });
 const { url } = await startStandaloneServer(
     server,
     {

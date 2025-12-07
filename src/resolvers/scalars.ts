@@ -8,9 +8,10 @@ import {
     URLResolver,
     PositiveIntResolver,
     PositiveFloatResolver,
-    EmailAddressResolver
+    EmailAddressResolver,
+    JWTResolver
 } from "graphql-scalars";
-import * as types from "../types/index.ts";
+import * as types from "../types";
 
 const scalarsResolvers: types.ResolversSchema = {
     JSONObject: JSONObjectResolver,
@@ -19,7 +20,8 @@ const scalarsResolvers: types.ResolversSchema = {
     DateTimeISO: DateTimeISOResolver,
     PositiveInt: PositiveIntResolver,
     PositiveFloat: PositiveFloatResolver,
-    EmailAddress: EmailAddressResolver
+    EmailAddress: EmailAddressResolver,
+    JWT: JWTResolver
 }
 
 export default scalarsResolvers;

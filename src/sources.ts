@@ -1,11 +1,11 @@
 
 // others
-import { sleep } from "./tools.ts";
-import * as types from "./types/index.ts";
+import { sleep } from "./tools";
+import * as types from "./types/index";
 
 // db
 import { PrismaClient } from "@prisma/client";
-import { Prisma } from '../prisma/generated/client.js';
+import { Prisma } from '../prisma/generated';
 
 export function formatSResponse(
     data: any[]
@@ -117,7 +117,7 @@ export class DatabaseSource {
                 await func(error);
             }
 
-            return formatFResponse(400, "Query failed! See more at logs");
+            return formatFResponse(500, "Query failed! See more at logs");
         }
     }
 

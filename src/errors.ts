@@ -14,3 +14,13 @@ export class IdsOrFilterWasNotSpecifiedError extends Error {
     static message = "You must specify array of necessary ids or filter with pagination!";
     static name = "IdsOrFilterWasNotSpecifiedError";
 }
+
+export class AuthorizationHeaderWasNotSpecifiedError extends Error {
+    static message = "You didn't specify the authoriation header!";
+    static name = "AuthorizationHeaderWasNotSpecifiedError";
+}
+
+export class ClientHasNoPermissions extends Error {
+    static message = "Client has no necessary role to use this resource!";
+    static name = "ClientHasNoPermissions";
+}

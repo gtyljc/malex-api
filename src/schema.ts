@@ -1,8 +1,10 @@
 
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import directives from "./directives";
 
 // path to file
 const __filename = fileURLToPath(import.meta.url);
@@ -15,8 +17,16 @@ const resolversArray = loadFilesSync(
         `!${__dirname}/resolvers/base.ts`, // exclude base.ts from search pool
     ]
 );
+let endSchema = makeExecutableSchema(
+    {
+        typeDefs: mergeTypeDefs(typesArray),
+        resolvers: mergeResolvers(resolversArray)
+    }
+);
 
-export default {
-    typeDefs: mergeTypeDefs(typesArray),
-    resolvers: mergeResolvers(resolversArray)
+// add directives to schema
+for (let directiveFunc of directives){
+    endSchema = directiveFunc(endSchema);
 }
+
+export default endSchema;

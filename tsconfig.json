@@ -1,16 +1,11 @@
 {
 	"compilerOptions": {
-		"noEmit": true,
-
-		"allowImportingTsExtensions": true,
-
-		"target": "es2023",
 
 		// Treat files as modules even if it doesn't use import/export
 		"moduleDetection": "force",
 
 		// Ignore module structure
-		"module": "es2022",
+		"module": "Preserve",
 
 		// Allow JSON modules to be imported
 		"resolveJsonModule": true,

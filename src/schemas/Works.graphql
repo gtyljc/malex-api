@@ -3,15 +3,15 @@
 # -------- types
 
 type WorkType {
-    id: Int! @auth
+    id: Int!
     img_url: URL!
-    img_id: ID! @auth
+    img_id: ID!
     category: WorkCategoryEnum!
     timestamp: DateTimeISO!
 }
 
 type WorkResponseType implements BaseMutationResponseInterface {
-    code: String!
+    code: Int!
     success: Boolean!
     message: String!
     data: [WorkType]!
@@ -21,24 +21,24 @@ type WorkResponseType implements BaseMutationResponseInterface {
 # -------- query
 
 extend type Query {
-    work(id: ID!): WorkResponseType!
+    work(id: ID!): WorkResponseType! @auth(role: ADMIN)
     works(
         ids: [ID], 
-        filter: JSONObject, 
+        filter: JSONObject,
         pagination: PaginationInput
         sort: SortInput    
-    ): WorkResponseType!
+    ): WorkResponseType! @auth(role: USER)
 }
 
 
 # -------- mutation
 
 extend type Mutation {
-    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType! @auth
-    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType! @auth
-    deleteWork(id: ID!): WorkResponseType! @auth
-    deleteManyWorks(ids: [ID]!): WorkResponseType! @auth
-    createWork(data: WorkCreateInput): WorkResponseType! @auth
+    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType! @auth(role: ADMIN)
+    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType! @auth(role: ADMIN)
+    deleteWork(id: ID!): WorkResponseType! @auth(role: ADMIN)
+    deleteManyWorks(ids: [ID]!): WorkResponseType! @auth(role: ADMIN)
+    createWork(data: WorkCreateInput): WorkResponseType! @auth(role: ADMIN)
 }
 
 

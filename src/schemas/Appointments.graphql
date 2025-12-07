@@ -3,48 +3,61 @@
 # -------- query
 
 extend type Query {
-    appointment(id: ID!): AppointmentResponseType!
+    appointment(id: ID!): AppointmentResponseType! @auth(role: ADMIN)
     appointments(
         ids: [ID], 
         filter: JSONObject, 
         pagination: PaginationInput, 
         sort: SortInput
-    ): AppointmentResponseType!
+    ): AppointmentResponseType @auth(role: ADMIN)
+    busyTimesInDay(date: DateTimeISO): BusyResponse! @auth(role: USER)
+    busyDaysAtMonth(date: DateTimeISO): BusyResponse! @auth(role: USER)
+    isDayBusy(date: DateTimeISO): BusyResponse! @auth(role: USER)
 }
 
 
 # -------- mutation
 
 extend type Mutation {
-    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType! @auth
-    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType! @auth
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth
-    appointmentsInRange(from: DateTimeISO! to: DateTimeISO!): AppointmentResponseType!
+    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: ADMIN)
 }
 
 
 # --------  types
 
 type AppointmentType {
-    id: ID! @auth
-    name: String! @auth
-    surname: String! @auth
-    address: String! @auth
-    job_desc: String! @auth
-    bwt: BestWayToTouchEnum! @auth
-    number: PhoneNumber! @auth
-    date: DateTimeISO! @auth
+    id: ID!
+    name: String!
+    surname: String!
+    address: String!
+    job_desc: String!
+    bwt: BestWayToTouchEnum!
+    number: PhoneNumber!
+    date: DateTimeISO!
     duration: PositiveFloat!
 }
 
 type AppointmentResponseType implements BaseMutationResponseInterface {
-    code: String!
+    code: Int!
     success: Boolean!
     message: String!
     data: [AppointmentType]!
     pagination: PaginationType
 }
 
+type Busy {
+    date: DateTimeISO!
+    busy: Boolean!
+}
+
+type BusyResponse implements BaseMutationResponseInterface {
+    code: Int!
+    success: Boolean!
+    message: String!
+    data: [Busy]!
+}
 
 # --------  inputs
 

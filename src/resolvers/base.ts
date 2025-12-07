@@ -1,16 +1,16 @@
-import { formatFResponse } from "../sources.ts";
-import { capitalize, assembleErrorMessage } from "../tools.ts";
+import { formatFResponse } from "../sources";
+import { capitalize, assembleErrorMessage } from "../tools";
 import { 
     IdsOrFilterWasNotSpecifiedError,
     PaginationIsNotSpecifiedError,
     PaginationLimitationError
-} from "../errors.ts";
-import * as types from "../types/index.ts";
+} from "../errors";
+import * as types from "../types/index";
 
 class ResolversManager {
     // !!! if you want to use resolvers in high-definied object use "resolvers" property !!!
 
-    private _resolvers: Object;
+    private resolversObject = {};
     protected resolverMarker: string;
 
     constructor(modelname: types.Resource){
@@ -18,11 +18,11 @@ class ResolversManager {
     }
 
     addResolver(name: string, func: Function): void {
-        this._resolvers[name] = func;
+        this.resolversObject[name] = func;
     }
 
     get resolvers(){
-        return this._resolvers;
+        return this.resolversObject;
     }
 }
 

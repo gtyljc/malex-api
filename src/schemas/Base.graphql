@@ -12,11 +12,12 @@ scalar DateTimeISO
 scalar PositiveInt
 scalar PositiveFloat
 scalar EmailAddress
+scalar JWT
 
 
 # -------- to extend
 
-directive @auth(role: RoleEnum = ADMIN) on FIELD_DEFINITION
+directive @auth(role: RoleEnum) on FIELD_DEFINITION # can bes used only on Query or Mutation fields
 
 
 # -------- to extend
@@ -24,8 +25,9 @@ directive @auth(role: RoleEnum = ADMIN) on FIELD_DEFINITION
 type Query
 
 type Mutation {
-    startImageUpload(id: ID!): StartUploadImageResponseType!
-    finalizeImageUpload(id: ID!): FinalizeUploudImageResponseType!
+    createJWT(role: RoleEnum): JWTResponseType # can access only backend
+    startImageUpload(id: ID!): StartUploadImageResponseType! @auth(role: ADMIN)
+    finalizeImageUpload(id: ID!): FinalizeUploudImageResponseType! @auth(role: ADMIN)
 }
 
 
@@ -56,17 +58,28 @@ type FinalizeUploadImageType {
 }
 
 type StartUploadImageResponseType implements BaseMutationResponseInterface {
-    code: String!
+    code: Int!
     message: String!
     success: Boolean!
-    data: StartUploadImageType
+    data: [StartUploadImageType]!
 }
 
 type FinalizeUploudImageResponseType implements BaseMutationResponseInterface {
-    code: String!
+    code: Int!
     message: String!
     success: Boolean!
-    data: FinalizeUploadImageType
+    data: [FinalizeUploadImageType]!
+}
+
+type JWTResponseType implements BaseMutationResponseInterface {
+    code: Int!
+    message: String!
+    success: Boolean!
+    data: [JWTType]!
+}
+
+type JWTType { 
+    token: JWT!
 }
 
 type PaginationType {

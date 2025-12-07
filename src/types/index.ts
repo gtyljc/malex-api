@@ -1,6 +1,6 @@
 
 // all available types in one file
-export * from "./sources.types.ts";
-export * from "./app.types.ts";
-export * from "./resolvers/index.ts";
-export * from "./directives.types.ts";
+export * from "./sources.types";
+export * from "./app.types";
+export * from "./resolvers";
+export * from "./directives.types";

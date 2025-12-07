@@ -1,5 +1,5 @@
 
-import { DatabaseSource } from "../sources.ts";
+import { DatabaseSource } from "../sources";
 import { IncomingMessage } from "http";
 
 export type AppContext = {

@@ -1,8 +1,8 @@
 
 // resolvers for model "Work"
 
-import { BaseMutationResolvers, BaseQueryResolvers } from "./base.ts";
-import * as types from "../types/index.ts";
+import { BaseMutationResolvers, BaseQueryResolvers } from "./base";
+import * as types from "../types";
 
 const __modelname = "work";
 
