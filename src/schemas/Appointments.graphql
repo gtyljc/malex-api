@@ -10,7 +10,7 @@ extend type Query {
         pagination: PaginationInput, 
         sort: SortInput
     ): AppointmentResponseType @auth(role: ADMIN)
-    busyTimesInDay(date: DateTimeISO): BusyResponse! @auth(role: USER)
+    busyTimesAtDay(date: DateTimeISO): BusyResponse! @auth(role: USER)
     busyDaysAtMonth(date: DateTimeISO): BusyResponse! @auth(role: USER)
     isDayBusy(date: DateTimeISO): BusyResponse! @auth(role: USER)
 }

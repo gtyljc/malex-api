@@ -12,7 +12,7 @@ dayjs.extend(isBetween);
 const __modelname = "appointment";
 
 // returns array, which will contains busy times (appointments that reserved for this day)
-async function _busyTimesInDay(date: string, db: types.AppContext["dataSources"]["db"]) {
+async function _busyTimesAtDay(date: string, db: types.AppContext["dataSources"]["db"]) {
     const appsInRange = (
         await db.getMany(
             __modelname, 
@@ -100,11 +100,11 @@ const resolversSchema: types.ResolversSchema = {
     Query: {
         ...new BaseQueryResolvers(__modelname).resolvers,
 
-        busyTimesInDay: async (
+        busyTimesAtDay: async (
             _, 
             { date }: { date: string }, 
             { dataSources: { db } }: types.AppContext
-        ) => await _busyTimesInDay(date, db),
+        ) => await _busyTimesAtDay(date, db),
 
         isDayBusy: async (
             _, 
