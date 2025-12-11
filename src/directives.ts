@@ -34,8 +34,6 @@ const directives = [
                                         hash: "SHA-256"
                                     }, true, [ "verify" ]
                                 );
-                                
-                                console.log(context.req.headers);
 
                                 try {
                                     if (context.req.headers.authorization) {

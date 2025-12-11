@@ -18,6 +18,20 @@ type WorkResponseType implements BaseMutationResponseInterface {
     pagination: PaginationType
 }
 
+type PublicWorkType {
+    img_url: URL!
+    category: WorkCategoryEnum!
+    timestamp: DateTimeISO!
+}
+
+type PublicWorkResponseType implements BaseMutationResponseInterface {
+    code: Int!
+    success: Boolean!
+    message: String!
+    data: [PublicWorkType]!
+    pagination: PaginationType
+}
+
 # -------- query
 
 extend type Query {
@@ -27,7 +41,13 @@ extend type Query {
         filter: JSONObject,
         pagination: PaginationInput
         sort: SortInput    
-    ): WorkResponseType! @auth(role: USER)
+    ): WorkResponseType! @auth(role: ADMIN)
+    getWorks(
+        filter: JSONObject,
+        pagination: PaginationInput
+        sort: SortInput
+    ): PublicWorkResponseType! @auth(role: USER)  # for gallery
+    newWorks(num: PositiveInt): PublicWorkResponseType! @auth(role: USER)
 }
 
 
