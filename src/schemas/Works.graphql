@@ -27,7 +27,7 @@ extend type Query {
         filter: JSONObject,
         pagination: PaginationInput
         sort: SortInput    
-    ): WorkResponseType! @auth(role: USER)
+    ): WorkResponseType! @auth(role: ADMIN)
 }
 
 

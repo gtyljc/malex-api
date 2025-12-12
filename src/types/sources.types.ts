@@ -24,7 +24,8 @@ export type DBMethod = (
 export type Resource = (
     "appointment" |
     "work" |
-    "adminConfig"
+    "siteConfig" |
+    "admins"
 )
 
 // pagination argument

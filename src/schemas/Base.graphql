@@ -17,7 +17,10 @@ scalar JWT
 
 # -------- to extend
 
-directive @auth(role: RoleEnum) on FIELD_DEFINITION # can bes used only on Query or Mutation fields
+# can bes used only on Query or Mutation fields;
+# argument role must be specified and means the 
+# minimal role, that user must to have to access
+directive @auth(role: RoleEnum) on FIELD_DEFINITION
 
 
 # -------- to extend
@@ -25,9 +28,11 @@ directive @auth(role: RoleEnum) on FIELD_DEFINITION # can bes used only on Query
 type Query
 
 type Mutation {
-    createJWT(role: RoleEnum): JWTResponseType # can access only backend
+    adminLogin(username: String, password: String): JWTResponseType! @auth(role: USER)
+    createJWT(role: RoleEnum): JWTResponseType! # can access only backend
+    refreshJWT: JWTResponseType!
     startImageUpload(id: ID!): StartUploadImageResponseType! @auth(role: ADMIN)
-    finalizeImageUpload(id: ID!): FinalizeUploudImageResponseType! @auth(role: ADMIN)
+    finalizeImageUpload(id: ID!): FinalizeUploadImageResponseType! @auth(role: ADMIN)
 }
 
 
@@ -64,7 +69,7 @@ type StartUploadImageResponseType implements BaseMutationResponseInterface {
     data: [StartUploadImageType]!
 }
 
-type FinalizeUploudImageResponseType implements BaseMutationResponseInterface {
+type FinalizeUploadImageResponseType implements BaseMutationResponseInterface {
     code: Int!
     message: String!
     success: Boolean!

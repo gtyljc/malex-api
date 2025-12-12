@@ -1,10 +1,6 @@
 import { formatFResponse } from "../sources";
 import { capitalize, assembleErrorMessage } from "../tools";
-import { 
-    IdsOrFilterWasNotSpecifiedError,
-    PaginationIsNotSpecifiedError,
-    PaginationLimitationError
-} from "../errors";
+import * as errors from "../errors";
 import * as types from "../types/index";
 
 class ResolversManager {
@@ -65,15 +61,7 @@ export class BaseQueryResolvers extends ResolversManager {
                 if (ids === undefined && filter === undefined){
                     return formatFResponse(
                         400,
-                        assembleErrorMessage(IdsOrFilterWasNotSpecifiedError)
-                    );
-                }
-
-                // if filter was specified, but without pagination
-                if (filter && pagination === undefined){
-                    return formatFResponse(
-                        400, 
-                        assembleErrorMessage(PaginationIsNotSpecifiedError)
+                        assembleErrorMessage(errors.IdsOrFilterWasNotSpecifiedError)
                     );
                 }
 
@@ -81,7 +69,7 @@ export class BaseQueryResolvers extends ResolversManager {
                 if (pagination.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
                     return formatFResponse(
                         400, 
-                        assembleErrorMessage(PaginationLimitationError)
+                        assembleErrorMessage(errors.PaginationLimitationError)
                     );
                 }
 

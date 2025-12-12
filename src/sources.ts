@@ -77,6 +77,7 @@ export class DatabaseSource {
     connection: DatabaseConnectionStatus;
     prismaClient: PrismaClient;
     private errorCases: Function[];
+    static defaultPagination = { page: 1, perPage: 100 };
 
     constructor (prisma_client: PrismaClient, connection: DatabaseConnectionStatus){
         this.prismaClient = prisma_client;
@@ -222,7 +223,7 @@ export class DatabaseSource {
             {
                 ids,
                 filter: (filter ? { where: filter }: filter),
-                pagination
+                pagination: pagination || DatabaseSource.defaultPagination
             },
             { ...(sort ? { orderBy: { [sort.field]: sort.order.toLowerCase() } }: {}) },
         )

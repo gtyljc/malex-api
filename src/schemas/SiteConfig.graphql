@@ -2,18 +2,18 @@
 # -------- query
 
 extend type Query {
-    adminConfig(id: ID!): AdminConfigResponseType! @auth(role: ADMIN)
-    contactData: AdminConfigResponseType! @auth(role: USER)
+    siteConfig(id: ID!): SiteConfigResponseType! @auth(role: ADMIN)
+    contactData: SiteConfigResponseType! @auth(role: USER)
 }
 
 extend type Mutation {
-    updateAdminConfig(id: ID!, data: AdminConfigUpdateInput): AdminConfigResponseType! @auth(role: ADMIN)
+    updateSiteConfig(id: ID!, data: SiteConfigUpdateInput): SiteConfigResponseType! @auth(role: ADMIN)
 }
 
 
 # --------  types
 
-type AdminConfigType {
+type SiteConfigType {
     id: ID!
     opening_at: DateTimeISO!
     closing_at: DateTimeISO!
@@ -22,11 +22,11 @@ type AdminConfigType {
     phone_number: PhoneNumber!
 }
 
-type AdminConfigResponseType implements BaseMutationResponseInterface {
+type SiteConfigResponseType implements BaseMutationResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
-    data: [AdminConfigType]!
+    data: [SiteConfigType]!
 }
 
 type ContactDataType {
@@ -47,7 +47,7 @@ type ContactDataResponseType implements BaseMutationResponseInterface {
 
 # --------  inputs
 
-input AdminConfigUpdateInput {
+input SiteConfigUpdateInput {
     id: ID
     opening_at: DateTimeISO
     closing_at: DateTimeISO
