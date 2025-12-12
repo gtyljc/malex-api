@@ -18,6 +18,20 @@ type WorkResponseType implements BaseMutationResponseInterface {
     pagination: PaginationType
 }
 
+type PublicWorkType {
+    img_url: URL!
+    category: WorkCategoryEnum!
+    timestamp: DateTimeISO!
+}
+
+type PublicWorkResponseType implements BaseMutationResponseInterface {
+    code: Int!
+    success: Boolean!
+    message: String!
+    data: [PublicWorkType]!
+    pagination: PaginationType
+}
+
 # -------- query
 
 extend type Query {
