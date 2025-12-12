@@ -1,9 +1,9 @@
 
 // others
 import * as types from "./types";
-import { jwtVerify } from "jose/jwt/verify"
-import * as errors from "./errors";
 import { formatFResponse } from "./sources";
+import { hasPermission } from "./roles";
+import { validateJWT } from "./resolvers/auth";
 
 // schema
 import { defaultFieldResolver } from "graphql";
@@ -19,38 +19,26 @@ const directives = [
                     const authDirective = getDirective(schema, fieldConfig, "auth")?.[0];
 
                     if(authDirective){
-                        const { resolve = defaultFieldResolver } = fieldConfig;
+                        const { resolve = defaultFieldResolver, astNode: { name } } = fieldConfig;
                         const { role } = authDirective; // get "role" directive argument
 
                         return {
                             ...fieldConfig,
                             resolve: async (source, args, context: types.AppContext, info) => {
-                                const secret = new TextEncoder().encode(process.env.API_SECRET);
-                                const jwk = await global.crypto.subtle.importKey(
-                                    "raw",
-                                    secret,
-                                    {
-                                        name: "HMAC",
-                                        hash: "SHA-256"
-                                    }, true, [ "verify" ]
-                                );
 
-                                try {
-                                    if (context.req.headers.authorization) {
-                                        const verfified = await jwtVerify<types.JWTHeader>(
-                                            context.req.headers.authorization.replace("Bearer ", ""),
-                                            jwk
-                                        );
+                                // check if header "Authorization" was specified
+                                if(context.req.headers.authorization){
+                                    const jwt = context.req.headers.authorization.replace("Bearer ", "");
+                                    const validated = await validateJWT(jwt);
 
-                                        if (verfified.payload.aud != role) throw new errors.ClientHasNoPermissions();
+                                    // user must have role that was specified at schema
+                                    // and also role has permissions on this field execution
+                                    if(validated && validated.payload.aud == role && hasPermission(validated.payload.aud, name.value)){
+                                        return await resolve(source, args, context, info);
                                     }
-                                    else throw new errors.AuthorizationHeaderWasNotSpecifiedError();
-                                }
-                                catch{
-                                    return formatFResponse(403, "Unauthorizated request!");
                                 }
 
-                                return await resolve(source, args, context, info);
+                                return formatFResponse(403, "Unauthorizated request!");
                             }
                         };
                     }

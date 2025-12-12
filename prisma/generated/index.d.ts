@@ -24,10 +24,15 @@ export type Appointment = $Result.DefaultSelection<Prisma.$AppointmentPayload>
  */
 export type Work = $Result.DefaultSelection<Prisma.$WorkPayload>
 /**
- * Model AdminConfig
+ * Model SiteConfig
  * 
  */
-export type AdminConfig = $Result.DefaultSelection<Prisma.$AdminConfigPayload>
+export type SiteConfig = $Result.DefaultSelection<Prisma.$SiteConfigPayload>
+/**
+ * Model Admins
+ * 
+ */
+export type Admins = $Result.DefaultSelection<Prisma.$AdminsPayload>
 
 /**
  * Enums
@@ -199,14 +204,24 @@ export class PrismaClient<
   get work(): Prisma.WorkDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.adminConfig`: Exposes CRUD operations for the **AdminConfig** model.
+   * `prisma.siteConfig`: Exposes CRUD operations for the **SiteConfig** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more AdminConfigs
-    * const adminConfigs = await prisma.adminConfig.findMany()
+    * // Fetch zero or more SiteConfigs
+    * const siteConfigs = await prisma.siteConfig.findMany()
     * ```
     */
-  get adminConfig(): Prisma.AdminConfigDelegate<ExtArgs, ClientOptions>;
+  get siteConfig(): Prisma.SiteConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.admins`: Exposes CRUD operations for the **Admins** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Admins
+    * const admins = await prisma.admins.findMany()
+    * ```
+    */
+  get admins(): Prisma.AdminsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -649,7 +664,8 @@ export namespace Prisma {
   export const ModelName: {
     Appointment: 'Appointment',
     Work: 'Work',
-    AdminConfig: 'AdminConfig'
+    SiteConfig: 'SiteConfig',
+    Admins: 'Admins'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -668,7 +684,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "appointment" | "work" | "adminConfig"
+      modelProps: "appointment" | "work" | "siteConfig" | "admins"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -820,77 +836,151 @@ export namespace Prisma {
           }
         }
       }
-      AdminConfig: {
-        payload: Prisma.$AdminConfigPayload<ExtArgs>
-        fields: Prisma.AdminConfigFieldRefs
+      SiteConfig: {
+        payload: Prisma.$SiteConfigPayload<ExtArgs>
+        fields: Prisma.SiteConfigFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.AdminConfigFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload> | null
+            args: Prisma.SiteConfigFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.AdminConfigFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>
+            args: Prisma.SiteConfigFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>
           }
           findFirst: {
-            args: Prisma.AdminConfigFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload> | null
+            args: Prisma.SiteConfigFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.AdminConfigFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>
+            args: Prisma.SiteConfigFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>
           }
           findMany: {
-            args: Prisma.AdminConfigFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>[]
+            args: Prisma.SiteConfigFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>[]
           }
           create: {
-            args: Prisma.AdminConfigCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>
+            args: Prisma.SiteConfigCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>
           }
           createMany: {
-            args: Prisma.AdminConfigCreateManyArgs<ExtArgs>
+            args: Prisma.SiteConfigCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.AdminConfigCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>[]
+            args: Prisma.SiteConfigCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>[]
           }
           delete: {
-            args: Prisma.AdminConfigDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>
+            args: Prisma.SiteConfigDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>
           }
           update: {
-            args: Prisma.AdminConfigUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>
+            args: Prisma.SiteConfigUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>
           }
           deleteMany: {
-            args: Prisma.AdminConfigDeleteManyArgs<ExtArgs>
+            args: Prisma.SiteConfigDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.AdminConfigUpdateManyArgs<ExtArgs>
+            args: Prisma.SiteConfigUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.AdminConfigUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>[]
+            args: Prisma.SiteConfigUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>[]
           }
           upsert: {
-            args: Prisma.AdminConfigUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdminConfigPayload>
+            args: Prisma.SiteConfigUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteConfigPayload>
           }
           aggregate: {
-            args: Prisma.AdminConfigAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAdminConfig>
+            args: Prisma.SiteConfigAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSiteConfig>
           }
           groupBy: {
-            args: Prisma.AdminConfigGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AdminConfigGroupByOutputType>[]
+            args: Prisma.SiteConfigGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SiteConfigGroupByOutputType>[]
           }
           count: {
-            args: Prisma.AdminConfigCountArgs<ExtArgs>
-            result: $Utils.Optional<AdminConfigCountAggregateOutputType> | number
+            args: Prisma.SiteConfigCountArgs<ExtArgs>
+            result: $Utils.Optional<SiteConfigCountAggregateOutputType> | number
+          }
+        }
+      }
+      Admins: {
+        payload: Prisma.$AdminsPayload<ExtArgs>
+        fields: Prisma.AdminsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>
+          }
+          findMany: {
+            args: Prisma.AdminsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>[]
+          }
+          create: {
+            args: Prisma.AdminsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>
+          }
+          createMany: {
+            args: Prisma.AdminsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>
+          }
+          update: {
+            args: Prisma.AdminsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminsPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdmins>
+          }
+          groupBy: {
+            args: Prisma.AdminsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminsCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminsCountAggregateOutputType> | number
           }
         }
       }
@@ -992,7 +1082,8 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     appointment?: AppointmentOmit
     work?: WorkOmit
-    adminConfig?: AdminConfigOmit
+    siteConfig?: SiteConfigOmit
+    admins?: AdminsOmit
   }
 
   /* Types for Logging */
@@ -1790,7 +1881,7 @@ export namespace Prisma {
     readonly job_desc: FieldRef<"Appointment", 'String'>
     readonly bwt: FieldRef<"Appointment", 'BwtChoice'>
     readonly number: FieldRef<"Appointment", 'String'>
-    readonly duration: FieldRef<"Appointment", 'Int'>
+    readonly duration: FieldRef<"Appointment", 'Float'>
     readonly date: FieldRef<"Appointment", 'DateTime'>
   }
     
@@ -3188,37 +3279,28 @@ export namespace Prisma {
 
 
   /**
-   * Model AdminConfig
+   * Model SiteConfig
    */
 
-  export type AggregateAdminConfig = {
-    _count: AdminConfigCountAggregateOutputType | null
-    _avg: AdminConfigAvgAggregateOutputType | null
-    _sum: AdminConfigSumAggregateOutputType | null
-    _min: AdminConfigMinAggregateOutputType | null
-    _max: AdminConfigMaxAggregateOutputType | null
+  export type AggregateSiteConfig = {
+    _count: SiteConfigCountAggregateOutputType | null
+    _avg: SiteConfigAvgAggregateOutputType | null
+    _sum: SiteConfigSumAggregateOutputType | null
+    _min: SiteConfigMinAggregateOutputType | null
+    _max: SiteConfigMaxAggregateOutputType | null
   }
 
-  export type AdminConfigAvgAggregateOutputType = {
+  export type SiteConfigAvgAggregateOutputType = {
     id: number | null
     min_duration: number | null
   }
 
-  export type AdminConfigSumAggregateOutputType = {
+  export type SiteConfigSumAggregateOutputType = {
     id: number | null
     min_duration: number | null
   }
 
-  export type AdminConfigMinAggregateOutputType = {
-    id: number | null
-    opening_at: Date | null
-    closing_at: Date | null
-    min_duration: number | null
-    support_email: string | null
-    phone_number: string | null
-  }
-
-  export type AdminConfigMaxAggregateOutputType = {
+  export type SiteConfigMinAggregateOutputType = {
     id: number | null
     opening_at: Date | null
     closing_at: Date | null
@@ -3227,7 +3309,16 @@ export namespace Prisma {
     phone_number: string | null
   }
 
-  export type AdminConfigCountAggregateOutputType = {
+  export type SiteConfigMaxAggregateOutputType = {
+    id: number | null
+    opening_at: Date | null
+    closing_at: Date | null
+    min_duration: number | null
+    support_email: string | null
+    phone_number: string | null
+  }
+
+  export type SiteConfigCountAggregateOutputType = {
     id: number
     opening_at: number
     closing_at: number
@@ -3238,26 +3329,17 @@ export namespace Prisma {
   }
 
 
-  export type AdminConfigAvgAggregateInputType = {
+  export type SiteConfigAvgAggregateInputType = {
     id?: true
     min_duration?: true
   }
 
-  export type AdminConfigSumAggregateInputType = {
+  export type SiteConfigSumAggregateInputType = {
     id?: true
     min_duration?: true
   }
 
-  export type AdminConfigMinAggregateInputType = {
-    id?: true
-    opening_at?: true
-    closing_at?: true
-    min_duration?: true
-    support_email?: true
-    phone_number?: true
-  }
-
-  export type AdminConfigMaxAggregateInputType = {
+  export type SiteConfigMinAggregateInputType = {
     id?: true
     opening_at?: true
     closing_at?: true
@@ -3266,7 +3348,16 @@ export namespace Prisma {
     phone_number?: true
   }
 
-  export type AdminConfigCountAggregateInputType = {
+  export type SiteConfigMaxAggregateInputType = {
+    id?: true
+    opening_at?: true
+    closing_at?: true
+    min_duration?: true
+    support_email?: true
+    phone_number?: true
+  }
+
+  export type SiteConfigCountAggregateInputType = {
     id?: true
     opening_at?: true
     closing_at?: true
@@ -3276,148 +3367,148 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type AdminConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which AdminConfig to aggregate.
+     * Filter which SiteConfig to aggregate.
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AdminConfigs to fetch.
+     * Determine the order of SiteConfigs to fetch.
      */
-    orderBy?: AdminConfigOrderByWithRelationInput | AdminConfigOrderByWithRelationInput[]
+    orderBy?: SiteConfigOrderByWithRelationInput | SiteConfigOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: AdminConfigWhereUniqueInput
+    cursor?: SiteConfigWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AdminConfigs from the position of the cursor.
+     * Take `±n` SiteConfigs from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AdminConfigs.
+     * Skip the first `n` SiteConfigs.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned AdminConfigs
+     * Count returned SiteConfigs
     **/
-    _count?: true | AdminConfigCountAggregateInputType
+    _count?: true | SiteConfigCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: AdminConfigAvgAggregateInputType
+    _avg?: SiteConfigAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: AdminConfigSumAggregateInputType
+    _sum?: SiteConfigSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: AdminConfigMinAggregateInputType
+    _min?: SiteConfigMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: AdminConfigMaxAggregateInputType
+    _max?: SiteConfigMaxAggregateInputType
   }
 
-  export type GetAdminConfigAggregateType<T extends AdminConfigAggregateArgs> = {
-        [P in keyof T & keyof AggregateAdminConfig]: P extends '_count' | 'count'
+  export type GetSiteConfigAggregateType<T extends SiteConfigAggregateArgs> = {
+        [P in keyof T & keyof AggregateSiteConfig]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateAdminConfig[P]>
-      : GetScalarType<T[P], AggregateAdminConfig[P]>
+        : GetScalarType<T[P], AggregateSiteConfig[P]>
+      : GetScalarType<T[P], AggregateSiteConfig[P]>
   }
 
 
 
 
-  export type AdminConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AdminConfigWhereInput
-    orderBy?: AdminConfigOrderByWithAggregationInput | AdminConfigOrderByWithAggregationInput[]
-    by: AdminConfigScalarFieldEnum[] | AdminConfigScalarFieldEnum
-    having?: AdminConfigScalarWhereWithAggregatesInput
+  export type SiteConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SiteConfigWhereInput
+    orderBy?: SiteConfigOrderByWithAggregationInput | SiteConfigOrderByWithAggregationInput[]
+    by: SiteConfigScalarFieldEnum[] | SiteConfigScalarFieldEnum
+    having?: SiteConfigScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: AdminConfigCountAggregateInputType | true
-    _avg?: AdminConfigAvgAggregateInputType
-    _sum?: AdminConfigSumAggregateInputType
-    _min?: AdminConfigMinAggregateInputType
-    _max?: AdminConfigMaxAggregateInputType
+    _count?: SiteConfigCountAggregateInputType | true
+    _avg?: SiteConfigAvgAggregateInputType
+    _sum?: SiteConfigSumAggregateInputType
+    _min?: SiteConfigMinAggregateInputType
+    _max?: SiteConfigMaxAggregateInputType
   }
 
-  export type AdminConfigGroupByOutputType = {
+  export type SiteConfigGroupByOutputType = {
     id: number
     opening_at: Date
     closing_at: Date
     min_duration: number
     support_email: string
     phone_number: string
-    _count: AdminConfigCountAggregateOutputType | null
-    _avg: AdminConfigAvgAggregateOutputType | null
-    _sum: AdminConfigSumAggregateOutputType | null
-    _min: AdminConfigMinAggregateOutputType | null
-    _max: AdminConfigMaxAggregateOutputType | null
+    _count: SiteConfigCountAggregateOutputType | null
+    _avg: SiteConfigAvgAggregateOutputType | null
+    _sum: SiteConfigSumAggregateOutputType | null
+    _min: SiteConfigMinAggregateOutputType | null
+    _max: SiteConfigMaxAggregateOutputType | null
   }
 
-  type GetAdminConfigGroupByPayload<T extends AdminConfigGroupByArgs> = Prisma.PrismaPromise<
+  type GetSiteConfigGroupByPayload<T extends SiteConfigGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<AdminConfigGroupByOutputType, T['by']> &
+      PickEnumerable<SiteConfigGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof AdminConfigGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof SiteConfigGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], AdminConfigGroupByOutputType[P]>
-            : GetScalarType<T[P], AdminConfigGroupByOutputType[P]>
+              : GetScalarType<T[P], SiteConfigGroupByOutputType[P]>
+            : GetScalarType<T[P], SiteConfigGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type AdminConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type SiteConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
     support_email?: boolean
     phone_number?: boolean
-  }, ExtArgs["result"]["adminConfig"]>
+  }, ExtArgs["result"]["siteConfig"]>
 
-  export type AdminConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type SiteConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
     support_email?: boolean
     phone_number?: boolean
-  }, ExtArgs["result"]["adminConfig"]>
+  }, ExtArgs["result"]["siteConfig"]>
 
-  export type AdminConfigSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type SiteConfigSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     opening_at?: boolean
     closing_at?: boolean
     min_duration?: boolean
     support_email?: boolean
     phone_number?: boolean
-  }, ExtArgs["result"]["adminConfig"]>
+  }, ExtArgs["result"]["siteConfig"]>
 
-  export type AdminConfigSelectScalar = {
+  export type SiteConfigSelectScalar = {
     id?: boolean
     opening_at?: boolean
     closing_at?: boolean
@@ -3426,10 +3517,10 @@ export namespace Prisma {
     phone_number?: boolean
   }
 
-  export type AdminConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "opening_at" | "closing_at" | "min_duration" | "support_email" | "phone_number", ExtArgs["result"]["adminConfig"]>
+  export type SiteConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "opening_at" | "closing_at" | "min_duration" | "support_email" | "phone_number", ExtArgs["result"]["siteConfig"]>
 
-  export type $AdminConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "AdminConfig"
+  export type $SiteConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SiteConfig"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3438,136 +3529,136 @@ export namespace Prisma {
       min_duration: number
       support_email: string
       phone_number: string
-    }, ExtArgs["result"]["adminConfig"]>
+    }, ExtArgs["result"]["siteConfig"]>
     composites: {}
   }
 
-  type AdminConfigGetPayload<S extends boolean | null | undefined | AdminConfigDefaultArgs> = $Result.GetResult<Prisma.$AdminConfigPayload, S>
+  type SiteConfigGetPayload<S extends boolean | null | undefined | SiteConfigDefaultArgs> = $Result.GetResult<Prisma.$SiteConfigPayload, S>
 
-  type AdminConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<AdminConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: AdminConfigCountAggregateInputType | true
+  type SiteConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SiteConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SiteConfigCountAggregateInputType | true
     }
 
-  export interface AdminConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminConfig'], meta: { name: 'AdminConfig' } }
+  export interface SiteConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SiteConfig'], meta: { name: 'SiteConfig' } }
     /**
-     * Find zero or one AdminConfig that matches the filter.
-     * @param {AdminConfigFindUniqueArgs} args - Arguments to find a AdminConfig
+     * Find zero or one SiteConfig that matches the filter.
+     * @param {SiteConfigFindUniqueArgs} args - Arguments to find a SiteConfig
      * @example
-     * // Get one AdminConfig
-     * const adminConfig = await prisma.adminConfig.findUnique({
+     * // Get one SiteConfig
+     * const siteConfig = await prisma.siteConfig.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends AdminConfigFindUniqueArgs>(args: SelectSubset<T, AdminConfigFindUniqueArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends SiteConfigFindUniqueArgs>(args: SelectSubset<T, SiteConfigFindUniqueArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one AdminConfig that matches the filter or throw an error with `error.code='P2025'`
+     * Find one SiteConfig that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {AdminConfigFindUniqueOrThrowArgs} args - Arguments to find a AdminConfig
+     * @param {SiteConfigFindUniqueOrThrowArgs} args - Arguments to find a SiteConfig
      * @example
-     * // Get one AdminConfig
-     * const adminConfig = await prisma.adminConfig.findUniqueOrThrow({
+     * // Get one SiteConfig
+     * const siteConfig = await prisma.siteConfig.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends AdminConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends SiteConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, SiteConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first AdminConfig that matches the filter.
+     * Find the first SiteConfig that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigFindFirstArgs} args - Arguments to find a AdminConfig
+     * @param {SiteConfigFindFirstArgs} args - Arguments to find a SiteConfig
      * @example
-     * // Get one AdminConfig
-     * const adminConfig = await prisma.adminConfig.findFirst({
+     * // Get one SiteConfig
+     * const siteConfig = await prisma.siteConfig.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends AdminConfigFindFirstArgs>(args?: SelectSubset<T, AdminConfigFindFirstArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends SiteConfigFindFirstArgs>(args?: SelectSubset<T, SiteConfigFindFirstArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first AdminConfig that matches the filter or
+     * Find the first SiteConfig that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigFindFirstOrThrowArgs} args - Arguments to find a AdminConfig
+     * @param {SiteConfigFindFirstOrThrowArgs} args - Arguments to find a SiteConfig
      * @example
-     * // Get one AdminConfig
-     * const adminConfig = await prisma.adminConfig.findFirstOrThrow({
+     * // Get one SiteConfig
+     * const siteConfig = await prisma.siteConfig.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends AdminConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends SiteConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, SiteConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more AdminConfigs that matches the filter.
+     * Find zero or more SiteConfigs that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {SiteConfigFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all AdminConfigs
-     * const adminConfigs = await prisma.adminConfig.findMany()
+     * // Get all SiteConfigs
+     * const siteConfigs = await prisma.siteConfig.findMany()
      * 
-     * // Get first 10 AdminConfigs
-     * const adminConfigs = await prisma.adminConfig.findMany({ take: 10 })
+     * // Get first 10 SiteConfigs
+     * const siteConfigs = await prisma.siteConfig.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const adminConfigWithIdOnly = await prisma.adminConfig.findMany({ select: { id: true } })
+     * const siteConfigWithIdOnly = await prisma.siteConfig.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends AdminConfigFindManyArgs>(args?: SelectSubset<T, AdminConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends SiteConfigFindManyArgs>(args?: SelectSubset<T, SiteConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a AdminConfig.
-     * @param {AdminConfigCreateArgs} args - Arguments to create a AdminConfig.
+     * Create a SiteConfig.
+     * @param {SiteConfigCreateArgs} args - Arguments to create a SiteConfig.
      * @example
-     * // Create one AdminConfig
-     * const AdminConfig = await prisma.adminConfig.create({
+     * // Create one SiteConfig
+     * const SiteConfig = await prisma.siteConfig.create({
      *   data: {
-     *     // ... data to create a AdminConfig
+     *     // ... data to create a SiteConfig
      *   }
      * })
      * 
      */
-    create<T extends AdminConfigCreateArgs>(args: SelectSubset<T, AdminConfigCreateArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends SiteConfigCreateArgs>(args: SelectSubset<T, SiteConfigCreateArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many AdminConfigs.
-     * @param {AdminConfigCreateManyArgs} args - Arguments to create many AdminConfigs.
+     * Create many SiteConfigs.
+     * @param {SiteConfigCreateManyArgs} args - Arguments to create many SiteConfigs.
      * @example
-     * // Create many AdminConfigs
-     * const adminConfig = await prisma.adminConfig.createMany({
+     * // Create many SiteConfigs
+     * const siteConfig = await prisma.siteConfig.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends AdminConfigCreateManyArgs>(args?: SelectSubset<T, AdminConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends SiteConfigCreateManyArgs>(args?: SelectSubset<T, SiteConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many AdminConfigs and returns the data saved in the database.
-     * @param {AdminConfigCreateManyAndReturnArgs} args - Arguments to create many AdminConfigs.
+     * Create many SiteConfigs and returns the data saved in the database.
+     * @param {SiteConfigCreateManyAndReturnArgs} args - Arguments to create many SiteConfigs.
      * @example
-     * // Create many AdminConfigs
-     * const adminConfig = await prisma.adminConfig.createManyAndReturn({
+     * // Create many SiteConfigs
+     * const siteConfig = await prisma.siteConfig.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many AdminConfigs and only return the `id`
-     * const adminConfigWithIdOnly = await prisma.adminConfig.createManyAndReturn({
+     * // Create many SiteConfigs and only return the `id`
+     * const siteConfigWithIdOnly = await prisma.siteConfig.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -3577,28 +3668,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends AdminConfigCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends SiteConfigCreateManyAndReturnArgs>(args?: SelectSubset<T, SiteConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a AdminConfig.
-     * @param {AdminConfigDeleteArgs} args - Arguments to delete one AdminConfig.
+     * Delete a SiteConfig.
+     * @param {SiteConfigDeleteArgs} args - Arguments to delete one SiteConfig.
      * @example
-     * // Delete one AdminConfig
-     * const AdminConfig = await prisma.adminConfig.delete({
+     * // Delete one SiteConfig
+     * const SiteConfig = await prisma.siteConfig.delete({
      *   where: {
-     *     // ... filter to delete one AdminConfig
+     *     // ... filter to delete one SiteConfig
      *   }
      * })
      * 
      */
-    delete<T extends AdminConfigDeleteArgs>(args: SelectSubset<T, AdminConfigDeleteArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends SiteConfigDeleteArgs>(args: SelectSubset<T, SiteConfigDeleteArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one AdminConfig.
-     * @param {AdminConfigUpdateArgs} args - Arguments to update one AdminConfig.
+     * Update one SiteConfig.
+     * @param {SiteConfigUpdateArgs} args - Arguments to update one SiteConfig.
      * @example
-     * // Update one AdminConfig
-     * const adminConfig = await prisma.adminConfig.update({
+     * // Update one SiteConfig
+     * const siteConfig = await prisma.siteConfig.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3608,30 +3699,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends AdminConfigUpdateArgs>(args: SelectSubset<T, AdminConfigUpdateArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends SiteConfigUpdateArgs>(args: SelectSubset<T, SiteConfigUpdateArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more AdminConfigs.
-     * @param {AdminConfigDeleteManyArgs} args - Arguments to filter AdminConfigs to delete.
+     * Delete zero or more SiteConfigs.
+     * @param {SiteConfigDeleteManyArgs} args - Arguments to filter SiteConfigs to delete.
      * @example
-     * // Delete a few AdminConfigs
-     * const { count } = await prisma.adminConfig.deleteMany({
+     * // Delete a few SiteConfigs
+     * const { count } = await prisma.siteConfig.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends AdminConfigDeleteManyArgs>(args?: SelectSubset<T, AdminConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends SiteConfigDeleteManyArgs>(args?: SelectSubset<T, SiteConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more AdminConfigs.
+     * Update zero or more SiteConfigs.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {SiteConfigUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many AdminConfigs
-     * const adminConfig = await prisma.adminConfig.updateMany({
+     * // Update many SiteConfigs
+     * const siteConfig = await prisma.siteConfig.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3641,14 +3732,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends AdminConfigUpdateManyArgs>(args: SelectSubset<T, AdminConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends SiteConfigUpdateManyArgs>(args: SelectSubset<T, SiteConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more AdminConfigs and returns the data updated in the database.
-     * @param {AdminConfigUpdateManyAndReturnArgs} args - Arguments to update many AdminConfigs.
+     * Update zero or more SiteConfigs and returns the data updated in the database.
+     * @param {SiteConfigUpdateManyAndReturnArgs} args - Arguments to update many SiteConfigs.
      * @example
-     * // Update many AdminConfigs
-     * const adminConfig = await prisma.adminConfig.updateManyAndReturn({
+     * // Update many SiteConfigs
+     * const siteConfig = await prisma.siteConfig.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3657,8 +3748,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more AdminConfigs and only return the `id`
-     * const adminConfigWithIdOnly = await prisma.adminConfig.updateManyAndReturn({
+     * // Update zero or more SiteConfigs and only return the `id`
+     * const siteConfigWithIdOnly = await prisma.siteConfig.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -3671,56 +3762,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends AdminConfigUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminConfigUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends SiteConfigUpdateManyAndReturnArgs>(args: SelectSubset<T, SiteConfigUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one AdminConfig.
-     * @param {AdminConfigUpsertArgs} args - Arguments to update or create a AdminConfig.
+     * Create or update one SiteConfig.
+     * @param {SiteConfigUpsertArgs} args - Arguments to update or create a SiteConfig.
      * @example
-     * // Update or create a AdminConfig
-     * const adminConfig = await prisma.adminConfig.upsert({
+     * // Update or create a SiteConfig
+     * const siteConfig = await prisma.siteConfig.upsert({
      *   create: {
-     *     // ... data to create a AdminConfig
+     *     // ... data to create a SiteConfig
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the AdminConfig we want to update
+     *     // ... the filter for the SiteConfig we want to update
      *   }
      * })
      */
-    upsert<T extends AdminConfigUpsertArgs>(args: SelectSubset<T, AdminConfigUpsertArgs<ExtArgs>>): Prisma__AdminConfigClient<$Result.GetResult<Prisma.$AdminConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends SiteConfigUpsertArgs>(args: SelectSubset<T, SiteConfigUpsertArgs<ExtArgs>>): Prisma__SiteConfigClient<$Result.GetResult<Prisma.$SiteConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of AdminConfigs.
+     * Count the number of SiteConfigs.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigCountArgs} args - Arguments to filter AdminConfigs to count.
+     * @param {SiteConfigCountArgs} args - Arguments to filter SiteConfigs to count.
      * @example
-     * // Count the number of AdminConfigs
-     * const count = await prisma.adminConfig.count({
+     * // Count the number of SiteConfigs
+     * const count = await prisma.siteConfig.count({
      *   where: {
-     *     // ... the filter for the AdminConfigs we want to count
+     *     // ... the filter for the SiteConfigs we want to count
      *   }
      * })
     **/
-    count<T extends AdminConfigCountArgs>(
-      args?: Subset<T, AdminConfigCountArgs>,
+    count<T extends SiteConfigCountArgs>(
+      args?: Subset<T, SiteConfigCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], AdminConfigCountAggregateOutputType>
+          : GetScalarType<T['select'], SiteConfigCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a AdminConfig.
+     * Allows you to perform aggregations operations on a SiteConfig.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {SiteConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -3740,13 +3831,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends AdminConfigAggregateArgs>(args: Subset<T, AdminConfigAggregateArgs>): Prisma.PrismaPromise<GetAdminConfigAggregateType<T>>
+    aggregate<T extends SiteConfigAggregateArgs>(args: Subset<T, SiteConfigAggregateArgs>): Prisma.PrismaPromise<GetSiteConfigAggregateType<T>>
 
     /**
-     * Group by AdminConfig.
+     * Group by SiteConfig.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminConfigGroupByArgs} args - Group by arguments.
+     * @param {SiteConfigGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -3761,14 +3852,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends AdminConfigGroupByArgs,
+      T extends SiteConfigGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: AdminConfigGroupByArgs['orderBy'] }
-        : { orderBy?: AdminConfigGroupByArgs['orderBy'] },
+        ? { orderBy: SiteConfigGroupByArgs['orderBy'] }
+        : { orderBy?: SiteConfigGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -3817,20 +3908,20 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, AdminConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, SiteConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSiteConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the AdminConfig model
+   * Fields of the SiteConfig model
    */
-  readonly fields: AdminConfigFieldRefs;
+  readonly fields: SiteConfigFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for AdminConfig.
+   * The delegate class that acts as a "Promise-like" for SiteConfig.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__AdminConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__SiteConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3858,378 +3949,1407 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the AdminConfig model
+   * Fields of the SiteConfig model
    */
-  interface AdminConfigFieldRefs {
-    readonly id: FieldRef<"AdminConfig", 'Int'>
-    readonly opening_at: FieldRef<"AdminConfig", 'DateTime'>
-    readonly closing_at: FieldRef<"AdminConfig", 'DateTime'>
-    readonly min_duration: FieldRef<"AdminConfig", 'Float'>
-    readonly support_email: FieldRef<"AdminConfig", 'String'>
-    readonly phone_number: FieldRef<"AdminConfig", 'String'>
+  interface SiteConfigFieldRefs {
+    readonly id: FieldRef<"SiteConfig", 'Int'>
+    readonly opening_at: FieldRef<"SiteConfig", 'DateTime'>
+    readonly closing_at: FieldRef<"SiteConfig", 'DateTime'>
+    readonly min_duration: FieldRef<"SiteConfig", 'Float'>
+    readonly support_email: FieldRef<"SiteConfig", 'String'>
+    readonly phone_number: FieldRef<"SiteConfig", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * AdminConfig findUnique
+   * SiteConfig findUnique
    */
-  export type AdminConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * Filter, which AdminConfig to fetch.
+     * Filter, which SiteConfig to fetch.
      */
-    where: AdminConfigWhereUniqueInput
+    where: SiteConfigWhereUniqueInput
   }
 
   /**
-   * AdminConfig findUniqueOrThrow
+   * SiteConfig findUniqueOrThrow
    */
-  export type AdminConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * Filter, which AdminConfig to fetch.
+     * Filter, which SiteConfig to fetch.
      */
-    where: AdminConfigWhereUniqueInput
+    where: SiteConfigWhereUniqueInput
   }
 
   /**
-   * AdminConfig findFirst
+   * SiteConfig findFirst
    */
-  export type AdminConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * Filter, which AdminConfig to fetch.
+     * Filter, which SiteConfig to fetch.
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AdminConfigs to fetch.
+     * Determine the order of SiteConfigs to fetch.
      */
-    orderBy?: AdminConfigOrderByWithRelationInput | AdminConfigOrderByWithRelationInput[]
+    orderBy?: SiteConfigOrderByWithRelationInput | SiteConfigOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for AdminConfigs.
+     * Sets the position for searching for SiteConfigs.
      */
-    cursor?: AdminConfigWhereUniqueInput
+    cursor?: SiteConfigWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AdminConfigs from the position of the cursor.
+     * Take `±n` SiteConfigs from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AdminConfigs.
+     * Skip the first `n` SiteConfigs.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of AdminConfigs.
+     * Filter by unique combinations of SiteConfigs.
      */
-    distinct?: AdminConfigScalarFieldEnum | AdminConfigScalarFieldEnum[]
+    distinct?: SiteConfigScalarFieldEnum | SiteConfigScalarFieldEnum[]
   }
 
   /**
-   * AdminConfig findFirstOrThrow
+   * SiteConfig findFirstOrThrow
    */
-  export type AdminConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * Filter, which AdminConfig to fetch.
+     * Filter, which SiteConfig to fetch.
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AdminConfigs to fetch.
+     * Determine the order of SiteConfigs to fetch.
      */
-    orderBy?: AdminConfigOrderByWithRelationInput | AdminConfigOrderByWithRelationInput[]
+    orderBy?: SiteConfigOrderByWithRelationInput | SiteConfigOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for AdminConfigs.
+     * Sets the position for searching for SiteConfigs.
      */
-    cursor?: AdminConfigWhereUniqueInput
+    cursor?: SiteConfigWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AdminConfigs from the position of the cursor.
+     * Take `±n` SiteConfigs from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AdminConfigs.
+     * Skip the first `n` SiteConfigs.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of AdminConfigs.
+     * Filter by unique combinations of SiteConfigs.
      */
-    distinct?: AdminConfigScalarFieldEnum | AdminConfigScalarFieldEnum[]
+    distinct?: SiteConfigScalarFieldEnum | SiteConfigScalarFieldEnum[]
   }
 
   /**
-   * AdminConfig findMany
+   * SiteConfig findMany
    */
-  export type AdminConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * Filter, which AdminConfigs to fetch.
+     * Filter, which SiteConfigs to fetch.
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of AdminConfigs to fetch.
+     * Determine the order of SiteConfigs to fetch.
      */
-    orderBy?: AdminConfigOrderByWithRelationInput | AdminConfigOrderByWithRelationInput[]
+    orderBy?: SiteConfigOrderByWithRelationInput | SiteConfigOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing AdminConfigs.
+     * Sets the position for listing SiteConfigs.
      */
-    cursor?: AdminConfigWhereUniqueInput
+    cursor?: SiteConfigWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` AdminConfigs from the position of the cursor.
+     * Take `±n` SiteConfigs from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` AdminConfigs.
+     * Skip the first `n` SiteConfigs.
      */
     skip?: number
-    distinct?: AdminConfigScalarFieldEnum | AdminConfigScalarFieldEnum[]
+    distinct?: SiteConfigScalarFieldEnum | SiteConfigScalarFieldEnum[]
   }
 
   /**
-   * AdminConfig create
+   * SiteConfig create
    */
-  export type AdminConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * The data needed to create a AdminConfig.
+     * The data needed to create a SiteConfig.
      */
-    data?: XOR<AdminConfigCreateInput, AdminConfigUncheckedCreateInput>
+    data?: XOR<SiteConfigCreateInput, SiteConfigUncheckedCreateInput>
   }
 
   /**
-   * AdminConfig createMany
+   * SiteConfig createMany
    */
-  export type AdminConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many AdminConfigs.
+     * The data used to create many SiteConfigs.
      */
-    data: AdminConfigCreateManyInput | AdminConfigCreateManyInput[]
+    data: SiteConfigCreateManyInput | SiteConfigCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * AdminConfig createManyAndReturn
+   * SiteConfig createManyAndReturn
    */
-  export type AdminConfigCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelectCreateManyAndReturn<ExtArgs> | null
+    select?: SiteConfigSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * The data used to create many AdminConfigs.
+     * The data used to create many SiteConfigs.
      */
-    data: AdminConfigCreateManyInput | AdminConfigCreateManyInput[]
+    data: SiteConfigCreateManyInput | SiteConfigCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * AdminConfig update
+   * SiteConfig update
    */
-  export type AdminConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * The data needed to update a AdminConfig.
+     * The data needed to update a SiteConfig.
      */
-    data: XOR<AdminConfigUpdateInput, AdminConfigUncheckedUpdateInput>
+    data: XOR<SiteConfigUpdateInput, SiteConfigUncheckedUpdateInput>
     /**
-     * Choose, which AdminConfig to update.
+     * Choose, which SiteConfig to update.
      */
-    where: AdminConfigWhereUniqueInput
+    where: SiteConfigWhereUniqueInput
   }
 
   /**
-   * AdminConfig updateMany
+   * SiteConfig updateMany
    */
-  export type AdminConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update AdminConfigs.
+     * The data used to update SiteConfigs.
      */
-    data: XOR<AdminConfigUpdateManyMutationInput, AdminConfigUncheckedUpdateManyInput>
+    data: XOR<SiteConfigUpdateManyMutationInput, SiteConfigUncheckedUpdateManyInput>
     /**
-     * Filter which AdminConfigs to update
+     * Filter which SiteConfigs to update
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
-     * Limit how many AdminConfigs to update.
+     * Limit how many SiteConfigs to update.
      */
     limit?: number
   }
 
   /**
-   * AdminConfig updateManyAndReturn
+   * SiteConfig updateManyAndReturn
    */
-  export type AdminConfigUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: SiteConfigSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * The data used to update AdminConfigs.
+     * The data used to update SiteConfigs.
      */
-    data: XOR<AdminConfigUpdateManyMutationInput, AdminConfigUncheckedUpdateManyInput>
+    data: XOR<SiteConfigUpdateManyMutationInput, SiteConfigUncheckedUpdateManyInput>
     /**
-     * Filter which AdminConfigs to update
+     * Filter which SiteConfigs to update
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
-     * Limit how many AdminConfigs to update.
+     * Limit how many SiteConfigs to update.
      */
     limit?: number
   }
 
   /**
-   * AdminConfig upsert
+   * SiteConfig upsert
    */
-  export type AdminConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * The filter to search for the AdminConfig to update in case it exists.
+     * The filter to search for the SiteConfig to update in case it exists.
      */
-    where: AdminConfigWhereUniqueInput
+    where: SiteConfigWhereUniqueInput
     /**
-     * In case the AdminConfig found by the `where` argument doesn't exist, create a new AdminConfig with this data.
+     * In case the SiteConfig found by the `where` argument doesn't exist, create a new SiteConfig with this data.
      */
-    create: XOR<AdminConfigCreateInput, AdminConfigUncheckedCreateInput>
+    create: XOR<SiteConfigCreateInput, SiteConfigUncheckedCreateInput>
     /**
-     * In case the AdminConfig was found with the provided `where` argument, update it with this data.
+     * In case the SiteConfig was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<AdminConfigUpdateInput, AdminConfigUncheckedUpdateInput>
+    update: XOR<SiteConfigUpdateInput, SiteConfigUncheckedUpdateInput>
   }
 
   /**
-   * AdminConfig delete
+   * SiteConfig delete
    */
-  export type AdminConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
     /**
-     * Filter which AdminConfig to delete.
+     * Filter which SiteConfig to delete.
      */
-    where: AdminConfigWhereUniqueInput
+    where: SiteConfigWhereUniqueInput
   }
 
   /**
-   * AdminConfig deleteMany
+   * SiteConfig deleteMany
    */
-  export type AdminConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which AdminConfigs to delete
+     * Filter which SiteConfigs to delete
      */
-    where?: AdminConfigWhereInput
+    where?: SiteConfigWhereInput
     /**
-     * Limit how many AdminConfigs to delete.
+     * Limit how many SiteConfigs to delete.
      */
     limit?: number
   }
 
   /**
-   * AdminConfig without action
+   * SiteConfig without action
    */
-  export type AdminConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SiteConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AdminConfig
+     * Select specific fields to fetch from the SiteConfig
      */
-    select?: AdminConfigSelect<ExtArgs> | null
+    select?: SiteConfigSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AdminConfig
+     * Omit specific fields from the SiteConfig
      */
-    omit?: AdminConfigOmit<ExtArgs> | null
+    omit?: SiteConfigOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Admins
+   */
+
+  export type AggregateAdmins = {
+    _count: AdminsCountAggregateOutputType | null
+    _avg: AdminsAvgAggregateOutputType | null
+    _sum: AdminsSumAggregateOutputType | null
+    _min: AdminsMinAggregateOutputType | null
+    _max: AdminsMaxAggregateOutputType | null
+  }
+
+  export type AdminsAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AdminsSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AdminsMinAggregateOutputType = {
+    id: number | null
+    username: string | null
+    password: string | null
+    is_logged: boolean | null
+    fullname: string | null
+  }
+
+  export type AdminsMaxAggregateOutputType = {
+    id: number | null
+    username: string | null
+    password: string | null
+    is_logged: boolean | null
+    fullname: string | null
+  }
+
+  export type AdminsCountAggregateOutputType = {
+    id: number
+    username: number
+    password: number
+    is_logged: number
+    fullname: number
+    _all: number
+  }
+
+
+  export type AdminsAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type AdminsSumAggregateInputType = {
+    id?: true
+  }
+
+  export type AdminsMinAggregateInputType = {
+    id?: true
+    username?: true
+    password?: true
+    is_logged?: true
+    fullname?: true
+  }
+
+  export type AdminsMaxAggregateInputType = {
+    id?: true
+    username?: true
+    password?: true
+    is_logged?: true
+    fullname?: true
+  }
+
+  export type AdminsCountAggregateInputType = {
+    id?: true
+    username?: true
+    password?: true
+    is_logged?: true
+    fullname?: true
+    _all?: true
+  }
+
+  export type AdminsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admins to aggregate.
+     */
+    where?: AdminsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminsOrderByWithRelationInput | AdminsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Admins
+    **/
+    _count?: true | AdminsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AdminsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AdminsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminsMaxAggregateInputType
+  }
+
+  export type GetAdminsAggregateType<T extends AdminsAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdmins]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdmins[P]>
+      : GetScalarType<T[P], AggregateAdmins[P]>
+  }
+
+
+
+
+  export type AdminsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminsWhereInput
+    orderBy?: AdminsOrderByWithAggregationInput | AdminsOrderByWithAggregationInput[]
+    by: AdminsScalarFieldEnum[] | AdminsScalarFieldEnum
+    having?: AdminsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminsCountAggregateInputType | true
+    _avg?: AdminsAvgAggregateInputType
+    _sum?: AdminsSumAggregateInputType
+    _min?: AdminsMinAggregateInputType
+    _max?: AdminsMaxAggregateInputType
+  }
+
+  export type AdminsGroupByOutputType = {
+    id: number
+    username: string
+    password: string
+    is_logged: boolean
+    fullname: string
+    _count: AdminsCountAggregateOutputType | null
+    _avg: AdminsAvgAggregateOutputType | null
+    _sum: AdminsSumAggregateOutputType | null
+    _min: AdminsMinAggregateOutputType | null
+    _max: AdminsMaxAggregateOutputType | null
+  }
+
+  type GetAdminsGroupByPayload<T extends AdminsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminsGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    password?: boolean
+    is_logged?: boolean
+    fullname?: boolean
+  }, ExtArgs["result"]["admins"]>
+
+  export type AdminsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    password?: boolean
+    is_logged?: boolean
+    fullname?: boolean
+  }, ExtArgs["result"]["admins"]>
+
+  export type AdminsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    password?: boolean
+    is_logged?: boolean
+    fullname?: boolean
+  }, ExtArgs["result"]["admins"]>
+
+  export type AdminsSelectScalar = {
+    id?: boolean
+    username?: boolean
+    password?: boolean
+    is_logged?: boolean
+    fullname?: boolean
+  }
+
+  export type AdminsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "is_logged" | "fullname", ExtArgs["result"]["admins"]>
+
+  export type $AdminsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Admins"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      username: string
+      password: string
+      is_logged: boolean
+      fullname: string
+    }, ExtArgs["result"]["admins"]>
+    composites: {}
+  }
+
+  type AdminsGetPayload<S extends boolean | null | undefined | AdminsDefaultArgs> = $Result.GetResult<Prisma.$AdminsPayload, S>
+
+  type AdminsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminsCountAggregateInputType | true
+    }
+
+  export interface AdminsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Admins'], meta: { name: 'Admins' } }
+    /**
+     * Find zero or one Admins that matches the filter.
+     * @param {AdminsFindUniqueArgs} args - Arguments to find a Admins
+     * @example
+     * // Get one Admins
+     * const admins = await prisma.admins.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminsFindUniqueArgs>(args: SelectSubset<T, AdminsFindUniqueArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Admins that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminsFindUniqueOrThrowArgs} args - Arguments to find a Admins
+     * @example
+     * // Get one Admins
+     * const admins = await prisma.admins.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminsFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsFindFirstArgs} args - Arguments to find a Admins
+     * @example
+     * // Get one Admins
+     * const admins = await prisma.admins.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminsFindFirstArgs>(args?: SelectSubset<T, AdminsFindFirstArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admins that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsFindFirstOrThrowArgs} args - Arguments to find a Admins
+     * @example
+     * // Get one Admins
+     * const admins = await prisma.admins.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminsFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminsFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Admins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Admins
+     * const admins = await prisma.admins.findMany()
+     * 
+     * // Get first 10 Admins
+     * const admins = await prisma.admins.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminsWithIdOnly = await prisma.admins.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminsFindManyArgs>(args?: SelectSubset<T, AdminsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Admins.
+     * @param {AdminsCreateArgs} args - Arguments to create a Admins.
+     * @example
+     * // Create one Admins
+     * const Admins = await prisma.admins.create({
+     *   data: {
+     *     // ... data to create a Admins
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminsCreateArgs>(args: SelectSubset<T, AdminsCreateArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Admins.
+     * @param {AdminsCreateManyArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admins = await prisma.admins.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminsCreateManyArgs>(args?: SelectSubset<T, AdminsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Admins and returns the data saved in the database.
+     * @param {AdminsCreateManyAndReturnArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admins = await prisma.admins.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Admins and only return the `id`
+     * const adminsWithIdOnly = await prisma.admins.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminsCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Admins.
+     * @param {AdminsDeleteArgs} args - Arguments to delete one Admins.
+     * @example
+     * // Delete one Admins
+     * const Admins = await prisma.admins.delete({
+     *   where: {
+     *     // ... filter to delete one Admins
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminsDeleteArgs>(args: SelectSubset<T, AdminsDeleteArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Admins.
+     * @param {AdminsUpdateArgs} args - Arguments to update one Admins.
+     * @example
+     * // Update one Admins
+     * const admins = await prisma.admins.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminsUpdateArgs>(args: SelectSubset<T, AdminsUpdateArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Admins.
+     * @param {AdminsDeleteManyArgs} args - Arguments to filter Admins to delete.
+     * @example
+     * // Delete a few Admins
+     * const { count } = await prisma.admins.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminsDeleteManyArgs>(args?: SelectSubset<T, AdminsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Admins
+     * const admins = await prisma.admins.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminsUpdateManyArgs>(args: SelectSubset<T, AdminsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins and returns the data updated in the database.
+     * @param {AdminsUpdateManyAndReturnArgs} args - Arguments to update many Admins.
+     * @example
+     * // Update many Admins
+     * const admins = await prisma.admins.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Admins and only return the `id`
+     * const adminsWithIdOnly = await prisma.admins.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminsUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Admins.
+     * @param {AdminsUpsertArgs} args - Arguments to update or create a Admins.
+     * @example
+     * // Update or create a Admins
+     * const admins = await prisma.admins.upsert({
+     *   create: {
+     *     // ... data to create a Admins
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Admins we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminsUpsertArgs>(args: SelectSubset<T, AdminsUpsertArgs<ExtArgs>>): Prisma__AdminsClient<$Result.GetResult<Prisma.$AdminsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsCountArgs} args - Arguments to filter Admins to count.
+     * @example
+     * // Count the number of Admins
+     * const count = await prisma.admins.count({
+     *   where: {
+     *     // ... the filter for the Admins we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminsCountArgs>(
+      args?: Subset<T, AdminsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminsAggregateArgs>(args: Subset<T, AdminsAggregateArgs>): Prisma.PrismaPromise<GetAdminsAggregateType<T>>
+
+    /**
+     * Group by Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminsGroupByArgs['orderBy'] }
+        : { orderBy?: AdminsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Admins model
+   */
+  readonly fields: AdminsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Admins.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Admins model
+   */
+  interface AdminsFieldRefs {
+    readonly id: FieldRef<"Admins", 'Int'>
+    readonly username: FieldRef<"Admins", 'String'>
+    readonly password: FieldRef<"Admins", 'String'>
+    readonly is_logged: FieldRef<"Admins", 'Boolean'>
+    readonly fullname: FieldRef<"Admins", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Admins findUnique
+   */
+  export type AdminsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where: AdminsWhereUniqueInput
+  }
+
+  /**
+   * Admins findUniqueOrThrow
+   */
+  export type AdminsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where: AdminsWhereUniqueInput
+  }
+
+  /**
+   * Admins findFirst
+   */
+  export type AdminsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminsOrderByWithRelationInput | AdminsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminsScalarFieldEnum | AdminsScalarFieldEnum[]
+  }
+
+  /**
+   * Admins findFirstOrThrow
+   */
+  export type AdminsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminsOrderByWithRelationInput | AdminsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminsScalarFieldEnum | AdminsScalarFieldEnum[]
+  }
+
+  /**
+   * Admins findMany
+   */
+  export type AdminsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminsOrderByWithRelationInput | AdminsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Admins.
+     */
+    cursor?: AdminsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    distinct?: AdminsScalarFieldEnum | AdminsScalarFieldEnum[]
+  }
+
+  /**
+   * Admins create
+   */
+  export type AdminsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Admins.
+     */
+    data: XOR<AdminsCreateInput, AdminsUncheckedCreateInput>
+  }
+
+  /**
+   * Admins createMany
+   */
+  export type AdminsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminsCreateManyInput | AdminsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Admins createManyAndReturn
+   */
+  export type AdminsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminsCreateManyInput | AdminsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Admins update
+   */
+  export type AdminsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Admins.
+     */
+    data: XOR<AdminsUpdateInput, AdminsUncheckedUpdateInput>
+    /**
+     * Choose, which Admins to update.
+     */
+    where: AdminsWhereUniqueInput
+  }
+
+  /**
+   * Admins updateMany
+   */
+  export type AdminsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminsUpdateManyMutationInput, AdminsUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminsWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admins updateManyAndReturn
+   */
+  export type AdminsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminsUpdateManyMutationInput, AdminsUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminsWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admins upsert
+   */
+  export type AdminsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Admins to update in case it exists.
+     */
+    where: AdminsWhereUniqueInput
+    /**
+     * In case the Admins found by the `where` argument doesn't exist, create a new Admins with this data.
+     */
+    create: XOR<AdminsCreateInput, AdminsUncheckedCreateInput>
+    /**
+     * In case the Admins was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminsUpdateInput, AdminsUncheckedUpdateInput>
+  }
+
+  /**
+   * Admins delete
+   */
+  export type AdminsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
+    /**
+     * Filter which Admins to delete.
+     */
+    where: AdminsWhereUniqueInput
+  }
+
+  /**
+   * Admins deleteMany
+   */
+  export type AdminsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admins to delete
+     */
+    where?: AdminsWhereInput
+    /**
+     * Limit how many Admins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admins without action
+   */
+  export type AdminsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admins
+     */
+    select?: AdminsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admins
+     */
+    omit?: AdminsOmit<ExtArgs> | null
   }
 
 
@@ -4273,7 +5393,7 @@ export namespace Prisma {
   export type WorkScalarFieldEnum = (typeof WorkScalarFieldEnum)[keyof typeof WorkScalarFieldEnum]
 
 
-  export const AdminConfigScalarFieldEnum: {
+  export const SiteConfigScalarFieldEnum: {
     id: 'id',
     opening_at: 'opening_at',
     closing_at: 'closing_at',
@@ -4282,7 +5402,18 @@ export namespace Prisma {
     phone_number: 'phone_number'
   };
 
-  export type AdminConfigScalarFieldEnum = (typeof AdminConfigScalarFieldEnum)[keyof typeof AdminConfigScalarFieldEnum]
+  export type SiteConfigScalarFieldEnum = (typeof SiteConfigScalarFieldEnum)[keyof typeof SiteConfigScalarFieldEnum]
+
+
+  export const AdminsScalarFieldEnum: {
+    id: 'id',
+    username: 'username',
+    password: 'password',
+    is_logged: 'is_logged',
+    fullname: 'fullname'
+  };
+
+  export type AdminsScalarFieldEnum = (typeof AdminsScalarFieldEnum)[keyof typeof AdminsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4357,6 +5488,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -4385,16 +5530,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of type 'Boolean'
    */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -4412,7 +5550,7 @@ export namespace Prisma {
     job_desc?: StringFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
     number?: StringNullableFilter<"Appointment"> | string | null
-    duration?: IntFilter<"Appointment"> | number
+    duration?: FloatFilter<"Appointment"> | number
     date?: DateTimeFilter<"Appointment"> | Date | string
   }
 
@@ -4440,7 +5578,7 @@ export namespace Prisma {
     address?: StringFilter<"Appointment"> | string
     job_desc?: StringFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
-    duration?: IntFilter<"Appointment"> | number
+    duration?: FloatFilter<"Appointment"> | number
   }, "id" | "number" | "date">
 
   export type AppointmentOrderByWithAggregationInput = {
@@ -4471,7 +5609,7 @@ export namespace Prisma {
     job_desc?: StringWithAggregatesFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceWithAggregatesFilter<"Appointment"> | $Enums.BwtChoice
     number?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
-    duration?: IntWithAggregatesFilter<"Appointment"> | number
+    duration?: FloatWithAggregatesFilter<"Appointment"> | number
     date?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   }
 
@@ -4529,19 +5667,19 @@ export namespace Prisma {
     timestamp?: DateTimeWithAggregatesFilter<"Work"> | Date | string
   }
 
-  export type AdminConfigWhereInput = {
-    AND?: AdminConfigWhereInput | AdminConfigWhereInput[]
-    OR?: AdminConfigWhereInput[]
-    NOT?: AdminConfigWhereInput | AdminConfigWhereInput[]
-    id?: IntFilter<"AdminConfig"> | number
-    opening_at?: DateTimeFilter<"AdminConfig"> | Date | string
-    closing_at?: DateTimeFilter<"AdminConfig"> | Date | string
-    min_duration?: FloatFilter<"AdminConfig"> | number
-    support_email?: StringFilter<"AdminConfig"> | string
-    phone_number?: StringFilter<"AdminConfig"> | string
+  export type SiteConfigWhereInput = {
+    AND?: SiteConfigWhereInput | SiteConfigWhereInput[]
+    OR?: SiteConfigWhereInput[]
+    NOT?: SiteConfigWhereInput | SiteConfigWhereInput[]
+    id?: IntFilter<"SiteConfig"> | number
+    opening_at?: DateTimeFilter<"SiteConfig"> | Date | string
+    closing_at?: DateTimeFilter<"SiteConfig"> | Date | string
+    min_duration?: FloatFilter<"SiteConfig"> | number
+    support_email?: StringFilter<"SiteConfig"> | string
+    phone_number?: StringFilter<"SiteConfig"> | string
   }
 
-  export type AdminConfigOrderByWithRelationInput = {
+  export type SiteConfigOrderByWithRelationInput = {
     id?: SortOrder
     opening_at?: SortOrder
     closing_at?: SortOrder
@@ -4550,42 +5688,96 @@ export namespace Prisma {
     phone_number?: SortOrder
   }
 
-  export type AdminConfigWhereUniqueInput = Prisma.AtLeast<{
+  export type SiteConfigWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    AND?: AdminConfigWhereInput | AdminConfigWhereInput[]
-    OR?: AdminConfigWhereInput[]
-    NOT?: AdminConfigWhereInput | AdminConfigWhereInput[]
-    opening_at?: DateTimeFilter<"AdminConfig"> | Date | string
-    closing_at?: DateTimeFilter<"AdminConfig"> | Date | string
-    min_duration?: FloatFilter<"AdminConfig"> | number
-    support_email?: StringFilter<"AdminConfig"> | string
-    phone_number?: StringFilter<"AdminConfig"> | string
+    AND?: SiteConfigWhereInput | SiteConfigWhereInput[]
+    OR?: SiteConfigWhereInput[]
+    NOT?: SiteConfigWhereInput | SiteConfigWhereInput[]
+    opening_at?: DateTimeFilter<"SiteConfig"> | Date | string
+    closing_at?: DateTimeFilter<"SiteConfig"> | Date | string
+    min_duration?: FloatFilter<"SiteConfig"> | number
+    support_email?: StringFilter<"SiteConfig"> | string
+    phone_number?: StringFilter<"SiteConfig"> | string
   }, "id">
 
-  export type AdminConfigOrderByWithAggregationInput = {
+  export type SiteConfigOrderByWithAggregationInput = {
     id?: SortOrder
     opening_at?: SortOrder
     closing_at?: SortOrder
     min_duration?: SortOrder
     support_email?: SortOrder
     phone_number?: SortOrder
-    _count?: AdminConfigCountOrderByAggregateInput
-    _avg?: AdminConfigAvgOrderByAggregateInput
-    _max?: AdminConfigMaxOrderByAggregateInput
-    _min?: AdminConfigMinOrderByAggregateInput
-    _sum?: AdminConfigSumOrderByAggregateInput
+    _count?: SiteConfigCountOrderByAggregateInput
+    _avg?: SiteConfigAvgOrderByAggregateInput
+    _max?: SiteConfigMaxOrderByAggregateInput
+    _min?: SiteConfigMinOrderByAggregateInput
+    _sum?: SiteConfigSumOrderByAggregateInput
   }
 
-  export type AdminConfigScalarWhereWithAggregatesInput = {
-    AND?: AdminConfigScalarWhereWithAggregatesInput | AdminConfigScalarWhereWithAggregatesInput[]
-    OR?: AdminConfigScalarWhereWithAggregatesInput[]
-    NOT?: AdminConfigScalarWhereWithAggregatesInput | AdminConfigScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"AdminConfig"> | number
-    opening_at?: DateTimeWithAggregatesFilter<"AdminConfig"> | Date | string
-    closing_at?: DateTimeWithAggregatesFilter<"AdminConfig"> | Date | string
-    min_duration?: FloatWithAggregatesFilter<"AdminConfig"> | number
-    support_email?: StringWithAggregatesFilter<"AdminConfig"> | string
-    phone_number?: StringWithAggregatesFilter<"AdminConfig"> | string
+  export type SiteConfigScalarWhereWithAggregatesInput = {
+    AND?: SiteConfigScalarWhereWithAggregatesInput | SiteConfigScalarWhereWithAggregatesInput[]
+    OR?: SiteConfigScalarWhereWithAggregatesInput[]
+    NOT?: SiteConfigScalarWhereWithAggregatesInput | SiteConfigScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SiteConfig"> | number
+    opening_at?: DateTimeWithAggregatesFilter<"SiteConfig"> | Date | string
+    closing_at?: DateTimeWithAggregatesFilter<"SiteConfig"> | Date | string
+    min_duration?: FloatWithAggregatesFilter<"SiteConfig"> | number
+    support_email?: StringWithAggregatesFilter<"SiteConfig"> | string
+    phone_number?: StringWithAggregatesFilter<"SiteConfig"> | string
+  }
+
+  export type AdminsWhereInput = {
+    AND?: AdminsWhereInput | AdminsWhereInput[]
+    OR?: AdminsWhereInput[]
+    NOT?: AdminsWhereInput | AdminsWhereInput[]
+    id?: IntFilter<"Admins"> | number
+    username?: StringFilter<"Admins"> | string
+    password?: StringFilter<"Admins"> | string
+    is_logged?: BoolFilter<"Admins"> | boolean
+    fullname?: StringFilter<"Admins"> | string
+  }
+
+  export type AdminsOrderByWithRelationInput = {
+    id?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    is_logged?: SortOrder
+    fullname?: SortOrder
+  }
+
+  export type AdminsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: AdminsWhereInput | AdminsWhereInput[]
+    OR?: AdminsWhereInput[]
+    NOT?: AdminsWhereInput | AdminsWhereInput[]
+    username?: StringFilter<"Admins"> | string
+    password?: StringFilter<"Admins"> | string
+    is_logged?: BoolFilter<"Admins"> | boolean
+    fullname?: StringFilter<"Admins"> | string
+  }, "id">
+
+  export type AdminsOrderByWithAggregationInput = {
+    id?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    is_logged?: SortOrder
+    fullname?: SortOrder
+    _count?: AdminsCountOrderByAggregateInput
+    _avg?: AdminsAvgOrderByAggregateInput
+    _max?: AdminsMaxOrderByAggregateInput
+    _min?: AdminsMinOrderByAggregateInput
+    _sum?: AdminsSumOrderByAggregateInput
+  }
+
+  export type AdminsScalarWhereWithAggregatesInput = {
+    AND?: AdminsScalarWhereWithAggregatesInput | AdminsScalarWhereWithAggregatesInput[]
+    OR?: AdminsScalarWhereWithAggregatesInput[]
+    NOT?: AdminsScalarWhereWithAggregatesInput | AdminsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Admins"> | number
+    username?: StringWithAggregatesFilter<"Admins"> | string
+    password?: StringWithAggregatesFilter<"Admins"> | string
+    is_logged?: BoolWithAggregatesFilter<"Admins"> | boolean
+    fullname?: StringWithAggregatesFilter<"Admins"> | string
   }
 
   export type AppointmentCreateInput = {
@@ -4618,7 +5810,7 @@ export namespace Prisma {
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4630,7 +5822,7 @@ export namespace Prisma {
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4653,7 +5845,7 @@ export namespace Prisma {
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4665,7 +5857,7 @@ export namespace Prisma {
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
     number?: NullableStringFieldUpdateOperationsInput | string | null
-    duration?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4722,7 +5914,7 @@ export namespace Prisma {
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AdminConfigCreateInput = {
+  export type SiteConfigCreateInput = {
     opening_at?: Date | string
     closing_at?: Date | string
     min_duration?: number
@@ -4730,7 +5922,7 @@ export namespace Prisma {
     phone_number?: string
   }
 
-  export type AdminConfigUncheckedCreateInput = {
+  export type SiteConfigUncheckedCreateInput = {
     id?: number
     opening_at?: Date | string
     closing_at?: Date | string
@@ -4739,7 +5931,7 @@ export namespace Prisma {
     phone_number?: string
   }
 
-  export type AdminConfigUpdateInput = {
+  export type SiteConfigUpdateInput = {
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
@@ -4747,7 +5939,7 @@ export namespace Prisma {
     phone_number?: StringFieldUpdateOperationsInput | string
   }
 
-  export type AdminConfigUncheckedUpdateInput = {
+  export type SiteConfigUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4756,7 +5948,7 @@ export namespace Prisma {
     phone_number?: StringFieldUpdateOperationsInput | string
   }
 
-  export type AdminConfigCreateManyInput = {
+  export type SiteConfigCreateManyInput = {
     id?: number
     opening_at?: Date | string
     closing_at?: Date | string
@@ -4765,7 +5957,7 @@ export namespace Prisma {
     phone_number?: string
   }
 
-  export type AdminConfigUpdateManyMutationInput = {
+  export type SiteConfigUpdateManyMutationInput = {
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
@@ -4773,13 +5965,66 @@ export namespace Prisma {
     phone_number?: StringFieldUpdateOperationsInput | string
   }
 
-  export type AdminConfigUncheckedUpdateManyInput = {
+  export type SiteConfigUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
     support_email?: StringFieldUpdateOperationsInput | string
     phone_number?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminsCreateInput = {
+    username: string
+    password: string
+    is_logged: boolean
+    fullname: string
+  }
+
+  export type AdminsUncheckedCreateInput = {
+    id?: number
+    username: string
+    password: string
+    is_logged: boolean
+    fullname: string
+  }
+
+  export type AdminsUpdateInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    fullname?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    fullname?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminsCreateManyInput = {
+    id?: number
+    username: string
+    password: string
+    is_logged: boolean
+    fullname: string
+  }
+
+  export type AdminsUpdateManyMutationInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    fullname?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdminsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    fullname?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -4828,6 +6073,17 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -4954,6 +6210,22 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5017,18 +6289,7 @@ export namespace Prisma {
     _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type AdminConfigCountOrderByAggregateInput = {
+  export type SiteConfigCountOrderByAggregateInput = {
     id?: SortOrder
     opening_at?: SortOrder
     closing_at?: SortOrder
@@ -5037,21 +6298,12 @@ export namespace Prisma {
     phone_number?: SortOrder
   }
 
-  export type AdminConfigAvgOrderByAggregateInput = {
+  export type SiteConfigAvgOrderByAggregateInput = {
     id?: SortOrder
     min_duration?: SortOrder
   }
 
-  export type AdminConfigMaxOrderByAggregateInput = {
-    id?: SortOrder
-    opening_at?: SortOrder
-    closing_at?: SortOrder
-    min_duration?: SortOrder
-    support_email?: SortOrder
-    phone_number?: SortOrder
-  }
-
-  export type AdminConfigMinOrderByAggregateInput = {
+  export type SiteConfigMaxOrderByAggregateInput = {
     id?: SortOrder
     opening_at?: SortOrder
     closing_at?: SortOrder
@@ -5060,25 +6312,63 @@ export namespace Prisma {
     phone_number?: SortOrder
   }
 
-  export type AdminConfigSumOrderByAggregateInput = {
+  export type SiteConfigMinOrderByAggregateInput = {
+    id?: SortOrder
+    opening_at?: SortOrder
+    closing_at?: SortOrder
+    min_duration?: SortOrder
+    support_email?: SortOrder
+    phone_number?: SortOrder
+  }
+
+  export type SiteConfigSumOrderByAggregateInput = {
     id?: SortOrder
     min_duration?: SortOrder
   }
 
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type AdminsCountOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    is_logged?: SortOrder
+    fullname?: SortOrder
+  }
+
+  export type AdminsAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type AdminsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    is_logged?: SortOrder
+    fullname?: SortOrder
+  }
+
+  export type AdminsMinOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    is_logged?: SortOrder
+    fullname?: SortOrder
+  }
+
+  export type AdminsSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -5093,7 +6383,7 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type IntFieldUpdateOperationsInput = {
+  export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
@@ -5105,16 +6395,20 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type EnumCategoryChoiceFieldUpdateOperationsInput = {
-    set?: $Enums.CategoryChoice
-  }
-
-  export type FloatFieldUpdateOperationsInput = {
+  export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type EnumCategoryChoiceFieldUpdateOperationsInput = {
+    set?: $Enums.CategoryChoice
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -5163,6 +6457,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5188,17 +6493,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5256,6 +6550,22 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5287,20 +6597,17 @@ export namespace Prisma {
     _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
   }
 
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
 

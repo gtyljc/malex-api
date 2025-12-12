@@ -22,10 +22,8 @@ model Appointment {
     job_desc String
     bwt      BwtChoice
     number   String?   @unique @db.VarChar(20)
-    duration Int       @default(1) // hours
+    duration Float     @default(1) // hours
     date     DateTime  @unique
-
-    @@map("appointment")
 }
 
 enum CategoryChoice {
@@ -40,19 +38,15 @@ model Work {
     img_id    String         @unique @db.VarChar(50)
     category  CategoryChoice
     timestamp DateTime       @default(now())
-
-    @@map("work")
 }
 
-model AdminConfig {
+model SiteConfig {
     id            Int      @id @default(autoincrement())
     opening_at    DateTime @default(now()) @db.Timestamp(0)
     closing_at    DateTime @default(now()) @db.Timestamp(0)
     min_duration  Float    @default(0.5)
     support_email String   @default("support@malexhandy.com")
     phone_number  String   @default("3474101444")
-
-    @@map("admin_config")
 }
 
 model Admins {
@@ -60,4 +54,5 @@ model Admins {
     username  String
     password  String
     is_logged Boolean
+    fullname  String
 }

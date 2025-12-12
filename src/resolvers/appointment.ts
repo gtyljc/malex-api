@@ -34,7 +34,7 @@ async function _busyTimesAtDay(date: string, db: types.AppContext["dataSources"]
 // returns boolean, which means is there free place for new appointments
 async function _isDayBusy(date: string, db: types.AppContext["dataSources"]["db"]) {
     const dateDayJS = dayjs(date);
-    const adminConfig = (await db.getOne("adminConfig", "1")).data[0];
+    const adminConfig = (await db.getOne("siteConfig", "1")).data[0];
     const workHours = dayjs(adminConfig.closing_at).diff(adminConfig.starting_at, "hours");
     const appsInRange = (
         await db.getMany(
@@ -60,8 +60,8 @@ async function _isDayBusy(date: string, db: types.AppContext["dataSources"]["db"
 // returns array, which will contains busy days
 async function _busyDaysAtMonth(date: string, db: types.AppContext["dataSources"]["db"]){
     const dateMonth = dayjs(date);
-    const adminConfig = (await db.getOne("adminConfig", "1")).data[0];
-    const workHours = dayjs(adminConfig.closing_at).diff(adminConfig.starting_at, "hours");
+    const siteConfig = (await db.getOne("siteConfig", "1")).data[0];
+    const workHours = dayjs(siteConfig.closing_at).diff(siteConfig.starting_at, "hours");
     const appsInRange = (
         await db.getMany(
             __modelname, 

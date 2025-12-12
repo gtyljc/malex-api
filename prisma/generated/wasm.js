@@ -112,13 +112,21 @@ exports.Prisma.WorkScalarFieldEnum = {
   timestamp: 'timestamp'
 };
 
-exports.Prisma.AdminConfigScalarFieldEnum = {
+exports.Prisma.SiteConfigScalarFieldEnum = {
   id: 'id',
   opening_at: 'opening_at',
   closing_at: 'closing_at',
   min_duration: 'min_duration',
   support_email: 'support_email',
   phone_number: 'phone_number'
+};
+
+exports.Prisma.AdminsScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  password: 'password',
+  is_logged: 'is_logged',
+  fullname: 'fullname'
 };
 
 exports.Prisma.SortOrder = {
@@ -150,7 +158,8 @@ exports.CategoryChoice = exports.$Enums.CategoryChoice = {
 exports.Prisma.ModelName = {
   Appointment: 'Appointment',
   Work: 'Work',
-  AdminConfig: 'AdminConfig'
+  SiteConfig: 'SiteConfig',
+  Admins: 'Admins'
 };
 /**
  * Create the Client
@@ -163,7 +172,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\generated",
+      "value": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -177,7 +186,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -199,13 +208,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nmodel Appointment {\n  id       Int       @id @default(autoincrement())\n  name     String    @db.VarChar(50)\n  surname  String    @db.VarChar(50)\n  address  String    @db.VarChar(255)\n  job_desc String\n  bwt      BwtChoice\n  number   String?   @unique @db.VarChar(20)\n  duration Int       @default(1) // hours\n  date     DateTime  @unique\n\n  @@map(\"appointment\")\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        Int            @id @default(autoincrement())\n  img_url   String         @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now())\n\n  @@map(\"work\")\n}\n\nmodel AdminConfig {\n  id            Int      @id @default(autoincrement())\n  opening_at    DateTime @default(now()) @db.Timestamp(0)\n  closing_at    DateTime @default(now()) @db.Timestamp(0)\n  min_duration  Float    @default(0.5)\n  support_email String   @default(\"support@malexhandy.com\")\n  phone_number  String   @default(\"3474101444\")\n\n  @@map(\"admin_config\")\n}\n",
-  "inlineSchemaHash": "df82626079f7d319934d051110b6f0e986b15b89bb41e7bff7444c71136e193a",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nmodel Appointment {\n  id       Int       @id @default(autoincrement())\n  name     String    @db.VarChar(50)\n  surname  String    @db.VarChar(50)\n  address  String    @db.VarChar(255)\n  job_desc String\n  bwt      BwtChoice\n  number   String?   @unique @db.VarChar(20)\n  duration Float     @default(1) // hours\n  date     DateTime  @unique\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        Int            @id @default(autoincrement())\n  img_url   String         @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now())\n}\n\nmodel SiteConfig {\n  id            Int      @id @default(autoincrement())\n  opening_at    DateTime @default(now()) @db.Timestamp(0)\n  closing_at    DateTime @default(now()) @db.Timestamp(0)\n  min_duration  Float    @default(0.5)\n  support_email String   @default(\"support@malexhandy.com\")\n  phone_number  String   @default(\"3474101444\")\n}\n\nmodel Admins {\n  id        Int     @id @default(autoincrement())\n  username  String\n  password  String\n  is_logged Boolean\n  fullname  String\n}\n",
+  "inlineSchemaHash": "52d5f180137a0ba594ee864af810fc7f3c563b56f371437e6c940fd77e9c6b07",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"appointment\"},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"work\"},\"AdminConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"opening_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"closing_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"min_duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"support_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":\"admin_config\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SiteConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"opening_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"closing_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"min_duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"support_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Admins\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_logged\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
