@@ -2,6 +2,7 @@
 // others
 import * as types from "./types/index";
 import { IncomingMessage } from "http";
+import Cloudflare from "cloudflare";
 
 // apollo server
 import { ApolloServer } from '@apollo/server';
@@ -26,7 +27,13 @@ const { url } = await startStandaloneServer(
             return {
                 req,
                 dataSources: {
-                    db: new DatabaseSource(prisma, connectionStatus)
+                    db: new DatabaseSource(prisma, connectionStatus),
+                    cloudflare: new Cloudflare(
+                        { 
+                            apiToken: process.env.CLOUDFLARE_API_TOKEN,
+                            maxRetries: 3 
+                        }
+                    ),
                 }
             }
         }

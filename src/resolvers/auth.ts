@@ -1,100 +1,71 @@
 
 import { formatSResponse, formatFResponse } from "../sources";
 import * as types from "../types";
-import { SignJWT, decodeJwt } from "jose";
+import { decodeJwt } from "jose";
 import dayjs from "dayjs";
-import { jwtVerify } from "jose/jwt/verify"
+import * as auth from "../auth";
 
-// returns "ready to use" secret
-async function getJWK(): Promise<CryptoKey> {
-    const secret = new TextEncoder().encode(process.env.API_SECRET);
-
-    return await global.crypto.subtle.importKey(
-        "raw",
-        secret,
-        {
-            name: "HMAC",
-            hash: "SHA-256"
-        }, true, [ "verify" ]
-    );
-}
-
-export async function validateJWT(jwt: string) {
-    const jwk = await getJWK();
-    const options: types.VerifyOptions  = {
-        algorithms: [ "HS256" ],
-        audience: [ "ADMIN", "USER" ],
-        maxTokenAge: `${parseInt(process.env.TOKEN_EXPIRATION_DELAY)} hours`,
-        issuer: "malex:api",
-        requiredClaims: [ "alg", "iss", "aud" ]
-    };
-
-    // in case of validation error will throw error
-    try { return await jwtVerify(jwt, jwk, options) }
-    catch { return null }
-}
-
-// generate jwt with specified params
-async function generateJWT(payload: types.JWTPayload, header: types.JWTHeader): Promise<string> {
-    const secret = new TextEncoder().encode(process.env.API_SECRET);
-    const jwt = new SignJWT(payload).setProtectedHeader(header);
-
-    return await jwt.sign(secret);
-}
+let currentAdminUrl: string; // dynamic url to Admin Panel
 
 // this mutation can be used only by Malex backend;
 // creates JWT token
-async function createJWT(role: types.Roles, senderIP: string): Promise<types.ResponseSchema> {
-    
+async function createAT(
+    role: types.Roles, 
+    req: types.AppContext["req"], 
+    db: types.AppContext["dataSources"]["db"]
+): Promise<types.ResponseSchema> {
+
     // check IP of sender ( it's must be backend or localhost )
-    if (senderIP != process.env.BACKEND_IP && senderIP != "::1") {
+    if (!auth.isSentFromBackend(req.socket.remoteAddress)) {
         return formatFResponse(403, "Unauthorizated request!")
     };
 
-    const payload: types.JWTPayload = {
-        aud: role,
-        iat: dayjs().unix(),
-        iss: "malex:api"
-    };
-    const header: types.JWTHeader = { alg: "HS256" };
+    const rt = auth.getJWTFromHeader(req.headers.authorization);
+    const [ header, payload, sign ] = rt.split(".");
 
-    return formatSResponse([{ token: await generateJWT(payload, header) }]);
+    // check if token exist
+    if ((await db.getManyByFilter("refreshToken", { sign, is_revoked: false }, { page: 1, perPage: 1 })).data[0]){
+
+    }
+
+    // mark refresh toket as revoked
+    await db.updateManyByFilter("refreshToken", { sign }, { is_revoked: true })
+
+    return formatSResponse([ await auth.getRTAndATPair(role, db) ]);
 }
 
 // verify login data from admin login page
 async function adminLogin(
-    username: string, 
+    username: string,
     password: string,
+    req: types.AppContext["req"],
     db: types.AppContext["dataSources"]["db"]
 ): Promise<types.ResponseSchema> {
-    const r = (
-        await db.getMany(
-            "admins", 
-            { filter: { username, password, is_logged: false } }
-        )
-    );
+    const r = (await db.getOneByFilter("admins", { filter: { username, password, is_logged: false } })).data;
 
     // if admin exist
-    if(r.data.length == 1){
+    if(r.length == 1){
         
         // // set is_logged flag to true
         // await db.updateOne("admins", r.data[0].id, { is_logged: true });
 
-        return formatSResponse([{ token: (await createJWT("ADMIN", "::1")).data[0].token }])
+        return formatSResponse([ await createAT("ADMIN", req, db) ])
     }
 
     return formatFResponse(403, "Unauthorizated request!");
 }
 
-async function refreshJWT(req: types.AppContext["req"]) {
-    const claims = decodeJwt<types.JWTPayload>(req.headers.authorization.replace("Bearer", ""));
-    const header: types.JWTHeader = { alg: "HS256" };
+// async function refreshJWT(req: types.AppContext["req"]) {
+//     const jwt = auth.getJWTFromHeader(req.headers.authorization);
+//     const claims = decodeJwt<types.JWTPayload>(jwt);
+//     const header: types.JWTHeader = { alg: "HS256" };
 
-    // reset expiration time range
-    claims.iat = dayjs().unix();
+//     // reset expiration time range
+//     claims.iat = dayjs().unix();
+//     claims.exp = dayjs().add(parseInt(process.env.TOKEN_EXPIRATION_DELAY), "hours").unix();
 
-    return formatSResponse([{ token: await generateJWT(claims, header) }]);
-}
+//     return formatSResponse([{ token: await auth.generateJWT(claims, header) }]);
+// }
 
 export default {
     Mutation: {
@@ -102,19 +73,19 @@ export default {
         createJWT: async(
             _, 
             { role }: { role: types.Roles }, 
-            { req }: types.AppContext
-        ) => await createJWT(role, req.socket.remoteAddress),
+            { req, dataSources: { db } }: types.AppContext
+        ) => await createAT(role, req, db),
 
         adminLogin: async(
             _,
             { username, password }: { username: string, password: string },
-            { dataSources: { db } }: types.AppContext
-        ) => await adminLogin(username, password, db),
+            { req, dataSources: { db } }: types.AppContext
+        ) => await adminLogin(username, password, req, db),
     
-        refreshJWT: async(
-            _,
-            __,
-            { req }: types.AppContext
-        ) => await refreshJWT(req)
+        // refreshJWT: async(
+        //     _,
+        //     __,
+        //     { req }: types.AppContext
+        // ) => await refreshJWT(req)
     }
 }

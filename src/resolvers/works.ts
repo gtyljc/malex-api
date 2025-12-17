@@ -33,11 +33,6 @@ async function _newWorks(num: number, db: types.AppContext["dataSources"]["db"])
         )
     );
 
-    // add rest if response is not full with necessery num of works
-    if (works.data.length < num){
-        for (let i = 0; i < num - works.data.length; i++) works.data.push(null);
-    }
-
     return works;
 }
 

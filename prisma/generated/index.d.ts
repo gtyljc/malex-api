@@ -1196,6 +1196,7 @@ export namespace Prisma {
     number: string | null
     duration: number | null
     date: Date | null
+    completed: boolean | null
   }
 
   export type AppointmentMaxAggregateOutputType = {
@@ -1208,6 +1209,7 @@ export namespace Prisma {
     number: string | null
     duration: number | null
     date: Date | null
+    completed: boolean | null
   }
 
   export type AppointmentCountAggregateOutputType = {
@@ -1220,6 +1222,7 @@ export namespace Prisma {
     number: number
     duration: number
     date: number
+    completed: number
     _all: number
   }
 
@@ -1244,6 +1247,7 @@ export namespace Prisma {
     number?: true
     duration?: true
     date?: true
+    completed?: true
   }
 
   export type AppointmentMaxAggregateInputType = {
@@ -1256,6 +1260,7 @@ export namespace Prisma {
     number?: true
     duration?: true
     date?: true
+    completed?: true
   }
 
   export type AppointmentCountAggregateInputType = {
@@ -1268,6 +1273,7 @@ export namespace Prisma {
     number?: true
     duration?: true
     date?: true
+    completed?: true
     _all?: true
   }
 
@@ -1367,6 +1373,7 @@ export namespace Prisma {
     number: string | null
     duration: number
     date: Date
+    completed: boolean
     _count: AppointmentCountAggregateOutputType | null
     _avg: AppointmentAvgAggregateOutputType | null
     _sum: AppointmentSumAggregateOutputType | null
@@ -1398,6 +1405,7 @@ export namespace Prisma {
     number?: boolean
     duration?: boolean
     date?: boolean
+    completed?: boolean
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1410,6 +1418,7 @@ export namespace Prisma {
     number?: boolean
     duration?: boolean
     date?: boolean
+    completed?: boolean
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1422,6 +1431,7 @@ export namespace Prisma {
     number?: boolean
     duration?: boolean
     date?: boolean
+    completed?: boolean
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectScalar = {
@@ -1434,9 +1444,10 @@ export namespace Prisma {
     number?: boolean
     duration?: boolean
     date?: boolean
+    completed?: boolean
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "surname" | "address" | "job_desc" | "bwt" | "number" | "duration" | "date", ExtArgs["result"]["appointment"]>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "surname" | "address" | "job_desc" | "bwt" | "number" | "duration" | "date" | "completed", ExtArgs["result"]["appointment"]>
 
   export type $AppointmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Appointment"
@@ -1451,6 +1462,7 @@ export namespace Prisma {
       number: string | null
       duration: number
       date: Date
+      completed: boolean
     }, ExtArgs["result"]["appointment"]>
     composites: {}
   }
@@ -1883,6 +1895,7 @@ export namespace Prisma {
     readonly number: FieldRef<"Appointment", 'String'>
     readonly duration: FieldRef<"Appointment", 'Float'>
     readonly date: FieldRef<"Appointment", 'DateTime'>
+    readonly completed: FieldRef<"Appointment", 'Boolean'>
   }
     
 
@@ -5376,7 +5389,8 @@ export namespace Prisma {
     bwt: 'bwt',
     number: 'number',
     duration: 'duration',
-    date: 'date'
+    date: 'date',
+    completed: 'completed'
   };
 
   export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
@@ -5516,6 +5530,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'CategoryChoice'
    */
   export type EnumCategoryChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryChoice'>
@@ -5526,13 +5547,6 @@ export namespace Prisma {
    * Reference to a field of type 'CategoryChoice[]'
    */
   export type ListEnumCategoryChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryChoice[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -5552,6 +5566,7 @@ export namespace Prisma {
     number?: StringNullableFilter<"Appointment"> | string | null
     duration?: FloatFilter<"Appointment"> | number
     date?: DateTimeFilter<"Appointment"> | Date | string
+    completed?: BoolFilter<"Appointment"> | boolean
   }
 
   export type AppointmentOrderByWithRelationInput = {
@@ -5564,6 +5579,7 @@ export namespace Prisma {
     number?: SortOrderInput | SortOrder
     duration?: SortOrder
     date?: SortOrder
+    completed?: SortOrder
   }
 
   export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
@@ -5579,6 +5595,7 @@ export namespace Prisma {
     job_desc?: StringFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
     duration?: FloatFilter<"Appointment"> | number
+    completed?: BoolFilter<"Appointment"> | boolean
   }, "id" | "number" | "date">
 
   export type AppointmentOrderByWithAggregationInput = {
@@ -5591,6 +5608,7 @@ export namespace Prisma {
     number?: SortOrderInput | SortOrder
     duration?: SortOrder
     date?: SortOrder
+    completed?: SortOrder
     _count?: AppointmentCountOrderByAggregateInput
     _avg?: AppointmentAvgOrderByAggregateInput
     _max?: AppointmentMaxOrderByAggregateInput
@@ -5611,6 +5629,7 @@ export namespace Prisma {
     number?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     duration?: FloatWithAggregatesFilter<"Appointment"> | number
     date?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
+    completed?: BoolWithAggregatesFilter<"Appointment"> | boolean
   }
 
   export type WorkWhereInput = {
@@ -5789,6 +5808,7 @@ export namespace Prisma {
     number?: string | null
     duration?: number
     date: Date | string
+    completed?: boolean
   }
 
   export type AppointmentUncheckedCreateInput = {
@@ -5801,6 +5821,7 @@ export namespace Prisma {
     number?: string | null
     duration?: number
     date: Date | string
+    completed?: boolean
   }
 
   export type AppointmentUpdateInput = {
@@ -5812,6 +5833,7 @@ export namespace Prisma {
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AppointmentUncheckedUpdateInput = {
@@ -5824,6 +5846,7 @@ export namespace Prisma {
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AppointmentCreateManyInput = {
@@ -5836,6 +5859,7 @@ export namespace Prisma {
     number?: string | null
     duration?: number
     date: Date | string
+    completed?: boolean
   }
 
   export type AppointmentUpdateManyMutationInput = {
@@ -5847,6 +5871,7 @@ export namespace Prisma {
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AppointmentUncheckedUpdateManyInput = {
@@ -5859,6 +5884,7 @@ export namespace Prisma {
     number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type WorkCreateInput = {
@@ -6097,6 +6123,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -6112,6 +6143,7 @@ export namespace Prisma {
     number?: SortOrder
     duration?: SortOrder
     date?: SortOrder
+    completed?: SortOrder
   }
 
   export type AppointmentAvgOrderByAggregateInput = {
@@ -6129,6 +6161,7 @@ export namespace Prisma {
     number?: SortOrder
     duration?: SortOrder
     date?: SortOrder
+    completed?: SortOrder
   }
 
   export type AppointmentMinOrderByAggregateInput = {
@@ -6141,6 +6174,7 @@ export namespace Prisma {
     number?: SortOrder
     duration?: SortOrder
     date?: SortOrder
+    completed?: SortOrder
   }
 
   export type AppointmentSumOrderByAggregateInput = {
@@ -6240,6 +6274,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type EnumCategoryChoiceFilter<$PrismaModel = never> = {
     equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
     in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
@@ -6326,11 +6368,6 @@ export namespace Prisma {
     min_duration?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type AdminsCountOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
@@ -6363,14 +6400,6 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -6395,6 +6424,10 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -6405,10 +6438,6 @@ export namespace Prisma {
 
   export type EnumCategoryChoiceFieldUpdateOperationsInput = {
     set?: $Enums.CategoryChoice
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -6477,6 +6506,11 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -6580,6 +6614,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedEnumCategoryChoiceFilter<$PrismaModel = never> = {
     equals?: $Enums.CategoryChoice | EnumCategoryChoiceFieldRefInput<$PrismaModel>
     in?: $Enums.CategoryChoice[] | ListEnumCategoryChoiceFieldRefInput<$PrismaModel>
@@ -6595,19 +6637,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumCategoryChoiceFilter<$PrismaModel>
     _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
 

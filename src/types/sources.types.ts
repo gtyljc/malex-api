@@ -25,7 +25,8 @@ export type Resource = (
     "appointment" |
     "work" |
     "siteConfig" |
-    "admins"
+    "admins" |
+    "refreshToken"
 )
 
 // pagination argument

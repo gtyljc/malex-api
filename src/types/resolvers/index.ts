@@ -1,5 +1,5 @@
 
-import { ResponseSchema } from "../index.ts";
+import { ResponseSchema } from "../index";
 
 type ResolversDefinition = {
     [name: string]: Function | Promise<ResponseSchema>

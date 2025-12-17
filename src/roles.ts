@@ -12,7 +12,9 @@ export const USER_PERMISSIONS: types.Permissions = {
         "busyDaysAtMonth",
         "isDayBusy",
         "contactData",
-        "adminLogin"
+        "adminLogin",
+        "getWorks",
+        "newWorks"
     ]
 }
 

@@ -129,7 +129,8 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   bwt: 'bwt',
   number: 'number',
   duration: 'duration',
-  date: 'date'
+  date: 'date',
+  completed: 'completed'
 };
 
 exports.Prisma.WorkScalarFieldEnum = {

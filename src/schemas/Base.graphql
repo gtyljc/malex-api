@@ -30,7 +30,7 @@ type Query
 type Mutation {
     adminLogin(username: String, password: String): JWTResponseType! @auth(role: USER)
     createJWT(role: RoleEnum): JWTResponseType! # can access only backend
-    refreshJWT: JWTResponseType!
+    refreshJWT: JWTResponseType! @auth(role: USER)
     startImageUpload(id: ID!): StartUploadImageResponseType! @auth(role: ADMIN)
     finalizeImageUpload(id: ID!): FinalizeUploadImageResponseType! @auth(role: ADMIN)
 }
@@ -85,6 +85,7 @@ type JWTResponseType implements BaseMutationResponseInterface {
 
 type JWTType { 
     token: JWT!
+    r_token: JWT!
 }
 
 type PaginationType {
@@ -107,8 +108,8 @@ enum OrderEnum {
 }
 
 enum RoleEnum {
-    ADMIN
-    USER
+    ADMIN # access to Admin Panel
+    USER # access to API from client ( browser )
 }
 
 

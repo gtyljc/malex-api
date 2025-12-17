@@ -37,6 +37,7 @@ type AppointmentType {
     number: PhoneNumber!
     date: DateTimeISO!
     duration: PositiveFloat!
+    completed: Boolean!
 }
 
 type AppointmentResponseType implements BaseMutationResponseInterface {
@@ -80,6 +81,7 @@ input AppointmentUpdateInput {
     number: PhoneNumber
     date: DateTimeISO
     duration: PositiveFloat
+    completed: Boolean
 }
 
 

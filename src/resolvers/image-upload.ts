@@ -3,18 +3,11 @@ import { formatSResponse, formatFResponse } from "../sources";
 import * as types from "../types/index";
 import Cloudflare from "cloudflare";
 
-const cloudflareClient = new Cloudflare(
-    { 
-        apiToken: process.env.CLOUDFLARE_API_TOKEN,
-        maxRetries: 3 
-    },
-);
-
 // resolvers for image upload
 const resolversSchema: types.ResolversSchema = {
     Mutation: {
-        async startImageUpload (_, { id }: { id: string }, __){
-            const response = await cloudflareClient.images.v2.directUploads.create(
+        async startImageUpload (_, { id }: { id: string }, { dataSources: { cloudflare } }: types.AppContext){
+            const response = await cloudflare.images.v2.directUploads.create(
                 { id, account_id: process.env.CLOUDFLARE_ACCOUNT_ID }
             );
 
@@ -27,8 +20,8 @@ const resolversSchema: types.ResolversSchema = {
             return formatSResponse([{ id: response.id, url: response.uploadURL}]);
         },
 
-        async finalizeImageUpload (_, { id }: { id: string }, __){
-            const response = await cloudflareClient.images.v1.get(
+        async finalizeImageUpload (_, { id }: { id: string }, { dataSources: { cloudflare } }: types.AppContext){
+            const response = await cloudflare.images.v1.get(
                 id,
                 { account_id: process.env.CLOUDFLARE_ACCOUNT_ID }
             );

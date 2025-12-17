@@ -7,9 +7,7 @@ import * as types from "./types/index";
 import { PrismaClient } from "@prisma/client";
 import { Prisma } from '../prisma/generated';
 
-export function formatSResponse(
-    data: any[]
-): types.ResponseSchema {    
+export function formatSResponse(data: any[]): types.ResponseSchema {    
     return {
         code: 200,
         message: "Success",
@@ -18,10 +16,7 @@ export function formatSResponse(
     };
 }
 
-export function formatFResponse(
-    code: number, 
-    message: string = "Query failed! See more at logs."
-): types.ResponseSchema {
+export function formatFResponse(code: number, message: string = "Query failed! See more at logs."): types.ResponseSchema {
     return {
         code,
         message,
@@ -99,11 +94,7 @@ export class DatabaseSource {
     }
 
     // silent error cathing + returns ready to send response
-    private async sendQuery(
-        modelname: types.Resource, 
-        method: types.DBMethod, 
-        query = {}
-    ): Promise<types.ResponseSchema> {
+    async _sendQuery(modelname: types.Resource, method: types.DBMethod, query = {}): Promise<types.ResponseSchema> {
         try {
             const data = await this.prismaClient[modelname][method](query);
 
@@ -122,130 +113,106 @@ export class DatabaseSource {
         }
     }
 
-    // decider which method should be use: manyByIds or manyByFilter
-    private async getManyEntities(
-        modelname: types.Resource, 
-        method: types.DBMethod,
-        {
-            ids,
-            filter,
-            pagination
-        }: {
-            ids?: string[],
-            filter?: Object,
-            pagination?: types.PaginationInput
-        },
-        query = {}
-    ): Promise<types.ResponseSchema> {
-
-        // get objects by specified ids
-        if(ids !== undefined) {
-            return await this.sendQuery(
-                modelname,
-                method,
-                {
-                    where: {id: { in: ids.map(e => parseInt(e))}}, 
-                    ...query
-                }
-            );
-        }
-
-        // get objects by filter
-        if(filter !== undefined) {
-
-            // pagination params
-            const skip = pagination.perPage * (pagination.page - 1);
-            const take = pagination.perPage;
-            const data = await this.sendQuery(
-                modelname,
-                method,
-                {
-                    ...query,
-                    ...filter,
-                    skip,
-                    take
-                }
-            );
-            const total = (await this.sendQuery(modelname, "count")).data[0];
-
-            return {
-                
-                // main part of response
-                ...data,
-
-                pagination: {
-                    total,
-                    pageInfo: {
-                        hasNextPage: total - (skip + take) > 0,
-                        hasPreviousPage: skip - take > 0
-                    }
-                }
-            }
-        } 
+    // returns filter on specified ids
+    private whereByIds(ids: string[]): Object {
+        return { id: { in: ids.map(e => parseInt(e))} }
     }
 
-    // if the target is interaction with only one object
-    private async getOneEntity(
-        modelname: types.Resource, 
-        method: types.DBMethod, 
-        id: string, 
-        query = {}
-    ): Promise<types.ResponseSchema> {
-        return await this.sendQuery(
+    async getOneById(modelname: types.Resource, id: string) {
+        return await this._sendQuery(
             modelname,
-            method,
-            { ...query, where: { id: parseInt(id) } }
-        );
-    }
-
-    async getOne(modelname: types.Resource, id: string) {
-        return await this.getOneEntity(modelname, "findFirst", id)
-    }
-
-    // can be used in two cases: spefied ids array, specified filter + pagination params
-    async getMany(
-        modelname: types.Resource,
-        { 
-            ids, 
-            filter, 
-            pagination,
-            sort 
-        }: {
-            ids?: string[],
-            filter?: Object,
-            pagination?: types.PaginationInput,
-            sort?: types.SortInput
-        }
-    ): Promise<types.ResponseSchema> {
-        return await this.getManyEntities(
-            modelname,
-            "findMany",
-            {
-                ids,
-                filter: (filter ? { where: filter }: filter),
-                pagination: pagination || DatabaseSource.defaultPagination
-            },
-            { ...(sort ? { orderBy: { [sort.field]: sort.order.toLowerCase() } }: {}) },
+            "findFirst",
+            { where: { id } }
         )
     }
 
-    async updateOne(modelname: types.Resource, id: string, data: Object) {
-        return await this.getOneEntity(modelname, "update", id, { data });
+    async getOneByFilter(modelname: types.Resource, filter: Object) {
+        return await this._sendQuery(modelname, "findFirst", { where: filter })
     }
 
-    async updateMany(modelname: types.Resource, ids: string[], data: Object) {
-        return this.getManyEntities( modelname, "updateMany", { ids }, { data });
+    async getManyByIds(modelname: types.Resource, ids: string[], sort?: types.SortInput): Promise<types.ResponseSchema> {
+        return await this._sendQuery(
+            modelname,
+            "findMany",
+            { 
+                where: this.whereByIds(ids),
+                ...(sort ? { [sort.field]: sort.order }: {})
+            }
+        )
     }
 
-    async deleteOne(modelname: types.Resource, id: string) {
-        return await this.getOneEntity(modelname, "delete", id);
+    async getManyByFilter(modelname: types.Resource, filter: Object, pagination: types.PaginationInput, sort?: types.SortInput){
+        const total = (await this._sendQuery(modelname, "count")).data[0];
+        const skip = pagination.perPage * (pagination.page - 1);
+        const take = pagination.perPage;
+
+        return {
+            ...(await this._sendQuery(
+                    modelname,
+                    "findMany",
+                    { 
+                        where: filter,
+                        ...(sort ? { [sort.field]: sort.order }: {}),
+                        skip,
+                        take
+                    }
+                )
+            ),
+            pagination: {
+                total,
+                pageInfo: {
+                    hasNextPage: total - (skip + take) > 0,
+                    hasPreviousPage: skip - take > 0
+                }
+            }
+        }
     }
 
-    async deleteMany(modelname: types.Resource, ids: string[]) {
-        return await this.getManyEntities(modelname, "deleteMany", { ids });
+    async updateById(modelname: types.Resource, id: string, data: Object) {
+        return await this._sendQuery(
+            modelname,
+            "update",
+            { where: { id }, data }
+        )
+    }
+
+    async updateByFilter(modelname: types.Resource, filter: Object, data: Object) {
+        return await this._sendQuery(modelname, "update", { where: filter, data })
+    }
+
+    async updateManyByIds(modelname: types.Resource, ids: string[], data: Object) {
+        return await this._sendQuery(
+            modelname,
+            "updateMany",
+            { where: this.whereByIds(ids), data }
+        )
+    }
+
+    async updateManyByFilter(modelname: types.Resource, filter: Object, data: Object) {
+        return await this._sendQuery(
+            modelname,
+            "updateMany",
+            { where: filter, data }
+        )
+    }
+
+    async deleteById(modelname: types.Resource, id: string) {
+        return await this._sendQuery(modelname, "delete", { where: { id } })
+    }
+
+    async deleteByFilter(modelname: types.Resource, filter: Object) {
+        return await this._sendQuery(modelname, "delete", { where: filter })
+    }
+
+    async deleteManyByIds(modelname: types.Resource, ids: string[]) {
+        return await this._sendQuery(modelname, "deleteMany", { where: this.whereByIds(ids) })
+    }
+
+    async deleteManyByFilter(modelname: types.Resource, filter: Object) {
+        return await this._sendQuery(modelname, "deleteMany", { where: filter })
     }
 
     async create(modelname: types.Resource, data: Object) {
-        return await this.sendQuery(modelname, "create", { data });
+        return await this._sendQuery(modelname, "create", { data });
     }
 }

@@ -42,6 +42,12 @@ extend type Query {
         pagination: PaginationInput
         sort: SortInput    
     ): WorkResponseType! @auth(role: ADMIN)
+    getWorks(
+        filter: JSONObject,
+        pagination: PaginationInput
+        sort: SortInput
+    ): PublicWorkResponseType! @auth(role: USER)  # for gallery
+    newWorks(num: PositiveInt): PublicWorkResponseType! @auth(role: USER)
 }
 
 

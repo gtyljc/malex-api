@@ -15,15 +15,16 @@ enum BwtChoice {
 }
 
 model Appointment {
-  id       Int       @id @default(autoincrement())
-  name     String    @db.VarChar(50)
-  surname  String    @db.VarChar(50)
-  address  String    @db.VarChar(255)
-  job_desc String
-  bwt      BwtChoice
-  number   String?   @unique @db.VarChar(20)
-  duration Float     @default(1) // hours
-  date     DateTime  @unique
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  surname   String    @db.VarChar(50)
+  address   String    @db.VarChar(255)
+  job_desc  String
+  bwt       BwtChoice
+  number    String?   @unique @db.VarChar(20)
+  duration  Float     @default(1) // hours
+  date      DateTime  @unique
+  completed Boolean   @default(false)
 }
 
 enum CategoryChoice {

@@ -14,17 +14,15 @@ const __modelname = "appointment";
 // returns array, which will contains busy times (appointments that reserved for this day)
 async function _busyTimesAtDay(date: string, db: types.AppContext["dataSources"]["db"]) {
     const appsInRange = (
-        await db.getMany(
-            __modelname, 
+        await db.getManyByFilter(
+            __modelname,
             { 
-                filter: { 
-                    AND: [ 
-                        { date: { gte: dayjs(date).hour(0) } }, 
-                        { date: { lte: dayjs(date).hour(23) } } 
-                    ] 
-                }, 
-                pagination: { perPage: 100, page: 1 }
-            }
+                AND: [ 
+                    { date: { gte: dayjs(date).hour(0) } }, 
+                    { date: { lte: dayjs(date).hour(23) } } 
+                ] 
+            }, 
+            { perPage: 100, page: 1 }
         )
     ).data;
 
@@ -34,20 +32,18 @@ async function _busyTimesAtDay(date: string, db: types.AppContext["dataSources"]
 // returns boolean, which means is there free place for new appointments
 async function _isDayBusy(date: string, db: types.AppContext["dataSources"]["db"]) {
     const dateDayJS = dayjs(date);
-    const adminConfig = (await db.getOne("siteConfig", "1")).data[0];
+    const adminConfig = (await db.getOneById("siteConfig", "1")).data[0];
     const workHours = dayjs(adminConfig.closing_at).diff(adminConfig.starting_at, "hours");
     const appsInRange = (
-        await db.getMany(
+        await db.getManyByFilter(
             __modelname, 
             { 
-                filter: { 
-                    AND: [ 
-                        { date: { gte: dateDayJS.hour(0).toISOString() } }, 
-                        { date: { lte: dateDayJS.hour(23).toISOString() } } 
-                    ] 
-                }, 
-                pagination: { perPage: 100, page: 1 }
-            }
+                AND: [ 
+                    { date: { gte: dateDayJS.hour(0).toISOString() } }, 
+                    { date: { lte: dateDayJS.hour(23).toISOString() } } 
+                ] 
+            },
+            { perPage: 100, page: 1 }
         )
     ).data;
     var sumHours = 0;
@@ -60,20 +56,19 @@ async function _isDayBusy(date: string, db: types.AppContext["dataSources"]["db"
 // returns array, which will contains busy days
 async function _busyDaysAtMonth(date: string, db: types.AppContext["dataSources"]["db"]){
     const dateMonth = dayjs(date);
-    const siteConfig = (await db.getOne("siteConfig", "1")).data[0];
+    const siteConfig = (await db.getOneById("siteConfig", "1")).data[0];
     const workHours = dayjs(siteConfig.closing_at).diff(siteConfig.starting_at, "hours");
     const appsInRange = (
-        await db.getMany(
+        await db.getManyByFilter(
             __modelname, 
             { 
-                filter: { 
-                    AND: [ 
-                        { date: { gte: dateMonth.date(1).toISOString() } }, 
-                        { date: { lte: dateMonth.date(dateMonth.daysInMonth()).toISOString() } } 
-                    ] 
-                }, 
-                pagination: { perPage: 1000, page: 1 }
-            }
+                AND: [ 
+                    { date: { gte: dateMonth.date(1).toISOString() } }, 
+                    { date: { lte: dateMonth.date(dateMonth.daysInMonth()).toISOString() } } 
+                ] 
+            }, 
+            { perPage: 1000, page: 1 }
+            
         )
     ).data;
     const r = [];

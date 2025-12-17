@@ -3,7 +3,7 @@
 import * as types from "./types";
 import { formatFResponse } from "./sources";
 import { hasPermission } from "./roles";
-import { validateJWT } from "./resolvers/auth";
+import * as auth from "./auth";
 
 // schema
 import { defaultFieldResolver } from "graphql";
@@ -28,12 +28,12 @@ const directives = [
 
                                 // check if header "Authorization" was specified
                                 if(context.req.headers.authorization){
-                                    const jwt = context.req.headers.authorization.replace("Bearer ", "");
-                                    const validated = await validateJWT(jwt);
+                                    const jwt = auth.getJWTFromHeader(context.req.headers.authorization);
+                                    const validated = await auth.validateJWT(jwt);
 
                                     // user must have role that was specified at schema
                                     // and also role has permissions on this field execution
-                                    if(validated && validated.payload.aud == role && hasPermission(validated.payload.aud, name.value)){
+                                    if(validated && validated.payload.aud == role && hasPermission(validated.payload.aud as types.Roles, name.value)){
                                         return await resolve(source, args, context, info);
                                     }
                                 }
