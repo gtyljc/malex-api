@@ -1,0 +1,34 @@
+
+# -------- query
+
+extend type Mutation {
+    startImageUpload(id: ID!): StartUploadImageResponseType! @auth(role: ADMIN)
+    finalizeImageUpload(id: ID!): FinalizeUploadImageResponseType! @auth(role: ADMIN)
+}
+
+
+# -------- types
+
+type StartUploadImageType { 
+    id: ID!
+    url: URL!
+}
+
+type FinalizeUploadImageType {
+    id: ID!
+    url: URL!
+}
+
+type StartUploadImageResponseType implements BaseMutationResponseInterface {
+    code: Int!
+    message: String!
+    success: Boolean!
+    data: [StartUploadImageType]!
+}
+
+type FinalizeUploadImageResponseType implements BaseMutationResponseInterface {
+    code: Int!
+    message: String!
+    success: Boolean!
+    data: [FinalizeUploadImageType]!
+}

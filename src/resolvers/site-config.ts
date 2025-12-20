@@ -9,7 +9,7 @@ const __modelname = "siteConfig";
 // returns object with contact data, that includes for instance
 // support email, contact phone number, closing and opening at infos, etc.
 async function _contactData(db: types.AppContext["dataSources"]["db"]){
-    return await db.getOne(__modelname, "1");
+    return await db.getOneById(__modelname, "1");
 }
 
 const resolversSchema: types.ResolversSchema = {

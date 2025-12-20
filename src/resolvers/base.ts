@@ -34,7 +34,7 @@ export class BaseQueryResolvers extends ResolversManager {
                 { id }: { id: string }, 
                 { dataSources: { db } }: types.AppContext
             ): Promise<types.ResponseSchema> => {
-                return await db.getOne(modelname, id);
+                return await db.getOneById(modelname, id);
             }
         )
 
@@ -42,7 +42,7 @@ export class BaseQueryResolvers extends ResolversManager {
         isIterrable && this.addResolver(
             modelname + "s",
             async (
-                _, 
+                _,
                 { 
                     ids, 
                     filter, 
@@ -65,15 +65,23 @@ export class BaseQueryResolvers extends ResolversManager {
                     );
                 }
 
-                // pagination exceeds 
-                if (pagination.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
+                // check if pagination exceeds 
+                if (filter && pagination.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
                     return formatFResponse(
                         400, 
                         assembleErrorMessage(errors.PaginationLimitationError)
                     );
                 }
 
-                return await db.getMany(modelname, { ids, filter, pagination, sort });
+                // if ids was specified, then return corresponding response
+                if (ids){
+                    return await db.getManyByIds(modelname, ids, sort)
+                }
+
+                // if filter was specified, then use filter + pagination to found result
+                if(filter){
+                    return await db.getManyByFilter(modelname, filter, pagination, sort)
+                }
             }
         )
     }
@@ -113,7 +121,7 @@ export class BaseMutationResolvers extends ResolversManager {
                 _, 
                 { id, data }: { id: string, data: Object }, 
                 { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.updateOne(modelname, id, data)
+            ): Promise<types.ResponseSchema> => await db.updateById(modelname, id, data)
         )
 
         // update many
@@ -123,7 +131,7 @@ export class BaseMutationResolvers extends ResolversManager {
                 _, 
                 { ids, data }: { ids: string[], data: Object }, 
                 { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.updateMany(modelname, ids, data)
+            ): Promise<types.ResponseSchema> => await db.updateManyByIds(modelname, ids, data)
         )
 
         // delete one
@@ -133,7 +141,7 @@ export class BaseMutationResolvers extends ResolversManager {
                 _, 
                 { id }: { id: string }, 
                 { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.deleteOne(modelname, id)
+            ): Promise<types.ResponseSchema> => await db.deleteById(modelname, id)
         )
 
         // delete many
@@ -143,7 +151,7 @@ export class BaseMutationResolvers extends ResolversManager {
                 _, 
                 { ids }: { ids: string[] }, 
                 { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.deleteMany(modelname, ids)
+            ): Promise<types.ResponseSchema> => await db.deleteManyByIds(modelname, ids)
         )
 
         // create instance of model

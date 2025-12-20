@@ -1,0 +1,31 @@
+
+
+# -------- query
+
+extend type Mutation {
+    adminLogin(username: String, password: String): JWTResponseType! @auth(role: USER)
+    adminLogout: JWTResponseType! @auth(role: USER)
+    createAT: JWTResponseType! @auth(role: USER)
+    createRT(role: RoleEnum!): JWTResponseType! # can access only backend
+}
+
+# -------- types
+
+type JWTResponseType implements BaseMutationResponseInterface {
+    code: Int!
+    message: String!
+    success: Boolean!
+    data: [JWTType]!
+}
+
+type JWTType { 
+    token: JWT!
+    r_token: JWT!
+}
+
+enum RoleEnum {
+    ADMIN # access to Admin Panel
+    USER
+    SUPERUSER # always backend
+    GUEST 
+}

@@ -14,6 +14,13 @@ enum BwtChoice {
     TEXT
 }
 
+enum Role {
+    GUEST
+    USER
+    ADMIN
+    SUPERUSER // backend
+}
+
 model Appointment {
     id        Int       @id @default(autoincrement())
     name      String    @db.VarChar(50)
@@ -51,17 +58,27 @@ model SiteConfig {
 }
 
 model Admin {
-    id        Int     @id @default(autoincrement())
+    id        String  @id @default(nanoid(10))
     username  String
     password  String
     is_logged Boolean
     fullname  String
+    user      User    @relation(fields: [user_id], references: [id])
+    user_id   String  @db.ObjectId
+}
+
+model User {
+    id       String @id @default(nanoid(10)) @db.ObjectId
+    username String
+    password String
 }
 
 model RefreshToken {
     id         Int      @id @default(autoincrement())
     hash       String
     created_at DateTime @default(now()) @db.Timestamp(0)
-    expired_at DateTime 
+    expired_at DateTime @db.Timestamp(0)
     is_revoked Boolean  @default(false)
+    audience   Role
+    subject    String   @unique
 }

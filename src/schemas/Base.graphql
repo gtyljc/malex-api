@@ -27,13 +27,7 @@ directive @auth(role: RoleEnum) on FIELD_DEFINITION
 
 type Query
 
-type Mutation {
-    adminLogin(username: String, password: String): JWTResponseType! @auth(role: USER)
-    createJWT(role: RoleEnum): JWTResponseType! # can access only backend
-    refreshJWT: JWTResponseType! @auth(role: USER)
-    startImageUpload(id: ID!): StartUploadImageResponseType! @auth(role: ADMIN)
-    finalizeImageUpload(id: ID!): FinalizeUploadImageResponseType! @auth(role: ADMIN)
-}
+type Mutation
 
 
 # -------- interfaces
@@ -52,42 +46,6 @@ interface BaseMutationResponseInterface {
 
 # -------- types
 
-type StartUploadImageType { 
-    id: ID!
-    url: URL!
-}
-
-type FinalizeUploadImageType {
-    id: ID!
-    url: URL!
-}
-
-type StartUploadImageResponseType implements BaseMutationResponseInterface {
-    code: Int!
-    message: String!
-    success: Boolean!
-    data: [StartUploadImageType]!
-}
-
-type FinalizeUploadImageResponseType implements BaseMutationResponseInterface {
-    code: Int!
-    message: String!
-    success: Boolean!
-    data: [FinalizeUploadImageType]!
-}
-
-type JWTResponseType implements BaseMutationResponseInterface {
-    code: Int!
-    message: String!
-    success: Boolean!
-    data: [JWTType]!
-}
-
-type JWTType { 
-    token: JWT!
-    r_token: JWT!
-}
-
 type PaginationType {
     total: Int!
     pageInfo: PageInfoType!
@@ -105,11 +63,6 @@ type PageInfoType {
 enum OrderEnum {
     ASC
     DESC
-}
-
-enum RoleEnum {
-    ADMIN # access to Admin Panel
-    USER # access to API from client ( browser )
 }
 
 

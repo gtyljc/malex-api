@@ -16,12 +16,7 @@ async function _newWorks(num: number, db: types.AppContext["dataSources"]["db"])
         return formatFResponse(400, tools.assembleErrorMessage(errors.PaginationLimitationError));
     }
     
-    const works = (
-        await db.getMany(
-            __modelname, 
-            { filter: {}, pagination: { page: 1, perPage: num } }
-        )
-    )
+    const works = await db.getManyByFilter(__modelname, {}, { page: 1, perPage: num })
 
     works.data = works.data.map(
         e => (

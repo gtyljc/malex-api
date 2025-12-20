@@ -150,12 +150,21 @@ exports.Prisma.SiteConfigScalarFieldEnum = {
   phone_number: 'phone_number'
 };
 
-exports.Prisma.AdminsScalarFieldEnum = {
+exports.Prisma.AdminScalarFieldEnum = {
   id: 'id',
   username: 'username',
   password: 'password',
   is_logged: 'is_logged',
   fullname: 'fullname'
+};
+
+exports.Prisma.RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  hash: 'hash',
+  created_at: 'created_at',
+  expired_at: 'expired_at',
+  is_revoked: 'is_revoked',
+  audience: 'audience'
 };
 
 exports.Prisma.SortOrder = {
@@ -184,11 +193,18 @@ exports.CategoryChoice = exports.$Enums.CategoryChoice = {
   MOUNTING: 'MOUNTING'
 };
 
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN',
+  SUPERUSER: 'SUPERUSER'
+};
+
 exports.Prisma.ModelName = {
   Appointment: 'Appointment',
   Work: 'Work',
   SiteConfig: 'SiteConfig',
-  Admins: 'Admins'
+  Admin: 'Admin',
+  RefreshToken: 'RefreshToken'
 };
 
 /**

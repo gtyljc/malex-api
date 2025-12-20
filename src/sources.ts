@@ -67,7 +67,7 @@ export class DatabaseConnectionStatus {
 }
 
 export class DatabaseSource {
-    // all methods expect id in string
+    // all methods expect id in string format
 
     connection: DatabaseConnectionStatus;
     prismaClient: PrismaClient;
@@ -122,7 +122,7 @@ export class DatabaseSource {
         return await this._sendQuery(
             modelname,
             "findFirst",
-            { where: { id } }
+            { where: { id: parseInt(id) } }
         )
     }
 
@@ -172,7 +172,7 @@ export class DatabaseSource {
         return await this._sendQuery(
             modelname,
             "update",
-            { where: { id }, data }
+            { where: { id: parseInt(id) }, data }
         )
     }
 
@@ -197,7 +197,7 @@ export class DatabaseSource {
     }
 
     async deleteById(modelname: types.Resource, id: string) {
-        return await this._sendQuery(modelname, "delete", { where: { id } })
+        return await this._sendQuery(modelname, "delete", { where: { id: parseInt(id) } })
     }
 
     async deleteByFilter(modelname: types.Resource, filter: Object) {
