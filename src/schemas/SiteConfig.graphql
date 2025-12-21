@@ -3,7 +3,7 @@
 
 extend type Query {
     siteConfig(id: ID!): SiteConfigResponseType! @auth(role: ADMIN)
-    contactData: SiteConfigResponseType! @auth(role: USER)
+    contactData: SiteConfigResponseType! @auth(role: GUEST)
 }
 
 extend type Mutation {

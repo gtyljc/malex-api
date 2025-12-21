@@ -10,6 +10,7 @@ export type ResponseSchema = {
 
 // allowed methods for working with DB (from Prisma Client API)
 export type DBMethod = (
+    "findUnique" |
     "findFirst" | 
     "findMany" | 
     "update" |
@@ -25,7 +26,7 @@ export type Resource = (
     "appointment" |
     "work" |
     "siteConfig" |
-    "admins" |
+    "admin" |
     "refreshToken"
 )
 

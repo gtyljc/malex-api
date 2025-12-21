@@ -23,7 +23,8 @@
     "graphql": "^16.11.0",
     "graphql-config": "^5.1.5",
     "graphql-scalars": "^1.25.0",
-    "jose": "^6.1.2"
+    "jose": "^6.1.2",
+    "nanoid": "^5.1.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",

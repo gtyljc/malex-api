@@ -19,7 +19,7 @@ scalar JWT
 
 # can bes used only on Query or Mutation fields;
 # argument role must be specified and means the 
-# minimal role, that user must to have to access
+# minimal role, that GUEST must to have to access
 directive @auth(role: RoleEnum) on FIELD_DEFINITION
 
 

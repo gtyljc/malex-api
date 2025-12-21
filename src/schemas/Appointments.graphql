@@ -10,9 +10,9 @@ extend type Query {
         pagination: PaginationInput, 
         sort: SortInput
     ): AppointmentResponseType @auth(role: ADMIN)
-    busyTimesAtDay(date: DateTimeISO): BusyResponse! @auth(role: USER)
-    busyDaysAtMonth(date: DateTimeISO): BusyResponse! @auth(role: USER)
-    isDayBusy(date: DateTimeISO): BusyResponse! @auth(role: USER)
+    busyTimesAtDay(date: DateTimeISO): BusyResponse! @auth(role: GUEST)
+    busyDaysAtMonth(date: DateTimeISO): BusyResponse! @auth(role: GUEST)
+    isDayBusy(date: DateTimeISO): BusyResponse! @auth(role: GUEST)
 }
 
 
@@ -21,7 +21,7 @@ extend type Query {
 extend type Mutation {
     updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
     updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: ADMIN)
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: SUPERUSER)
 }
 
 

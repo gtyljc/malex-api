@@ -2,7 +2,7 @@
 // others
 import * as types from "./types";
 import { formatFResponse } from "./sources";
-import { hasPermission } from "./roles";
+import { hasPermission } from "./permissions";
 import * as auth from "./auth";
 
 // schema
@@ -33,7 +33,7 @@ const directives = [
 
                                     // user must have role that was specified at schema
                                     // and also role has permissions on this field execution
-                                    if(validated && validated.payload.aud == role && hasPermission(validated.payload.aud as types.Roles, name.value)){
+                                    if(validated && validated.payload.aud == role && hasPermission(validated.payload.aud as types.Roles, name.value)){           
                                         return await resolve(source, args, context, info);
                                     }
                                 }

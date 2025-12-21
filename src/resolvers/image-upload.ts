@@ -12,8 +12,6 @@ const resolversSchema: types.ResolversSchema = {
             );
 
             if (response instanceof Cloudflare.APIError){
-                console.log(response); // log error
-
                 return formatFResponse(500);
             }
             
@@ -27,8 +25,6 @@ const resolversSchema: types.ResolversSchema = {
             );
 
             if (response instanceof Cloudflare.APIError){
-                console.log(response); // log error
-
                 return formatFResponse(500);
             }
             

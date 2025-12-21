@@ -16,5 +16,5 @@ export function assembleErrorMessage(error: Error): string {
 
 // check if there is no element sin array
 export function isEmpty(array: Array<any>): boolean{
-    return array.length == 0
+    return array.length == 0;
 }

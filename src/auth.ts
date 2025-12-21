@@ -60,35 +60,37 @@ export async function getJWT(
 export async function validateJWT(jwt: string) {
     const options: types.VerifyOptions  = {
         algorithms: [ "HS256" ],
-        audience: [ "ADMIN", "USER" ],
+        audience: [ "ADMIN", "SUPERADMIN", "GUEST", "USER", "SUPERUSER" ],
         issuer: "malex:api",
-        requiredClaims: [ "iss", "aud", "iat", "exp" ]
+        requiredClaims: [ "iss", "aud", "iat", "exp", "sub" ]
     };
 
     // in case of validation error will throw error
     try { return await jwtVerify(jwt, await getJWK(), options) }
-    catch(error) { return null }
+    catch(error) { console.log(error); return null }
 }
 
-// returns refresh token ( represents JWT token )
+// returns new RT, and register in DB
 export async function getRT(
+    user_id: string,
     role: types.Roles, 
     db: types.AppContext["dataSources"]["db"]
 ): Promise<string> {
-    const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY), "hours").unix();
+    const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY), "hours");
     const rt = await getJWT(
         { alg: "HS256" }, 
         {
             aud: role,
             iss: "malex:api",
             iat: dayjs().unix(),
-            exp: expiredAt
+            exp: expiredAt.unix(),
+            sub: user_id
         }
     );
     const [ header, payload, sign ] = rt.split("."); 
 
     // register RT into DB
-    await db.create("refreshToken", { hash: sign, expired_at: expiredAt });
+    await db.create("refreshToken", { hash: sign, expired_at: expiredAt.toDate(), role, user_id });
 
     return rt;
 }
@@ -97,38 +99,61 @@ export async function getRT(
 export async function isRTExist(rt: string, db: types.AppContext["dataSources"]["db"]) {
     const claims = decodeJwt<types.JWTPayload>(rt);
     const [ header, payload, sign ] = rt.split(".");
-    const isExist = (
-        await db.getOneByFilter(
-            "refreshToken", 
-            { sign, is_revoked: false, audience: claims.aud }
-        )
-    ).data.length == 1;
-    
-    if(isExist){
-        return claims;
-    }
+    const isExist = !tools.isEmpty(
+        (
+            await db.getOneByFilter(
+                "refreshToken", 
+                { 
+                    hash: sign,
+                    is_revoked: false, 
+                    role: claims.aud, 
+                    user_id: claims.sub,
+                    expired_at: { lt: dayjs().toDate() }
+                }
+            )
+        ).data
+    );
+
+    if(isExist) return claims;
+
+    return null;
 }
 
-// returns access token ( represents JWT token )
-export async function getAT(role: types.Roles): Promise<string> {
+// needs an sub param in jwt, to get user id, and then revokes 
+// RT with his id; accepts any jwt ( RT or AT )
+export async function revokeRT(jwt: string, db: types.AppContext["dataSources"]["db"]) {
+    const claims = decodeJwt<types.JWTPayload>(jwt);
+
+    // mark RT as revoked in DB
+    return await db.updateManyByFilter(
+        "refreshToken", 
+        { user_id: claims.sub, role: claims.aud, is_revoked: false }, 
+        { is_revoked: true }
+    );
+}
+
+// returns new AT
+export async function getAT(user_id: string, role: types.Roles): Promise<string> {
     return await getJWT(
         { alg: "HS256" }, 
         {
             aud: role,
             iss: "malex:api",
             iat: dayjs().unix(),
-            exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY), "hours").unix() 
+            exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY), "hours").unix(),
+            sub: user_id
         }
     )
 }
 
 // generates pair with access JWT and RT ( also JWT )
 export async function getAuthPair(
+    user_id: string,
     role: types.Roles, 
     db: types.AppContext["dataSources"]["db"]
-): Promise<{ token: string, r_token: string }> {  
+): Promise<{ token: string, r_token: string }> {
     return {
-        token: await getAT(role),
-        r_token: await getRT(role, db)
+        token: await getAT(user_id, role),
+        r_token: await getRT(user_id, role, db)
     }
 }

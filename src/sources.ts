@@ -67,8 +67,6 @@ export class DatabaseConnectionStatus {
 }
 
 export class DatabaseSource {
-    // all methods expect id in string format
-
     connection: DatabaseConnectionStatus;
     prismaClient: PrismaClient;
     private errorCases: Function[];
@@ -113,16 +111,21 @@ export class DatabaseSource {
         }
     }
 
-    // returns filter on specified ids
+    // returns request filter part on specified ids
     private whereByIds(ids: string[]): Object {
-        return { id: { in: ids.map(e => parseInt(e))} }
+        return { id: { in: ids } }
+    }
+
+    // returns request orderBy part
+    private orderBy(field:  types.SortInput["field"], method: types.SortInput["order"]): Object {
+        return { orderBy: { [ field ]: method.toLowerCase() } }
     }
 
     async getOneById(modelname: types.Resource, id: string) {
         return await this._sendQuery(
             modelname,
-            "findFirst",
-            { where: { id: parseInt(id) } }
+            "findUnique",
+            { where: { id } }
         )
     }
 
@@ -136,7 +139,7 @@ export class DatabaseSource {
             "findMany",
             { 
                 where: this.whereByIds(ids),
-                ...(sort ? { [sort.field]: sort.order }: {})
+                ...(sort ? this.orderBy(sort.field, sort.order): {})
             }
         )
     }
@@ -152,7 +155,7 @@ export class DatabaseSource {
                     "findMany",
                     { 
                         where: filter,
-                        ...(sort ? { [sort.field]: sort.order }: {}),
+                        ...(sort ? this.orderBy(sort.field, sort.order): {}),
                         skip,
                         take
                     }
@@ -172,7 +175,7 @@ export class DatabaseSource {
         return await this._sendQuery(
             modelname,
             "update",
-            { where: { id: parseInt(id) }, data }
+            { where: { id }, data }
         )
     }
 
@@ -197,7 +200,7 @@ export class DatabaseSource {
     }
 
     async deleteById(modelname: types.Resource, id: string) {
-        return await this._sendQuery(modelname, "delete", { where: { id: parseInt(id) } })
+        return await this._sendQuery(modelname, "delete", { where: { id } })
     }
 
     async deleteByFilter(modelname: types.Resource, filter: Object) {

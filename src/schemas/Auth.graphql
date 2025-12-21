@@ -3,11 +3,12 @@
 # -------- query
 
 extend type Mutation {
-    adminLogin(username: String, password: String): JWTResponseType! @auth(role: USER)
-    adminLogout: JWTResponseType! @auth(role: USER)
-    createAT: JWTResponseType! @auth(role: USER)
-    createRT(role: RoleEnum!): JWTResponseType! # can access only backend
+    adminLogin(username: String!, password: String!): JWTResponseType! @auth(role: GUEST)
+    adminLogout: JWTResponseType! @auth(role: GUEST)
+    createAT: JWTResponseType! @auth(role: GUEST)
+    createRT(user_id: ID!, role: RoleEnum!): JWTResponseType! # can access only backend
 }
+
 
 # -------- types
 
@@ -24,8 +25,9 @@ type JWTType {
 }
 
 enum RoleEnum {
+    SUPERADMIN # can add new admins
     ADMIN # access to Admin Panel
-    USER
+    GUEST
     SUPERUSER # always backend
-    GUEST 
+    USER
 }

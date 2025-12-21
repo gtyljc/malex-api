@@ -155,7 +155,14 @@ exports.Prisma.AdminScalarFieldEnum = {
   username: 'username',
   password: 'password',
   is_logged: 'is_logged',
-  fullname: 'fullname'
+  fullname: 'fullname',
+  user_id: 'user_id'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  password: 'password'
 };
 
 exports.Prisma.RefreshTokenScalarFieldEnum = {
@@ -164,7 +171,8 @@ exports.Prisma.RefreshTokenScalarFieldEnum = {
   created_at: 'created_at',
   expired_at: 'expired_at',
   is_revoked: 'is_revoked',
-  audience: 'audience'
+  role: 'role',
+  user_id: 'user_id'
 };
 
 exports.Prisma.SortOrder = {
@@ -194,9 +202,11 @@ exports.CategoryChoice = exports.$Enums.CategoryChoice = {
 };
 
 exports.Role = exports.$Enums.Role = {
+  GUEST: 'GUEST',
   USER: 'USER',
   ADMIN: 'ADMIN',
-  SUPERUSER: 'SUPERUSER'
+  SUPERUSER: 'SUPERUSER',
+  SUPERADMIN: 'SUPERADMIN'
 };
 
 exports.Prisma.ModelName = {
@@ -204,6 +214,7 @@ exports.Prisma.ModelName = {
   Work: 'Work',
   SiteConfig: 'SiteConfig',
   Admin: 'Admin',
+  User: 'User',
   RefreshToken: 'RefreshToken'
 };
 

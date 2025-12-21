@@ -3,7 +3,7 @@
 # -------- types
 
 type WorkType {
-    id: Int!
+    id: ID!
     img_url: URL!
     img_id: ID!
     category: WorkCategoryEnum!
@@ -32,6 +32,7 @@ type PublicWorkResponseType implements BaseMutationResponseInterface {
     pagination: PaginationType
 }
 
+
 # -------- query
 
 extend type Query {
@@ -46,8 +47,8 @@ extend type Query {
         filter: JSONObject,
         pagination: PaginationInput
         sort: SortInput
-    ): PublicWorkResponseType! @auth(role: USER)  # for gallery
-    newWorks(num: PositiveInt): PublicWorkResponseType! @auth(role: USER)
+    ): PublicWorkResponseType! @auth(role: GUEST)  # for gallery
+    newWorks(num: PositiveInt): PublicWorkResponseType! @auth(role: GUEST)
 }
 
 

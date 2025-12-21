@@ -8,14 +8,14 @@ export type JWTPayload = {
     aud: Roles // how is using API
     iat: number // when JWT was issued ( timestamp )
     exp: number // when JWT expires ( timestamp )
-    sub?: string // id of user ( was made for admins ) 
+    sub: string // id of user
 }
 
 export type VerifyOptions = {
     algorithms: [ JWTHeader["alg"] ]
     issuer: JWTPayload["iss"],
     audience: Array<JWTPayload["aud"]>,
-    requiredClaims: [ "iss", "aud", "iat", "exp" ]
+    requiredClaims: [ "iss", "aud", "iat", "exp", "sub" ]
 }
 
-export type Roles = "ADMIN" | "USER"
+export type Roles = "ADMIN" | "USER" | "GUEST" | "SUPERUSER" | "SUPERADMIN"
