@@ -35,7 +35,7 @@ export function getJWTFromHeader(header: string): string{
 }
 
 // returns "ready to use" secret
-export async function getJWK(): Promise<CryptoKey> {
+async function getJWK(): Promise<CryptoKey> {
     const secret = new TextEncoder().encode(process.env.API_SECRET);
 
     return await global.crypto.subtle.importKey(
@@ -49,7 +49,7 @@ export async function getJWK(): Promise<CryptoKey> {
 }
 
 // returns new JWT based on specified params
-export async function getJWT(
+async function getJWT(
     header: types.JWTHeader, 
     payload: types.JWTPayload
 ): Promise<string> {
@@ -76,7 +76,7 @@ export async function getRT(
     role: types.Roles, 
     db: types.AppContext["dataSources"]["db"]
 ): Promise<string> {
-    const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY), "hours");
+    const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY), "seconds");
     const rt = await getJWT(
         { alg: "HS256" }, 
         {
@@ -125,11 +125,13 @@ export async function revokeRT(jwt: string, db: types.AppContext["dataSources"][
     const claims = decodeJwt<types.JWTPayload>(jwt);
 
     // mark RT as revoked in DB
-    return await db.updateManyByFilter(
+    await db.updateManyByFilter(
         "refreshToken", 
         { user_id: claims.sub, role: claims.aud, is_revoked: false }, 
         { is_revoked: true }
     );
+
+    return claims;
 }
 
 // returns new AT
@@ -140,7 +142,7 @@ export async function getAT(user_id: string, role: types.Roles): Promise<string>
             aud: role,
             iss: "malex:api",
             iat: dayjs().unix(),
-            exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY), "hours").unix(),
+            exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY), "seconds").unix(),
             sub: user_id
         }
     )

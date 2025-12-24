@@ -2,7 +2,7 @@
 // resolvers for model "Work"
 
 import { BaseMutationResolvers, BaseQueryResolvers } from "./base";
-import { formatFResponse } from "../sources";
+import * as responses from "../responses";
 import * as types from "../types";
 import * as errors from "../errors";
 import * as tools from "../tools";
@@ -13,7 +13,7 @@ async function _newWorks(num: number, db: types.AppContext["dataSources"]["db"])
     
     // pagination limitation
     if (num > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
-        return formatFResponse(400, tools.assembleErrorMessage(errors.PaginationLimitationError));
+        return responses.f400Response(tools.assembleErrorMessage(errors.PaginationLimitationError));
     }
     
     const works = await db.getManyByFilter(__modelname, {}, { page: 1, perPage: num })

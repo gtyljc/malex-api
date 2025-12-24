@@ -1,5 +1,5 @@
 
-import { formatSResponse, formatFResponse } from "../sources";
+import * as responses from "../responses";
 import * as types from "../types/index";
 import Cloudflare from "cloudflare";
 
@@ -12,10 +12,10 @@ const resolversSchema: types.ResolversSchema = {
             );
 
             if (response instanceof Cloudflare.APIError){
-                return formatFResponse(500);
+                return responses.f500Response();
             }
             
-            return formatSResponse([{ id: response.id, url: response.uploadURL}]);
+            return responses.f200Response([{ id: response.id, url: response.uploadURL}]);
         },
 
         async finalizeImageUpload (_, { id }: { id: string }, { dataSources: { cloudflare } }: types.AppContext){
@@ -25,10 +25,10 @@ const resolversSchema: types.ResolversSchema = {
             );
 
             if (response instanceof Cloudflare.APIError){
-                return formatFResponse(500);
+                return responses.f500Response();
             }
             
-            return formatSResponse([{ id: response.id, url: response.variants[0] }]);
+            return responses.f200Response([{ id: response.id, url: response.variants[0] }]);
         }
     }
 }

@@ -2,28 +2,11 @@
 // others
 import { sleep } from "./tools";
 import * as types from "./types/index";
+import * as responses from "./responses";
 
 // db
 import { PrismaClient } from "@prisma/client";
 import { Prisma } from '../prisma/generated';
-
-export function formatSResponse(data: any[]): types.ResponseSchema {    
-    return {
-        code: 200,
-        message: "Success",
-        success: true,
-        data,
-    };
-}
-
-export function formatFResponse(code: number, message: string = "Query failed! See more at logs."): types.ResponseSchema {
-    return {
-        code,
-        message,
-        success: false,
-        data: [],
-    };
-}
 
 export class DatabaseConnectionStatus {
     isTryingToConnect = false;
@@ -97,7 +80,7 @@ export class DatabaseSource {
             const data = await this.prismaClient[modelname][method](query);
 
             // format response; if the return type is single object => wrap it into array
-            return formatSResponse(data instanceof Array ? data: [ data ]);
+            return responses.f200Response(data instanceof Array ? data: [ data ]);
         }
         catch (error) {
             console.log(error);
@@ -107,7 +90,7 @@ export class DatabaseSource {
                 await func(error);
             }
 
-            return formatFResponse(500, "Query failed! See more at logs");
+            return responses.f500Response();
         }
     }
 
@@ -144,10 +127,10 @@ export class DatabaseSource {
         )
     }
 
-    async getManyByFilter(modelname: types.Resource, filter: Object, pagination: types.PaginationInput, sort?: types.SortInput){
+    async getManyByFilter(modelname: types.Resource, filter: Object, pagination?: types.PaginationInput, sort?: types.SortInput){
         const total = (await this._sendQuery(modelname, "count")).data[0];
-        const skip = pagination.perPage * (pagination.page - 1);
-        const take = pagination.perPage;
+        const skip = pagination && pagination.perPage * (pagination.page - 1);
+        const take = pagination && pagination.perPage;
 
         return {
             ...(await this._sendQuery(
@@ -200,18 +183,38 @@ export class DatabaseSource {
     }
 
     async deleteById(modelname: types.Resource, id: string) {
-        return await this._sendQuery(modelname, "delete", { where: { id } })
+        const record = (await this.getOneById(modelname, id));
+
+        // remove record
+        await this._sendQuery(modelname, "delete", { where: { id } });
+
+        return responses.f200Response(record.data);
     }
 
     async deleteByFilter(modelname: types.Resource, filter: Object) {
-        return await this._sendQuery(modelname, "delete", { where: filter })
+        const record = (await this.getOneByFilter(modelname, filter));
+        
+        // remove record
+        await this._sendQuery(modelname, "delete", { where: filter })
+
+        return responses.f200Response(record.data);
     }
 
     async deleteManyByIds(modelname: types.Resource, ids: string[]) {
-        return await this._sendQuery(modelname, "deleteMany", { where: this.whereByIds(ids) })
+        const records = await this.getManyByIds(modelname, ids);
+     
+        // remove record
+        await this._sendQuery(modelname, "deleteMany", { where: this.whereByIds(ids) });
+
+        return responses.f200Response(records.data);
     }
 
     async deleteManyByFilter(modelname: types.Resource, filter: Object) {
+        const records = await this.getManyByFilter(modelname, filter);
+     
+        // remove records
+        await this._sendQuery(modelname, "deleteMany", { where: filter });
+
         return await this._sendQuery(modelname, "deleteMany", { where: filter })
     }
 

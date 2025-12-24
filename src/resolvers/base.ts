@@ -1,4 +1,4 @@
-import { formatFResponse } from "../sources";
+import * as responses from "../responses";
 import { capitalize, assembleErrorMessage } from "../tools";
 import * as errors from "../errors";
 import * as types from "../types/index";
@@ -13,8 +13,14 @@ class ResolversManager {
         this.resolverMarker = capitalize(modelname); // how resolvers will be marked
     }
 
-    addResolver(name: string, func: Function): void {
+    // adds or updates resolver in list of resolvers
+    setResolver(name: string, func: Function): void {
         this.resolversObject[name] = func;
+    }
+
+    // returns resolver from list with specified name
+    getResolver(name: string) {
+        return this.resolvers[name];
     }
 
     get resolvers(){
@@ -23,11 +29,16 @@ class ResolversManager {
 }
 
 export class BaseQueryResolvers extends ResolversManager {
+    
+    // names of base query resolvers
+    protected getManyName: string;
+    protected getOneName: string;
+    
     constructor(modelname: types.Resource, { isIterrable = true } = {}) {
         super(modelname);
 
         // get single entity
-        this.addResolver(
+        this.setResolver(
             modelname,
             async (
                 _, 
@@ -39,7 +50,7 @@ export class BaseQueryResolvers extends ResolversManager {
         )
 
         // get many entities
-        isIterrable && this.addResolver(
+        isIterrable && this.setResolver(
             modelname + "s",
             async (
                 _,
@@ -59,18 +70,12 @@ export class BaseQueryResolvers extends ResolversManager {
 
                 // if ids or filter wasn't specified
                 if (ids === undefined && filter === undefined){
-                    return formatFResponse(
-                        400,
-                        assembleErrorMessage(errors.IdsOrFilterWasNotSpecifiedError)
-                    );
+                    return responses.f400Response(assembleErrorMessage(errors.IdsOrFilterWasNotSpecifiedError));
                 }
 
                 // check if pagination exceeds 
                 if (filter && pagination.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
-                    return formatFResponse(
-                        400, 
-                        assembleErrorMessage(errors.PaginationLimitationError)
-                    );
+                    return responses.f400Response(assembleErrorMessage(errors.PaginationLimitationError));
                 }
 
                 // if ids was specified, then return corresponding response
@@ -89,12 +94,12 @@ export class BaseQueryResolvers extends ResolversManager {
 
 export class BaseMutationResolvers extends ResolversManager {
 
-    // names of resolvers
-    private updateOneName: string;
-    private updateManyName: string;
-    private deleteOneName: string;
-    private deleteManyName: string;
-    private createName: string;
+    // names of base mutation resolvers
+    protected updateOneName: string;
+    protected updateManyName: string;
+    protected deleteOneName: string;
+    protected deleteManyName: string;
+    protected createName: string;
 
     constructor(
         modelname: types.Resource, 
@@ -115,27 +120,27 @@ export class BaseMutationResolvers extends ResolversManager {
         this.createName = `create${this.resolverMarker}`
 
         // update one
-        isUpdatable && this.addResolver(
+        isUpdatable && this.setResolver(
             this.updateOneName, 
             async (
                 _, 
-                { id, data }: { id: string, data: Object }, 
+                { id, data }: { id: string, data: any }, 
                 { dataSources: { db } }: types.AppContext
             ): Promise<types.ResponseSchema> => await db.updateById(modelname, id, data)
         )
 
         // update many
-        isUpdatable && isIterrable && this.addResolver(
+        isUpdatable && isIterrable && this.setResolver(
             this.updateManyName,
             async (
                 _, 
-                { ids, data }: { ids: string[], data: Object }, 
+                { ids, data }: { ids: string[], data: any }, 
                 { dataSources: { db } }: types.AppContext
             ): Promise<types.ResponseSchema> => await db.updateManyByIds(modelname, ids, data)
         )
 
         // delete one
-        isDeletable && this.addResolver(
+        isDeletable && this.setResolver(
             this.deleteOneName,
             async (
                 _, 
@@ -145,7 +150,7 @@ export class BaseMutationResolvers extends ResolversManager {
         )
 
         // delete many
-        isDeletable && isIterrable && this.addResolver(
+        isDeletable && isIterrable && this.setResolver(
             this.deleteManyName,
             async (
                 _, 
@@ -155,11 +160,11 @@ export class BaseMutationResolvers extends ResolversManager {
         )
 
         // create instance of model
-        isCreatable && this.addResolver(
+        isCreatable && this.setResolver(
             this.createName,
             async (
                 _, 
-                { data }: { data: Object }, 
+                { data }: { data: any }, 
                 { dataSources: { db } }: types.AppContext
             ): Promise<types.ResponseSchema> => await db.create(modelname, data)
         )

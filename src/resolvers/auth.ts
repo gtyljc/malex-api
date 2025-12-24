@@ -1,8 +1,7 @@
 
-import { formatSResponse, formatFResponse } from "../sources";
+import * as responses from "../responses";
 import * as types from "../types";
 import * as auth from "../auth";
-import * as tools from "../tools";
 import { nanoid } from "nanoid";
 
 let currentAdminUrl: string; // dynamic url to Admin Panel
@@ -18,14 +17,12 @@ async function _createAT(
     const claims = await auth.isRTExist(rt, db);
 
     // check if token exist
-    if (!claims){
-        return formatFResponse(403, "Unauthorizated request!")
-    }
+    if (!claims) return responses.f403Response();
 
     // revoke current RT and give new one
     await auth.revokeRT(rt, db);
 
-    return formatSResponse([ await auth.getAuthPair(claims.sub, claims.aud, db) ]);
+    return responses.f200Response([ await auth.getAuthPair(claims.sub, claims.aud, db) ]);
 }
 
 // NEEDS IP
@@ -40,11 +37,9 @@ async function _createRT(
 ) {
 
     // check IP of sender ( it's must be backend or localhost )
-    if (!auth.isSentFromBackend(req.socket.remoteAddress)) {
-        return formatFResponse(403, "Unauthorizated request!")
-    };
+    if (!auth.isSentFromBackend(req.socket.remoteAddress)) return responses.f403Response();
 
-    return formatSResponse([ await auth.getAuthPair(user_id, role, db) ]);
+    return responses.f200Response([ await auth.getAuthPair(user_id, role, db) ]);
 }
 
 // NEEDS AT
@@ -58,11 +53,12 @@ async function _adminLogin(
     const r = (await db.getOneByFilter("admin", { username, password, is_logged: false }));
 
     // if admin not exist
-    if(tools.isEmpty(r.data)){
-        return formatFResponse(403, "Unauthorizated request!");
-    }
+    if(!r.data[0]) return responses.f403Response();
 
-    return formatSResponse([ await auth.getAuthPair(r.data[0].user_id, "ADMIN", db) ]);
+    // set flag as logged in DB
+    await db.updateById("admin", r.data[0].id, { is_logged: true });
+
+    return responses.f200Response([ await auth.getAuthPair(r.data[0].user_id, "ADMIN", db) ]);
 }
 
 // NEEDS AT
@@ -74,9 +70,12 @@ async function _adminLogout(
     const at = auth.getJWTFromHeader(req.headers.authorization);
 
     // revoke current RT and give new one
-    await auth.revokeRT(at, db);
+    const oldClaims = await auth.revokeRT(at, db);
 
-    return formatSResponse([ await auth.getAuthPair(nanoid(10), "GUEST", db) ]);
+    // reset flag is_logged
+    await db.updateById("admin", oldClaims.sub, { is_logged: false });
+
+    return responses.f200Response([ await auth.getAuthPair(nanoid(10), "GUEST", db) ]);
 }
 
 export default {

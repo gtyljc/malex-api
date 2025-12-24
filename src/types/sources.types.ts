@@ -1,13 +1,4 @@
 
-// schema of response of each query / mutation
-export type ResponseSchema = {
-    code: number,
-    success: boolean,
-    message: string,
-    data: any[]
-    pagination?: PaginationOutput
-}
-
 // allowed methods for working with DB (from Prisma Client API)
 export type DBMethod = (
     "findUnique" |
