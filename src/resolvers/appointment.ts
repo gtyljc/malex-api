@@ -109,8 +109,8 @@ class AppointmentBaseMutationResolvers extends BaseMutationResolvers {
                 ctx: types.AppContext
             ) => {
                 
-                // proof one more time time range of appointment
-                if (dayjs(data.date).unix() > dayjs().unix()) return responses.f400Response();
+                // proof time range of appointment
+                if (dayjs(data.date).unix() < dayjs().unix()) return responses.f400Response();
             
                 return this.getResolver(this.createName)(_, { data }, ctx);
             }

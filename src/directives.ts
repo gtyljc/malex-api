@@ -33,7 +33,7 @@ const directives = [
 
                                     // user must have role that was specified at schema
                                     // and also role has permissions on this field execution
-                                    if(validated && hasPermission(validated.payload.aud as types.Roles, name.value)){           
+                                    if(validated && hasPermission(validated.payload.aud as types.Roles, name.value)){   
                                         return await resolve(source, args, context, info);
                                     }
                                 }

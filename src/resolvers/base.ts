@@ -106,7 +106,7 @@ export class BaseMutationResolvers extends ResolversManager {
         { 
             isUpdatable = true, 
             isDeletable = true, 
-            isCreatable  = true, 
+            isCreatable = true, 
             isIterrable = true 
         } = {}
     ) {
