@@ -8,8 +8,10 @@ class ResolversManager {
 
     private resolversObject = {};
     protected resolverMarker: string;
+    modelname: types.Resource;
 
     constructor(modelname: types.Resource){
+        this.modelname = modelname;
         this.resolverMarker = capitalize(modelname); // how resolvers will be marked
     }
 
@@ -33,62 +35,76 @@ export class BaseQueryResolvers extends ResolversManager {
     // names of base query resolvers
     protected getManyName: string;
     protected getOneName: string;
-    
+
     constructor(modelname: types.Resource, { isIterrable = true } = {}) {
         super(modelname);
 
-        // get single entity
-        this.setResolver(
-            modelname,
-            async (
-                _, 
-                { id }: { id: string }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => {
-                return await db.getOneById(modelname, id);
+        // configurate names
+        this.getOneName = modelname;
+        this.getManyName = modelname + "s";
+
+        // register resolver to get single entity
+        this.setResolver(this.getOneName, this.getOne())
+
+        // register resolver to get list
+        isIterrable && this.setResolver(this.getManyName, this.getMany())
+    }
+
+    getMany() {
+        const modelname = this.modelname;
+        
+        async function inner(
+            _,
+            { 
+                ids, 
+                filter, 
+                pagination, 
+                sort 
+            }: {
+                ids: string[],
+                filter: Object,
+                pagination: types.PaginationInput,
+                sort: types.SortInput
+            }, 
+            { dataSources: { db } }: types.AppContext
+        ) {
+
+            // if ids or filter wasn't specified
+            if (ids === undefined && filter === undefined){
+                return responses.f400Response(assembleErrorMessage(errors.IdsOrFilterWasNotSpecifiedError));
             }
-        )
 
-        // get many entities
-        isIterrable && this.setResolver(
-            modelname + "s",
-            async (
-                _,
-                { 
-                    ids, 
-                    filter, 
-                    pagination, 
-                    sort 
-                }: {
-                    ids: string[],
-                    filter: Object,
-                    pagination: types.PaginationInput,
-                    sort: types.SortInput
-                }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => {
-
-                // if ids or filter wasn't specified
-                if (ids === undefined && filter === undefined){
-                    return responses.f400Response(assembleErrorMessage(errors.IdsOrFilterWasNotSpecifiedError));
-                }
-
-                // check if pagination exceeds 
-                if (filter && pagination.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
-                    return responses.f400Response(assembleErrorMessage(errors.PaginationLimitationError));
-                }
-
-                // if ids was specified, then return corresponding response
-                if (ids){
-                    return await db.getManyByIds(modelname, ids, sort)
-                }
-
-                // if filter was specified, then use filter + pagination to found result
-                if(filter){
-                    return await db.getManyByFilter(modelname, filter, pagination, sort)
-                }
+            // check if pagination exceeds 
+            if (filter && pagination.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
+                return responses.f400Response(assembleErrorMessage(errors.PaginationLimitationError));
             }
-        )
+
+            // if ids was specified, then return corresponding response
+            if (ids){
+                return await db.getManyByIds(modelname, ids, sort)
+            }
+
+            // if filter was specified, then use filter + pagination to found result
+            if(filter){
+                return await db.getManyByFilter(modelname, filter, pagination, sort)
+            }
+        }
+
+        return inner;
+    }
+
+    getOne() {
+        const modelname = this.modelname;
+
+        async function inner(
+            _, 
+            { id }: { id: string }, 
+            { dataSources: { db } }: types.AppContext
+        ): Promise<types.ResponseSchema> {
+            return await db.getOneById(modelname, id);   
+        }
+
+        return inner;
     }
 }
 
@@ -120,53 +136,89 @@ export class BaseMutationResolvers extends ResolversManager {
         this.createName = `create${this.resolverMarker}`
 
         // update one
-        isUpdatable && this.setResolver(
-            this.updateOneName, 
-            async (
-                _, 
-                { id, data }: { id: string, data: any }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.updateById(modelname, id, data)
-        )
+        isUpdatable && this.setResolver(this.updateOneName, this.updateOne)
 
         // update many
-        isUpdatable && isIterrable && this.setResolver(
-            this.updateManyName,
-            async (
-                _, 
-                { ids, data }: { ids: string[], data: any }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.updateManyByIds(modelname, ids, data)
-        )
+        isUpdatable && isIterrable && this.setResolver(this.updateManyName, this.updateMany)
 
         // delete one
-        isDeletable && this.setResolver(
-            this.deleteOneName,
-            async (
-                _, 
-                { id }: { id: string }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.deleteById(modelname, id)
-        )
+        isDeletable && this.setResolver(this.deleteOneName, this.deleteOne)
 
         // delete many
-        isDeletable && isIterrable && this.setResolver(
-            this.deleteManyName,
-            async (
-                _, 
-                { ids }: { ids: string[] }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.deleteManyByIds(modelname, ids)
-        )
+        isDeletable && isIterrable && this.setResolver(this.deleteManyName, this.deleteMany)
 
         // create instance of model
-        isCreatable && this.setResolver(
-            this.createName,
-            async (
-                _, 
-                { data }: { data: any }, 
-                { dataSources: { db } }: types.AppContext
-            ): Promise<types.ResponseSchema> => await db.create(modelname, data)
-        )
+        isCreatable && this.setResolver(this.createName, this.create)
+    }
+
+    updateOne(){
+        const modelname = this.modelname;
+
+        async function inner(
+            _, 
+            { id, data }: { id: string, data: any }, 
+            { dataSources: { db } }: types.AppContext
+        ) {
+            return await db.updateById(modelname, id, data);
+        }
+
+        return inner;
+    }
+
+    updateMany(){
+        const modelname = this.modelname;
+
+        async function inner(
+             _, 
+            { ids, data }: { ids: string[], data: any }, 
+            { dataSources: { db } }: types.AppContext
+        ) {
+            return await db.updateManyByIds(modelname, ids, data)
+        }
+
+        return inner;
+
+    }
+
+    deleteOne(){
+        const modelname = this.modelname;
+
+        async function inner(
+            _, 
+            { id }: { id: string }, 
+            { dataSources: { db } }: types.AppContext
+        ) {
+            return await db.deleteById(modelname, id);
+        }
+
+        return inner;
+    }
+
+    deleteMany() {
+        const modelname = this.modelname;
+
+        async function inner(
+             _, 
+            { ids }: { ids: string[] }, 
+            { dataSources: { db } }: types.AppContext
+        ) {
+            return await db.deleteManyByIds(modelname, ids)
+        }
+
+        return inner;
+    }
+
+    create() {
+        const modelname = this.modelname;
+
+        async function inner(
+            _, 
+            { data }: { data: any }, 
+            { dataSources: { db } }: types.AppContext
+        ) {
+            return await db.create(modelname, data)
+        }
+
+        return inner;
     }
 }

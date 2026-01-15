@@ -28,12 +28,16 @@ const directives = [
 
                                 // check if header "Authorization" was specified
                                 if(context.req.headers.authorization){
+                                    console.log("asked")
+
                                     const jwt = auth.getJWTFromHeader(context.req.headers.authorization);
                                     const validated = await auth.validateJWT(jwt);
 
                                     // user must have role that was specified at schema
                                     // and also role has permissions on this field execution
                                     if(validated && hasPermission(validated.payload.aud as types.Roles, name.value)){   
+                                        console.log("accessed")
+
                                         return await resolve(source, args, context, info);
                                     }
                                 }

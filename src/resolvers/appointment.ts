@@ -58,9 +58,9 @@ async function _busyDaysAtMonth(date: string, db: types.AppContext["dataSources"
     const dateMonth = dayjs(date);
     const siteConfig = (await db.getOneById("siteConfig", "1")).data[0];
     
-    console.log(dayjs(siteConfig.closing_at).hour())
+    console.log(dayjs(siteConfig.closing_at).hour(), siteConfig.closing_at)
 
-    console.log(dayjs(siteConfig.starting_at).hour())
+    console.log(dayjs(siteConfig.starting_at).hour(), siteConfig.starting_at)
     
     const workHours = dayjs(siteConfig.closing_at).hour() - dayjs(siteConfig.starting_at).hour();
     const appsInRange = (
@@ -76,6 +76,9 @@ async function _busyDaysAtMonth(date: string, db: types.AppContext["dataSources"
             
         )
     ).data;
+
+    console.log(appsInRange)
+
     const r = [];
     const initV = 0;
 
@@ -87,8 +90,7 @@ async function _busyDaysAtMonth(date: string, db: types.AppContext["dataSources"
                         dateMonth.date(i + 1).hour(0), 
                         dateMonth.date(i + 1).hour(23)
                     )
-                ).reduce((acc, e) => acc + e.duration, initV) >= workHours,
-                date: dateMonth.date(i + 1).toISOString()
+                ).reduce((acc, e) => acc + e.duration, initV) >= workHours, date: dateMonth.date(i + 1).toISOString()
             }
         );
     }
@@ -97,24 +99,18 @@ async function _busyDaysAtMonth(date: string, db: types.AppContext["dataSources"
 }
 
 class AppointmentBaseMutationResolvers extends BaseMutationResolvers {
-    constructor(modelname: types.Resource, args: Object){
-        super(modelname, args);
+    create() {
+        const p_func = super.create;
 
-        // add extra validation for each request on create
-        this.setResolver(
-            this.createName,
-            (
-                _, 
-                { data }: { data: any },
-                ctx: types.AppContext
-            ) => {
-                
-                // proof time range of appointment
-                if (dayjs(data.date).unix() < dayjs().unix()) return responses.f400Response();
+        async function inner(_, args: { data: any }, ctx: types.AppContext) {
             
-                return this.getResolver(this.createName)(_, { data }, ctx);
-            }
-        );
+            // proof time range of appointment
+            if (dayjs(args.data.date).unix() < dayjs().unix()) return responses.f400Response();
+
+            return await p_func()(_, args, ctx);
+        }
+
+        return inner;
     }
 }
 
