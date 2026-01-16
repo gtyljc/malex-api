@@ -60,6 +60,7 @@ type BusyResponse implements BaseMutationResponseInterface {
     data: [Busy]!
 }
 
+
 # --------  inputs
 
 input AppointmentCreateInput {

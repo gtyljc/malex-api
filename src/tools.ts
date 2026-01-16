@@ -10,11 +10,16 @@ export function sleep(ms: number): Promise<void> {
 }
 
 // assembles error message from it's name and message ( fields of class )
-export function assembleErrorMessage(error: Error): string {
-    return `${ error.name }: ${ error.message }`
+export function assembleErrorMessage(error: any): string {
+    return `${ error.NAME }: ${ error.MESSAGE }`
 }
 
 // check if there is no element sin array
 export function isEmpty(array: Array<any>): boolean{
     return array.length == 0;
+}
+
+// removes element and returns new array
+export function patch(array: Array<any>, changes: Array<any>){
+    return array.filter(e => !changes.includes(e));
 }

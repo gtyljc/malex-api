@@ -11,12 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const typesArray = loadFilesSync(`${__dirname}/schemas/**/*.graphql`);
-const resolversArray = loadFilesSync(
-    [
-        `${__dirname}/resolvers/**/*.ts`,
-        `!${__dirname}/resolvers/base.ts`, // exclude base.ts from search pool
-    ]
-);
+const resolversArray = loadFilesSync([ `${__dirname}/resolvers/**/*.ts`]);
 let endSchema = makeExecutableSchema(
     {
         typeDefs: mergeTypeDefs(typesArray),

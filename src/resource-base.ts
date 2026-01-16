@@ -1,18 +1,21 @@
-import * as responses from "../responses";
-import { capitalize, assembleErrorMessage } from "../tools";
-import * as errors from "../errors";
-import * as types from "../types/index";
+import * as responses from "./responses";
+import { capitalize, assembleErrorMessage } from "./tools";
+import * as errors from "./errors";
+import * as types from "./types/index";
+import * as tools from "./tools";
 
 class ResolversManager {
     // !!! if you want to use resolvers in high-definied object use "resolvers" property !!!
 
     private resolversObject = {};
-    protected resolverMarker: string;
+    protected mutationResolverMarker: string;
+    protected queryResolverMarker: string;
     modelname: types.Resource;
 
     constructor(modelname: types.Resource){
         this.modelname = modelname;
-        this.resolverMarker = capitalize(modelname); // how resolvers will be marked
+        this.queryResolverMarker = modelname;
+        this.mutationResolverMarker = capitalize(modelname); // how resolvers will be marked
     }
 
     // adds or updates resolver in list of resolvers
@@ -28,6 +31,39 @@ class ResolversManager {
     get resolvers(){
         return this.resolversObject;
     }
+
+    // get all methods from object
+    protected getAllMethods(obj: Object) { 
+        const methods = new Set();
+
+        while (obj && obj !== Object.prototype) { 
+            Object.getOwnPropertyNames(obj).filter(
+                name => typeof obj[name] === 'function' && name !== 'constructor' 
+            ).forEach(name => methods.add(name));
+
+            obj = Object.getPrototypeOf(obj);
+        } 
+        return [...methods]; 
+    }
+
+    protected register(methods: Array<string>) {
+        for (let method of tools.patch(
+            this.getAllMethods(this), 
+            [
+
+                // except base methods
+                "getAllMethods",
+                "setResolver",
+                "getResolver",
+                "register"
+
+            ].concat(methods)
+        )){
+            this.setResolver(method, this[method]());
+        }
+
+        return this;
+    }
 }
 
 export class BaseQueryResolvers extends ResolversManager {
@@ -36,18 +72,12 @@ export class BaseQueryResolvers extends ResolversManager {
     protected getManyName: string;
     protected getOneName: string;
 
+    protected isIterrable: boolean;
+
     constructor(modelname: types.Resource, { isIterrable = true } = {}) {
         super(modelname);
 
-        // configurate names
-        this.getOneName = modelname;
-        this.getManyName = modelname + "s";
-
-        // register resolver to get single entity
-        this.setResolver(this.getOneName, this.getOne())
-
-        // register resolver to get list
-        isIterrable && this.setResolver(this.getManyName, this.getMany())
+        this.isIterrable = isIterrable;
     }
 
     getMany() {
@@ -106,6 +136,21 @@ export class BaseQueryResolvers extends ResolversManager {
 
         return inner;
     }
+
+    register() {
+
+        // configurate names
+        this.getOneName = this.queryResolverMarker;
+        this.getManyName = this.queryResolverMarker + "s";
+
+        // register resolver to get single entity
+        this.setResolver(this.getOneName, this.getOne())
+
+        // register resolver to get list
+        this.isIterrable && this.setResolver(this.getManyName, this.getMany())
+
+        return super.register([ "getOne", "getMany" ]);
+    }
 }
 
 export class BaseMutationResolvers extends ResolversManager {
@@ -116,6 +161,11 @@ export class BaseMutationResolvers extends ResolversManager {
     protected deleteOneName: string;
     protected deleteManyName: string;
     protected createName: string;
+
+    protected isUpdatable: boolean;
+    protected isDeletable: boolean; 
+    protected isCreatable: boolean; 
+    protected isIterrable: boolean;
 
     constructor(
         modelname: types.Resource, 
@@ -128,27 +178,10 @@ export class BaseMutationResolvers extends ResolversManager {
     ) {
         super(modelname);
 
-        // configurate names
-        this.updateOneName = `update${this.resolverMarker}`;
-        this.updateManyName = `updateMany${this.resolverMarker}s`;
-        this.deleteOneName = `delete${this.resolverMarker}`;
-        this.deleteManyName = `deleteMany${this.resolverMarker}s`;
-        this.createName = `create${this.resolverMarker}`
-
-        // update one
-        isUpdatable && this.setResolver(this.updateOneName, this.updateOne)
-
-        // update many
-        isUpdatable && isIterrable && this.setResolver(this.updateManyName, this.updateMany)
-
-        // delete one
-        isDeletable && this.setResolver(this.deleteOneName, this.deleteOne)
-
-        // delete many
-        isDeletable && isIterrable && this.setResolver(this.deleteManyName, this.deleteMany)
-
-        // create instance of model
-        isCreatable && this.setResolver(this.createName, this.create)
+        this.isUpdatable = isUpdatable;
+        this.isDeletable = isDeletable;
+        this.isCreatable = isCreatable;
+        this.isIterrable = isIterrable;
     }
 
     updateOne(){
@@ -220,5 +253,40 @@ export class BaseMutationResolvers extends ResolversManager {
         }
 
         return inner;
+    }
+
+    register() {
+
+        // configurate names
+        this.updateOneName = `update${this.mutationResolverMarker}`;
+        this.updateManyName = `updateMany${this.mutationResolverMarker}s`;
+        this.deleteOneName = `delete${this.mutationResolverMarker}`;
+        this.deleteManyName = `deleteMany${this.mutationResolverMarker}s`;
+        this.createName = `create${this.mutationResolverMarker}`
+
+        // update one
+        this.isUpdatable && this.setResolver(this.updateOneName, this.updateOne())
+
+        // update many
+        this.isUpdatable && this.isIterrable && this.setResolver(this.updateManyName, this.updateMany())
+
+        // delete one
+        this.isDeletable && this.setResolver(this.deleteOneName, this.deleteOne())
+
+        // delete many
+        this.isDeletable && this.isIterrable && this.setResolver(this.deleteManyName, this.deleteMany())
+
+        // create instance of model
+        this.isCreatable && this.setResolver(this.createName, this.create())
+
+        return super.register(
+            [ 
+                "updateOne",
+                "updateMany",
+                "deleteOne",
+                "deleteMany",
+                "create"
+            ]
+        );
     }
 }

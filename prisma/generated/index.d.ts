@@ -8210,7 +8210,7 @@ export namespace Prisma {
     job_desc: string
     bwt: $Enums.BwtChoice
     number?: string | null
-    duration?: number
+    duration: number
     date: Date | string
     completed?: boolean
   }
@@ -8223,7 +8223,7 @@ export namespace Prisma {
     job_desc: string
     bwt: $Enums.BwtChoice
     number?: string | null
-    duration?: number
+    duration: number
     date: Date | string
     completed?: boolean
   }
@@ -8262,7 +8262,7 @@ export namespace Prisma {
     job_desc: string
     bwt: $Enums.BwtChoice
     number?: string | null
-    duration?: number
+    duration: number
     date: Date | string
     completed?: boolean
   }

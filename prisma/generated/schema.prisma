@@ -30,7 +30,7 @@ model Appointment {
   job_desc  String    @db.VarChar(500)
   bwt       BwtChoice
   number    String?   @db.VarChar(20)
-  duration  Float     @default(1) // hours
+  duration  Float
   date      DateTime  @unique
   completed Boolean   @default(false)
 }
