@@ -20,8 +20,8 @@ type JWTResponseType implements BaseMutationResponseInterface {
 }
 
 type JWTType { 
-    token: JWT!
-    r_token: JWT!
+    at: JWT!
+    rt: JWT!
 }
 
 enum RoleEnum {

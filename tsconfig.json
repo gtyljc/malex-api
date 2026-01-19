@@ -6,7 +6,7 @@
 		"allowJs": true,
 		"esModuleInterop": true,
 		"isolatedModules": true,
-		"target": "es2015",		
+		"target": "es2017",		
 		"baseUrl": ".",
 		"paths": {
 			"@src/*": ["src/*"],

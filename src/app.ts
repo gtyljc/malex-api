@@ -12,17 +12,20 @@ import schema from './schema';
 // db
 import { DatabaseSource, DatabaseConnectionStatus } from './sources';
 import { PrismaClient } from '../prisma/generated/client.js';
+import { withAccelerate } from "@prisma/extension-accelerate";
+import { PrismaPg } from '@prisma/adapter-pg'
 
 // load .env file
 process.loadEnvFile();
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
 const connectionStatus = new DatabaseConnectionStatus(prisma);
 const server = new ApolloServer<types.AppContext>({ schema });
 const { url } = await startStandaloneServer(
     server,
     {
-        listen: { port: 2000 },
+        listen: { port: parseInt(process.env.PORT) },
         context: async ({ req }: { req: IncomingMessage }) => {
             return {
                 req,

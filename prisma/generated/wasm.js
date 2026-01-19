@@ -26,7 +26,7 @@ const {
   Public,
   getRuntime,
   createParam,
-} = require('./runtime/wasm-engine-edge.js')
+} = require('./runtime/wasm-compiler-edge.js')
 
 
 const Prisma = {}
@@ -200,11 +200,11 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\generated",
+      "value": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\generated",
       "fromEnvVar": null
     },
     "config": {
-      "engineType": "library"
+      "engineType": "client"
     },
     "binaryTargets": [
       {
@@ -214,7 +214,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\imatiash\\OneDrive - SHE Informationstechnologie AG\\Desktop\\malex-api\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\vanya\\Desktop\\malex-api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -228,6 +228,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -236,23 +237,23 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nenum Role {\n  GUEST\n  USER\n  ADMIN\n  SUPERUSER // backend\n  SUPERADMIN\n}\n\nmodel Appointment {\n  id        String    @id @default(nanoid(10))\n  name      String    @db.VarChar(50)\n  surname   String    @db.VarChar(50)\n  address   String    @db.VarChar(255)\n  job_desc  String    @db.VarChar(500)\n  bwt       BwtChoice\n  number    String?   @db.VarChar(20)\n  duration  Float\n  date      DateTime  @unique\n  completed Boolean   @default(false)\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        String         @id @default(nanoid(16))\n  img_url   String         @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now())\n}\n\nmodel SiteConfig {\n  id            String   @id @default(\"1\")\n  opening_at    DateTime @default(now()) @db.Timestamp(0)\n  closing_at    DateTime @default(now()) @db.Timestamp(0)\n  min_duration  Float    @default(0.5)\n  support_email String   @default(\"support@malexhandy.com\")\n  phone_number  String   @default(\"3474101444\")\n}\n\nmodel Admin {\n  id        String  @id @default(nanoid(16))\n  username  String  @db.VarChar(50)\n  password  String  @db.VarChar(50)\n  is_logged Boolean @default(false)\n  fullname  String  @db.VarChar(50)\n  user      User    @relation(fields: [user_id], references: [id])\n  user_id   String  @unique\n}\n\nmodel User {\n  id       String @id @default(nanoid(16))\n  username String @db.VarChar(50)\n  password String @db.VarChar(50)\n  admin    Admin?\n}\n\nmodel RefreshToken {\n  id         String   @id @default(nanoid(16))\n  hash       String   @unique\n  created_at DateTime @default(now()) @db.Timestamp(0)\n  expired_at DateTime @db.Timestamp(0)\n  is_revoked Boolean  @default(false)\n  role       Role\n  user_id    String   @db.VarChar(16)\n}\n",
-  "inlineSchemaHash": "1f667c9c593b0829f48d680df1cc16af3d693ffc7657fd078cb3d5b1fd692f66",
+  "inlineSchema": "generator client {\n  provider   = \"prisma-client-js\"\n  output     = \"./generated\"\n  engineType = \"client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nenum Role {\n  GUEST\n  USER\n  ADMIN\n  SUPERUSER // backend\n  SUPERADMIN\n}\n\nmodel Appointment {\n  id        String    @id @default(nanoid(10))\n  name      String    @db.VarChar(50)\n  surname   String    @db.VarChar(50)\n  address   String    @db.VarChar(255)\n  job_desc  String    @db.VarChar(500)\n  bwt       BwtChoice\n  number    String?   @db.VarChar(20)\n  duration  Float\n  date      DateTime  @unique\n  completed Boolean   @default(false)\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        String         @id @default(nanoid(16))\n  img_url   String         @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now())\n}\n\nmodel SiteConfig {\n  id            String   @id @default(\"1\")\n  opening_at    DateTime @default(now()) @db.Timestamp(0)\n  closing_at    DateTime @default(now()) @db.Timestamp(0)\n  min_duration  Float    @default(0.5)\n  support_email String   @default(\"support@malexhandy.com\")\n  phone_number  String   @default(\"3474101444\")\n}\n\nmodel Admin {\n  id        String  @id @default(nanoid(16))\n  username  String  @db.VarChar(50)\n  password  String  @db.VarChar(50)\n  is_logged Boolean @default(false)\n  fullname  String  @db.VarChar(50)\n  user      User    @relation(fields: [user_id], references: [id])\n  user_id   String  @unique\n}\n\nmodel User {\n  id       String @id @default(nanoid(16))\n  username String @db.VarChar(50)\n  password String @db.VarChar(50)\n  admin    Admin?\n}\n\nmodel RefreshToken {\n  id         String   @id @default(nanoid(16))\n  hash       String   @unique\n  created_at DateTime @default(now()) @db.Timestamp(0)\n  expired_at DateTime @db.Timestamp(0)\n  is_revoked Boolean  @default(false)\n  role       Role\n  user_id    String   @db.VarChar(16)\n}\n",
+  "inlineSchemaHash": "c7f7cb762a824c81a00362704be83c372a2a9ec5e3cb3108bb16174d5d0a6603",
   "copyEngine": true
 }
 config.dirname = '/'
 
 config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"completed\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":null},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SiteConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"opening_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"closing_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"min_duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"support_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Admin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_logged\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AdminToUser\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"admin\",\"kind\":\"object\",\"type\":\"Admin\",\"relationName\":\"AdminToUser\"}],\"dbName\":null},\"RefreshToken\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"is_revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
-config.engineWasm = {
-  getRuntime: async () => require('./query_engine_bg.js'),
-  getQueryEngineWasmModule: async () => {
-    const loader = (await import('#wasm-engine-loader')).default
-    const engine = (await loader).default
-    return engine
+config.engineWasm = undefined
+config.compilerWasm = {
+  getRuntime: async () => require('./query_compiler_bg.js'),
+  getQueryCompilerWasmModule: async () => {
+    const loader = (await import('#wasm-compiler-loader')).default
+    const compiler = (await loader).default
+    return compiler
   }
 }
-config.compilerWasm = undefined
 
 config.injectableEdgeEnv = () => ({
   parsed: {

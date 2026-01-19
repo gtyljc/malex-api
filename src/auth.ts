@@ -153,9 +153,9 @@ export async function getAuthPair(
     user_id: string,
     role: types.Roles, 
     db: types.AppContext["dataSources"]["db"]
-): Promise<{ token: string, r_token: string }> {
+): Promise<{ at: string, rt: string }> {
     return {
-        token: await getAT(user_id, role),
-        r_token: await getRT(user_id, role, db)
+        at: await getAT(user_id, role),
+        rt: await getRT(user_id, role, db)
     }
 }
