@@ -1,4 +1,59 @@
 
+# -------- query
+
+extend type Query {
+
+    # <ADMIN> role is required
+    # return one work with specified ID
+    work(id: ID!): WorkResponseType! @auth(role: ADMIN)
+
+    # <ADMIN> role is required
+    # search works by filter or specified ids ( only one way is available )
+    works(
+        ids: [ID], 
+        filter: JSONObject,
+        pagination: PaginationInput
+        sort: SortInput    
+    ): WorkResponseType! @auth(role: ADMIN)
+
+    # <GUEST> role is required
+    # as "works", but with the limited fields
+    getWorks(
+        filter: JSONObject!,
+        pagination: PaginationInput!
+        sort: SortInput
+    ): PublicWorkResponseType! @auth(role: GUEST)
+
+    # <GUEST> role is required
+    # returns last images, that was uploaded by admin ( num => how many will be returned )
+    newWorks(num: PositiveInt): PublicWorkResponseType! @auth(role: GUEST)
+}
+
+
+# -------- mutation
+
+extend type Mutation {
+
+    # <ADMIN> role is required
+    # updates one work with specified ID
+    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # updates works with specified ids
+    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # deletes work with specified ID ( only from DB )
+    deleteWork(id: ID!): WorkResponseType! @auth(role: ADMIN)
+
+    # deletes works with specified IDs ( only from DB )
+    deleteManyWorks(ids: [ID]!): WorkResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # creates work with specified data
+    createWork(data: WorkCreateInput): WorkResponseType! @auth(role: ADMIN)
+}
+
 
 # -------- types
 
@@ -10,7 +65,7 @@ type WorkType {
     timestamp: DateTimeISO!
 }
 
-type WorkResponseType implements BaseMutationResponseInterface {
+type WorkResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
@@ -24,44 +79,13 @@ type PublicWorkType {
     timestamp: DateTimeISO!
 }
 
-type PublicWorkResponseType implements BaseMutationResponseInterface {
+type PublicWorkResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
     data: [PublicWorkType]!
     pagination: PaginationType
 }
-
-
-# -------- query
-
-extend type Query {
-    work(id: ID!): WorkResponseType! @auth(role: ADMIN)
-    works(
-        ids: [ID], 
-        filter: JSONObject,
-        pagination: PaginationInput
-        sort: SortInput    
-    ): WorkResponseType! @auth(role: ADMIN)
-    getWorks(
-        filter: JSONObject,
-        pagination: PaginationInput
-        sort: SortInput
-    ): PublicWorkResponseType! @auth(role: GUEST)  # for gallery
-    newWorks(num: PositiveInt): PublicWorkResponseType! @auth(role: GUEST)
-}
-
-
-# -------- mutation
-
-extend type Mutation {
-    updateWork(id: ID!, data: WorkUpdateInput): WorkResponseType! @auth(role: ADMIN)
-    updateManyWorks(ids: [ID]!, data: WorkUpdateInput): WorkResponseType! @auth(role: ADMIN)
-    deleteWork(id: ID!): WorkResponseType! @auth(role: ADMIN)
-    deleteManyWorks(ids: [ID]!): WorkResponseType! @auth(role: ADMIN)
-    createWork(data: WorkCreateInput): WorkResponseType! @auth(role: ADMIN)
-}
-
 
 # -------- inputs
 

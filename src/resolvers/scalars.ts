@@ -13,7 +13,7 @@ import {
 } from "graphql-scalars";
 import * as types from "../types";
 
-const scalarsResolvers: types.ResolversSchema = {
+const resolvers: types.Resolvers = {
     JSONObject: JSONObjectResolver,
     URL: URLResolver,
     PhoneNumber: PhoneNumberResolver,
@@ -24,4 +24,4 @@ const scalarsResolvers: types.ResolversSchema = {
     JWT: JWTResolver
 }
 
-export default scalarsResolvers;
+export default resolvers;

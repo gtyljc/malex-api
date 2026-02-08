@@ -3,24 +3,41 @@
 # -------- query
 
 extend type Query {
+    
+    # <ADMIN> role is required
+    # return one appointment with specified ID
     appointment(id: ID!): AppointmentResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # search appointments by filter or specified ids ( only one way is available )
     appointments(
         ids: [ID], 
         filter: JSONObject, 
         pagination: PaginationInput, 
         sort: SortInput
-    ): AppointmentResponseType @auth(role: ADMIN)
-    busyTimesAtDay(date: DateTimeISO): BusyResponse! @auth(role: GUEST)
-    busyDaysAtMonth(date: DateTimeISO): BusyResponse! @auth(role: GUEST)
-    isDayBusy(date: DateTimeISO): BusyResponse! @auth(role: GUEST)
+    ): AppointmentResponseType! @auth(role: ADMIN)
+
+    # <GUEST> role is required
+    # returns set of busy types, that corresponds to each appointment
+    # in specified range;
+    busyInRange(start: DateTimeISO!, end: DateTimeISO!, unit: TimeUnitEnum!): BusyResponseType! @auth(role: GUEST)
 }
 
 
 # -------- mutation
 
 extend type Mutation {
+
+    # <ADMIN> role is required
+    # updates one appointment with specified ID
     updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # updates appointments with specified ids
     updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # creates appointment with specified data
     createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: SUPERUSER)
 }
 
@@ -34,13 +51,13 @@ type AppointmentType {
     address: String!
     job_desc: String!
     bwt: BestWayToTouchEnum!
-    number: PhoneNumber!
+    phone_number: PhoneNumber!
     date: DateTimeISO!
     duration: PositiveFloat!
     completed: Boolean!
 }
 
-type AppointmentResponseType implements BaseMutationResponseInterface {
+type AppointmentResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
@@ -48,16 +65,16 @@ type AppointmentResponseType implements BaseMutationResponseInterface {
     pagination: PaginationType
 }
 
-type Busy {
+type BusyType {
     date: DateTimeISO!
     busy: Boolean!
 }
 
-type BusyResponse implements BaseMutationResponseInterface {
+type BusyResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
-    data: [Busy]!
+    data: [BusyType]!
 }
 
 
@@ -69,7 +86,7 @@ input AppointmentCreateInput {
     address: String!
     job_desc: String!
     bwt: BestWayToTouchEnum!
-    number: PhoneNumber!
+    phone_number: PhoneNumber!
     date: DateTimeISO!
 }
 
@@ -79,12 +96,11 @@ input AppointmentUpdateInput {
     address: String
     job_desc: String
     bwt: BestWayToTouchEnum
-    number: PhoneNumber
+    phone_number: PhoneNumber
     date: DateTimeISO
     duration: PositiveFloat
     completed: Boolean
 }
-
 
 # --------  enums
 
@@ -92,4 +108,10 @@ enum BestWayToTouchEnum {
     WHATSAPP
     PHONE
     TEXT
+}
+
+
+enum TimeUnitEnum {
+    APPOINTMENT
+    DAY
 }

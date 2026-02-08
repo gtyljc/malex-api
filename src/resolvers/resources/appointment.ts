@@ -6,111 +6,64 @@ import * as types from "@src/types";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween"
 import * as responses from "@src/responses";
+import { getConfig } from "./site-config";
 
 dayjs.extend(isBetween);
 
 const __modelname = "appointment";
 
 class AppointmentQueryResolvers extends BaseQueryResolvers {
-    isDayBusy(){
 
-        async function inner(
-            _, 
-            { date }: { date: string }, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            const dateDayJS = dayjs(date);
-            const adminConfig = (await db.getOneById("siteConfig", "1")).data[0];
-            const workHours = dayjs(adminConfig.closing_at).diff(adminConfig.starting_at, "hours");
-            const appsInRange = (
-                await db.getManyByFilter(
-                    __modelname, 
-                    { 
-                        AND: [ 
-                            { date: { gte: dateDayJS.hour(0).toISOString() } }, 
-                            { date: { lte: dateDayJS.hour(23).toISOString() } } 
-                        ] 
-                    },
-                    { perPage: 100, page: 1 }
-                )
-            ).data;
-            var sumHours = 0;
+    busyInRange(){
 
-            for (let app of appsInRange) sumHours += app.duration;
-
-            return responses.f200Response([{ date, busy: sumHours < workHours }]);
-        }
-
-        return inner;
-    }
-
-    busyTimesAtDay(){
-
-        async function inner(
-            _, 
-            { date }: { date: string }, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            const appsInRange = (
+        async function inner(_, { start, end, unit }: types.QueryBusyInRangeArgs, { dataSources: { db } }: types.AppContext) {
+            const apps = (
                 await db.getManyByFilter(
                     __modelname,
                     { 
-                        AND: [ 
-                            { date: { gte: dayjs(date).hour(0) } }, 
-                            { date: { lte: dayjs(date).hour(23) } } 
-                        ] 
-                    }, 
-                    { perPage: 100, page: 1 }
-                )
-            ).data;
-
-            return responses.f200Response(appsInRange.map(e => ({ busy: true, date: e.date })))
-        }
-
-        return inner;
-    }
-
-    busyDaysAtMonth(){
-
-        async function inner(
-            _, 
-            { date }: { date: string }, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            const dateMonth = dayjs(date);
-            const siteConfig = (await db.getOneById("siteConfig", "1")).data[0];
-            const workHours = dayjs(siteConfig.closing_at).hour() - dayjs(siteConfig.opening_at).hour();
-            const appsInRange = (
-                await db.getManyByFilter(
-                    __modelname, 
-                    { 
-                        AND: [ 
-                            { date: { gte: dateMonth.date(1).toISOString() } }, 
-                            { date: { lte: dateMonth.date(dateMonth.daysInMonth()).toISOString() } } 
-                        ] 
-                    }, 
-                    { perPage: 1000, page: 1 }
-                    
-                )
-            ).data;
-
-            const r = [];
-            const initV = 0;
-
-            for (let i = 0; i < dateMonth.daysInMonth(); i++){
-                r.push(
-                    { 
-                        busy: appsInRange.filter(
-                            e => dayjs(e.date).isBetween(
-                                dateMonth.date(i + 1).hour(0), 
-                                dateMonth.date(i + 1).hour(23)
-                            )
-                        ).reduce((acc, e) => acc + e.duration, initV) >= workHours, date: dateMonth.date(i + 1).toISOString()
+                        AND: [
+                            { date: { gte: start } }, 
+                            { date: { lte: end } } 
+                        ]
                     }
-                );
+                )
+            ).qResult;
+
+            if(unit == "DAY") {
+                let day = dayjs(start);
+                let busy: types.BusyType[] = [];
+                const siteConfig = (await getConfig(db)).qResult;
+                const workTime = dayjs(siteConfig.closing_at).diff(dayjs(siteConfig.starting_at));
+
+                while (day.unix() < dayjs(end).unix()) {
+                     let appsInDay = apps.filter(
+                        e => dayjs(e.date).isBetween(
+                            day.hour(0).minute(0).second(0).millisecond(0), 
+                            day.hour(24).minute(0).second(0).millisecond(0)
+                        )
+                    );
+                    day = day.add(1, "day");
+
+                    busy = busy.concat(
+                        appsInDay.map(
+                            e => (
+                                { 
+                                    date: e.date, 
+                                    busy: workTime <= appsInDay.reduce((acc, e) => acc += e.duration * 3600, 0) 
+                                }
+                            )
+                        )
+                    )
+                }
+
+                return responses.f200Response(busy);
             }
 
-            return responses.f200Response(r);
+            if(unit == "APPOINTMENT") {
+                return responses.f200Response(
+                    apps.map( e => ({ date: e.date, busy: true }))
+                );
+            }
         }
 
         return inner;
@@ -121,7 +74,7 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
     create() {
         const p_func = super.create();
     
-        async function inner(_, args: any, ctx: types.AppContext) {
+        async function inner(_: any, args: types.CreateArgs, ctx: types.AppContext) {
             const { data } = args;
             const { dataSources: { db } } = ctx;
 
@@ -129,7 +82,7 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
             if (dayjs(data.date).unix() < dayjs().unix()) return responses.f400Response();
 
             // add default duration
-            data.duration = (await db.getOneById("siteConfig", "1")).data[0].min_duration;
+            data["duration"] = (await getConfig(db)).qResult.min_duration;
 
             return await p_func(_, args, ctx);
         }
@@ -138,7 +91,7 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
     }
 }
 
-const resolversSchema: types.ResolversSchema = {
+const resolvers: types.Resolvers = {
     Query: { 
         ...new AppointmentQueryResolvers(
             __modelname
@@ -152,4 +105,4 @@ const resolversSchema: types.ResolversSchema = {
     }
 }
 
-export default resolversSchema;
+export default resolvers;

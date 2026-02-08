@@ -10,17 +10,8 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import schema from './schema';
 
 // db
-import { DatabaseSource, DatabaseConnectionStatus } from './sources';
-import { PrismaClient } from '../prisma/generated/client.js';
-import { withAccelerate } from "@prisma/extension-accelerate";
-import { PrismaPg } from '@prisma/adapter-pg'
+import { DatabaseSource } from "./sources";
 
-// load .env file
-process.loadEnvFile();
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
-const connectionStatus = new DatabaseConnectionStatus(prisma);
 const server = new ApolloServer<types.AppContext>({ schema });
 const { url } = await startStandaloneServer(
     server,
@@ -30,7 +21,7 @@ const { url } = await startStandaloneServer(
             return {
                 req,
                 dataSources: {
-                    db: new DatabaseSource(prisma, connectionStatus),
+                    db: new DatabaseSource(),
                     cloudflare: new Cloudflare(
                         { 
                             apiToken: process.env.CLOUDFLARE_API_TOKEN,

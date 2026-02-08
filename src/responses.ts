@@ -1,7 +1,7 @@
 
 import * as types from "./types";
 
-export function f200Response(data: any[]): types.ResponseSchema {    
+export function f200Response(data: any[]): types.APIResponse {    
     return {
         code: 200,
         message: "Success",
@@ -10,7 +10,7 @@ export function f200Response(data: any[]): types.ResponseSchema {
     };
 }
 
-export function f500Response(message: string = "Query failed! See more at logs."): types.ResponseSchema {
+export function f500Response(message: string = "Query failed! See more at logs."): types.APIResponse {
     return {
         code: 500,
         message,
@@ -19,7 +19,7 @@ export function f500Response(message: string = "Query failed! See more at logs."
     };
 }
 
-export function f403Response(message: string = "Unauthorizated request!"): types.ResponseSchema {
+export function f403Response(message: string = "Unauthorizated request!"): types.APIResponse {
     return {
         code: 403,
         message,
@@ -28,7 +28,7 @@ export function f403Response(message: string = "Unauthorizated request!"): types
     };
 }
 
-export function f400Response(message: string = "Bad request! Try one more time!"): types.ResponseSchema {
+export function f400Response(message: string = "Bad request! Try one more time!"): types.APIResponse {
     return {
         code: 400,
         message,

@@ -1,7 +1,7 @@
 
 // resolvers for model "Work"
 
-import { BaseMutationResolvers, BaseQueryResolvers } from "../../resource-base";
+import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
 import * as responses from "@src/responses";
 import * as types from "@src/types";
 import * as errors from "@src/errors";
@@ -10,21 +10,21 @@ import * as tools from "@src/tools";
 const __modelname = "work";
 
 class WorkQueryResolvers extends BaseQueryResolvers {
-    newWorks(){   
+    newWorks() {   
         async function inner(
-            _, 
-            { num }: { num: number }, 
+            _: any, 
+            { num }: types.QueryNewWorksArgs, 
             { dataSources: { db } }: types.AppContext
         ) {
 
             // pagination limitation
-            if (num > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT)){
+            if (num > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)){
                 return responses.f400Response(tools.assembleErrorMessage(errors.PaginationLimitationError));
             }
             
-            const works = await db.getManyByFilter(__modelname, {}, { page: 1, perPage: num })
+            const q = await db.getManyByFilter(__modelname, {}, { page: 1, perPage: num });
 
-            works.data = works.data.map(
+            q.apiResponse.data = q.qResult.map(
                 e => (
                     { 
                         img_url: e.img_url, 
@@ -34,17 +34,21 @@ class WorkQueryResolvers extends BaseQueryResolvers {
                 )
             );
 
-            return works;   
+            return q.apiResponse;
         }
 
         return inner;
     }
 
-    getWorks(){
+    getWorks() {
         const p_func = super.getMany();
 
-        async function inner(_, args: any, ctx: types.AppContext) {
-            const r = await p_func(_, args, ctx);
+        async function inner(
+            _: any,
+            args: types.GetManyArgs, 
+            ctx: types.AppContext
+        ): Promise<types.APIResponse> {
+            const r = await p_func(_, { ...args, ids: [] }, ctx);
 
             r.data = r.data.map(
                 e => (
@@ -63,9 +67,9 @@ class WorkQueryResolvers extends BaseQueryResolvers {
     }
 }
 
-const resolversSchema: types.ResolversSchema = {
+const resolvers: types.Resolvers = {
     Query: { ...new WorkQueryResolvers(__modelname).register().resolvers },
     Mutation: { ...new BaseMutationResolvers(__modelname).register().resolvers }
 };
 
-export default resolversSchema;
+export default resolvers;

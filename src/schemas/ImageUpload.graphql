@@ -2,7 +2,13 @@
 # -------- query
 
 extend type Mutation {
+
+    # <ADMIN> role is required
+    # returns upload link for new image
     startImageUpload(id: ID!): StartUploadImageResponseType! @auth(role: ADMIN)
+    
+    # <ADMIN> role is required
+    # saves new image data to DB ( must be used only after  )
     finalizeImageUpload(id: ID!): FinalizeUploadImageResponseType! @auth(role: ADMIN)
 }
 
@@ -19,14 +25,14 @@ type FinalizeUploadImageType {
     url: URL!
 }
 
-type StartUploadImageResponseType implements BaseMutationResponseInterface {
+type StartUploadImageResponseType implements APIResponseInterface {
     code: Int!
     message: String!
     success: Boolean!
     data: [StartUploadImageType]!
 }
 
-type FinalizeUploadImageResponseType implements BaseMutationResponseInterface {
+type FinalizeUploadImageResponseType implements APIResponseInterface {
     code: Int!
     message: String!
     success: Boolean!

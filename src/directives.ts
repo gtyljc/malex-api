@@ -4,6 +4,8 @@ import * as types from "./types";
 import * as responses from "./responses";
 import { hasPermission } from "./permissions";
 import * as auth from "./auth";
+import * as tools from "@src/tools";
+import { decodeJwt } from "jose";
 
 // schema
 import { defaultFieldResolver } from "graphql";
@@ -20,29 +22,47 @@ const directives = [
 
                     if(authDirective){
                         const { resolve = defaultFieldResolver, astNode: { name } } = fieldConfig;
-                        const { role } = authDirective; // get "role" directive argument
+                        // const { role } = authDirective; // get "role" directive argument
 
                         return {
                             ...fieldConfig,
-                            resolve: async (source, args, context: types.AppContext, info) => {
+                            resolve: async (source, args, ctx: types.AppContext, info) => {
+                                const mustBeAuthenticated = parseInt(process.env.AUTHENTICATION!);
 
-                                // check if header "Authorization" was specified
-                                if(context.req.headers.authorization){
-                                    console.log("asked")
+                                if (
+                                    mustBeAuthenticated && !tools.validate(
+                                        [
 
-                                    const jwt = auth.getJWTFromHeader(context.req.headers.authorization);
-                                    const validated = await auth.validateJWT(jwt);
+                                            // check if jwt was specified
+                                            ({ ctx }: { ctx: types.AppContext }) => {
+                                                if (ctx.req.headers.authorization){
+                                                    [ true, ctx.req.headers.authorization ]
+                                                }
+                                                else [ false, undefined ]
+                                            },
+                                            
+                                            // validate jwt
+                                            async ({ next }: { next: string }) => {
+                                                const jwt = tools.getJWTFromHeader(next);
+                                                const isValid = await auth.jwt.validate(jwt);
 
-                                    // user must have role that was specified at schema
-                                    // and also role has permissions on this field execution
-                                    if(validated && hasPermission(validated.payload.aud as types.Roles, name.value)){   
-                                        console.log("accessed")
+                                                return [ isValid, isValid && jwt ] ;
+                                            },
 
-                                        return await resolve(source, args, context, info);
-                                    }
+                                            // checks if user has permissions on execution
+                                            ({ next }: { next: string }) => {
+                                                const claims = decodeJwt(next);
+                                                
+                                                return [ hasPermission(claims.aud as types.Roles, name.value) ];
+                                            }
+                                        ],
+                                        { ctx }
+                                    )
+                                ){
+                                    return responses.f403Response();
                                 }
 
-                                return responses.f403Response();
+                                return await resolve(source, args, ctx, info);
                             }
                         };
                     }

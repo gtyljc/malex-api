@@ -325,8 +325,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.17.1
-   * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
+   * Prisma Client JS version: 6.19.2
+   * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
    */
   export type PrismaVersion = {
     client: string
@@ -339,6 +339,7 @@ export namespace Prisma {
    */
 
 
+  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -1388,7 +1389,7 @@ export namespace Prisma {
     address: string | null
     job_desc: string | null
     bwt: $Enums.BwtChoice | null
-    number: string | null
+    phone_number: string | null
     duration: number | null
     date: Date | null
     completed: boolean | null
@@ -1401,7 +1402,7 @@ export namespace Prisma {
     address: string | null
     job_desc: string | null
     bwt: $Enums.BwtChoice | null
-    number: string | null
+    phone_number: string | null
     duration: number | null
     date: Date | null
     completed: boolean | null
@@ -1414,7 +1415,7 @@ export namespace Prisma {
     address: number
     job_desc: number
     bwt: number
-    number: number
+    phone_number: number
     duration: number
     date: number
     completed: number
@@ -1437,7 +1438,7 @@ export namespace Prisma {
     address?: true
     job_desc?: true
     bwt?: true
-    number?: true
+    phone_number?: true
     duration?: true
     date?: true
     completed?: true
@@ -1450,7 +1451,7 @@ export namespace Prisma {
     address?: true
     job_desc?: true
     bwt?: true
-    number?: true
+    phone_number?: true
     duration?: true
     date?: true
     completed?: true
@@ -1463,7 +1464,7 @@ export namespace Prisma {
     address?: true
     job_desc?: true
     bwt?: true
-    number?: true
+    phone_number?: true
     duration?: true
     date?: true
     completed?: true
@@ -1563,7 +1564,7 @@ export namespace Prisma {
     address: string
     job_desc: string
     bwt: $Enums.BwtChoice
-    number: string | null
+    phone_number: string | null
     duration: number
     date: Date
     completed: boolean
@@ -1595,7 +1596,7 @@ export namespace Prisma {
     address?: boolean
     job_desc?: boolean
     bwt?: boolean
-    number?: boolean
+    phone_number?: boolean
     duration?: boolean
     date?: boolean
     completed?: boolean
@@ -1608,7 +1609,7 @@ export namespace Prisma {
     address?: boolean
     job_desc?: boolean
     bwt?: boolean
-    number?: boolean
+    phone_number?: boolean
     duration?: boolean
     date?: boolean
     completed?: boolean
@@ -1621,7 +1622,7 @@ export namespace Prisma {
     address?: boolean
     job_desc?: boolean
     bwt?: boolean
-    number?: boolean
+    phone_number?: boolean
     duration?: boolean
     date?: boolean
     completed?: boolean
@@ -1634,13 +1635,13 @@ export namespace Prisma {
     address?: boolean
     job_desc?: boolean
     bwt?: boolean
-    number?: boolean
+    phone_number?: boolean
     duration?: boolean
     date?: boolean
     completed?: boolean
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "surname" | "address" | "job_desc" | "bwt" | "number" | "duration" | "date" | "completed", ExtArgs["result"]["appointment"]>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "surname" | "address" | "job_desc" | "bwt" | "phone_number" | "duration" | "date" | "completed", ExtArgs["result"]["appointment"]>
 
   export type $AppointmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Appointment"
@@ -1652,7 +1653,7 @@ export namespace Prisma {
       address: string
       job_desc: string
       bwt: $Enums.BwtChoice
-      number: string | null
+      phone_number: string | null
       duration: number
       date: Date
       completed: boolean
@@ -2085,7 +2086,7 @@ export namespace Prisma {
     readonly address: FieldRef<"Appointment", 'String'>
     readonly job_desc: FieldRef<"Appointment", 'String'>
     readonly bwt: FieldRef<"Appointment", 'BwtChoice'>
-    readonly number: FieldRef<"Appointment", 'String'>
+    readonly phone_number: FieldRef<"Appointment", 'String'>
     readonly duration: FieldRef<"Appointment", 'Float'>
     readonly date: FieldRef<"Appointment", 'DateTime'>
     readonly completed: FieldRef<"Appointment", 'Boolean'>
@@ -4506,27 +4507,30 @@ export namespace Prisma {
     id: string | null
     username: string | null
     password: string | null
-    is_logged: boolean | null
+    email: string | null
     fullname: string | null
-    user_id: string | null
+    is_logged: boolean | null
+    is_super: boolean | null
   }
 
   export type AdminMaxAggregateOutputType = {
     id: string | null
     username: string | null
     password: string | null
-    is_logged: boolean | null
+    email: string | null
     fullname: string | null
-    user_id: string | null
+    is_logged: boolean | null
+    is_super: boolean | null
   }
 
   export type AdminCountAggregateOutputType = {
     id: number
     username: number
     password: number
-    is_logged: number
+    email: number
     fullname: number
-    user_id: number
+    is_logged: number
+    is_super: number
     _all: number
   }
 
@@ -4535,27 +4539,30 @@ export namespace Prisma {
     id?: true
     username?: true
     password?: true
-    is_logged?: true
+    email?: true
     fullname?: true
-    user_id?: true
+    is_logged?: true
+    is_super?: true
   }
 
   export type AdminMaxAggregateInputType = {
     id?: true
     username?: true
     password?: true
-    is_logged?: true
+    email?: true
     fullname?: true
-    user_id?: true
+    is_logged?: true
+    is_super?: true
   }
 
   export type AdminCountAggregateInputType = {
     id?: true
     username?: true
     password?: true
-    is_logged?: true
+    email?: true
     fullname?: true
-    user_id?: true
+    is_logged?: true
+    is_super?: true
     _all?: true
   }
 
@@ -4635,9 +4642,10 @@ export namespace Prisma {
     id: string
     username: string
     password: string
-    is_logged: boolean
+    email: string
     fullname: string
-    user_id: string
+    is_logged: boolean
+    is_super: boolean
     _count: AdminCountAggregateOutputType | null
     _min: AdminMinAggregateOutputType | null
     _max: AdminMaxAggregateOutputType | null
@@ -4661,64 +4669,55 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
-    is_logged?: boolean
+    email?: boolean
     fullname?: boolean
-    user_id?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    is_logged?: boolean
+    is_super?: boolean
   }, ExtArgs["result"]["admin"]>
 
   export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     username?: boolean
     password?: boolean
-    is_logged?: boolean
+    email?: boolean
     fullname?: boolean
-    user_id?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    is_logged?: boolean
+    is_super?: boolean
   }, ExtArgs["result"]["admin"]>
 
   export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     username?: boolean
     password?: boolean
-    is_logged?: boolean
+    email?: boolean
     fullname?: boolean
-    user_id?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    is_logged?: boolean
+    is_super?: boolean
   }, ExtArgs["result"]["admin"]>
 
   export type AdminSelectScalar = {
     id?: boolean
     username?: boolean
     password?: boolean
-    is_logged?: boolean
+    email?: boolean
     fullname?: boolean
-    user_id?: boolean
+    is_logged?: boolean
+    is_super?: boolean
   }
 
-  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "is_logged" | "fullname" | "user_id", ExtArgs["result"]["admin"]>
-  export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type AdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
+  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "email" | "fullname" | "is_logged" | "is_super", ExtArgs["result"]["admin"]>
 
   export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Admin"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
       username: string
       password: string
-      is_logged: boolean
+      email: string
       fullname: string
-      user_id: string
+      is_logged: boolean
+      is_super: boolean
     }, ExtArgs["result"]["admin"]>
     composites: {}
   }
@@ -5113,7 +5112,6 @@ export namespace Prisma {
    */
   export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5146,9 +5144,10 @@ export namespace Prisma {
     readonly id: FieldRef<"Admin", 'String'>
     readonly username: FieldRef<"Admin", 'String'>
     readonly password: FieldRef<"Admin", 'String'>
-    readonly is_logged: FieldRef<"Admin", 'Boolean'>
+    readonly email: FieldRef<"Admin", 'String'>
     readonly fullname: FieldRef<"Admin", 'String'>
-    readonly user_id: FieldRef<"Admin", 'String'>
+    readonly is_logged: FieldRef<"Admin", 'Boolean'>
+    readonly is_super: FieldRef<"Admin", 'Boolean'>
   }
     
 
@@ -5165,10 +5164,6 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
     /**
      * Filter, which Admin to fetch.
      */
@@ -5188,10 +5183,6 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
      * Filter, which Admin to fetch.
      */
     where: AdminWhereUniqueInput
@@ -5209,10 +5200,6 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
     /**
      * Filter, which Admin to fetch.
      */
@@ -5262,10 +5249,6 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
      * Filter, which Admin to fetch.
      */
     where?: AdminWhereInput
@@ -5314,10 +5297,6 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
      * Filter, which Admins to fetch.
      */
     where?: AdminWhereInput
@@ -5361,10 +5340,6 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    /**
      * The data needed to create a Admin.
      */
     data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
@@ -5398,10 +5373,6 @@ export namespace Prisma {
      */
     data: AdminCreateManyInput | AdminCreateManyInput[]
     skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5416,10 +5387,6 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
     /**
      * The data needed to update a Admin.
      */
@@ -5472,10 +5439,6 @@ export namespace Prisma {
      * Limit how many Admins to update.
      */
     limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5490,10 +5453,6 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
     /**
      * The filter to search for the Admin to update in case it exists.
      */
@@ -5520,10 +5479,6 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
     /**
      * Filter which Admin to delete.
      */
@@ -5556,10 +5511,6 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
   }
 
 
@@ -5711,7 +5662,6 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
-    admin?: boolean | User$adminArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5733,17 +5683,10 @@ export namespace Prisma {
   }
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password", ExtArgs["result"]["user"]>
-  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    admin?: boolean | User$adminArgs<ExtArgs>
-  }
-  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {
-      admin: Prisma.$AdminPayload<ExtArgs> | null
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
       username: string
@@ -6142,7 +6085,6 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    admin<T extends User$adminArgs<ExtArgs> = {}>(args?: Subset<T, User$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6192,10 +6134,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -6214,10 +6152,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -6235,10 +6169,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -6288,10 +6218,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -6340,10 +6266,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -6386,10 +6308,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to create a User.
      */
@@ -6438,10 +6356,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -6509,10 +6423,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -6539,10 +6449,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -6563,25 +6469,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.admin
-   */
-  export type User$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Admin
-     */
-    select?: AdminSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Admin
-     */
-    omit?: AdminOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdminInclude<ExtArgs> | null
-    where?: AdminWhereInput
-  }
-
-  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6593,10 +6480,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
   }
 
 
@@ -7642,7 +7525,7 @@ export namespace Prisma {
     address: 'address',
     job_desc: 'job_desc',
     bwt: 'bwt',
-    number: 'number',
+    phone_number: 'phone_number',
     duration: 'duration',
     date: 'date',
     completed: 'completed'
@@ -7678,9 +7561,10 @@ export namespace Prisma {
     id: 'id',
     username: 'username',
     password: 'password',
-    is_logged: 'is_logged',
+    email: 'email',
     fullname: 'fullname',
-    user_id: 'user_id'
+    is_logged: 'is_logged',
+    is_super: 'is_super'
   };
 
   export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
@@ -7855,7 +7739,7 @@ export namespace Prisma {
     address?: StringFilter<"Appointment"> | string
     job_desc?: StringFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
-    number?: StringNullableFilter<"Appointment"> | string | null
+    phone_number?: StringNullableFilter<"Appointment"> | string | null
     duration?: FloatFilter<"Appointment"> | number
     date?: DateTimeFilter<"Appointment"> | Date | string
     completed?: BoolFilter<"Appointment"> | boolean
@@ -7868,7 +7752,7 @@ export namespace Prisma {
     address?: SortOrder
     job_desc?: SortOrder
     bwt?: SortOrder
-    number?: SortOrderInput | SortOrder
+    phone_number?: SortOrderInput | SortOrder
     duration?: SortOrder
     date?: SortOrder
     completed?: SortOrder
@@ -7885,7 +7769,7 @@ export namespace Prisma {
     address?: StringFilter<"Appointment"> | string
     job_desc?: StringFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceFilter<"Appointment"> | $Enums.BwtChoice
-    number?: StringNullableFilter<"Appointment"> | string | null
+    phone_number?: StringNullableFilter<"Appointment"> | string | null
     duration?: FloatFilter<"Appointment"> | number
     completed?: BoolFilter<"Appointment"> | boolean
   }, "id" | "date">
@@ -7897,7 +7781,7 @@ export namespace Prisma {
     address?: SortOrder
     job_desc?: SortOrder
     bwt?: SortOrder
-    number?: SortOrderInput | SortOrder
+    phone_number?: SortOrderInput | SortOrder
     duration?: SortOrder
     date?: SortOrder
     completed?: SortOrder
@@ -7918,7 +7802,7 @@ export namespace Prisma {
     address?: StringWithAggregatesFilter<"Appointment"> | string
     job_desc?: StringWithAggregatesFilter<"Appointment"> | string
     bwt?: EnumBwtChoiceWithAggregatesFilter<"Appointment"> | $Enums.BwtChoice
-    number?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
+    phone_number?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     duration?: FloatWithAggregatesFilter<"Appointment"> | number
     date?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
     completed?: BoolWithAggregatesFilter<"Appointment"> | boolean
@@ -8042,42 +7926,43 @@ export namespace Prisma {
     id?: StringFilter<"Admin"> | string
     username?: StringFilter<"Admin"> | string
     password?: StringFilter<"Admin"> | string
-    is_logged?: BoolFilter<"Admin"> | boolean
+    email?: StringFilter<"Admin"> | string
     fullname?: StringFilter<"Admin"> | string
-    user_id?: StringFilter<"Admin"> | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    is_logged?: BoolFilter<"Admin"> | boolean
+    is_super?: BoolFilter<"Admin"> | boolean
   }
 
   export type AdminOrderByWithRelationInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
-    is_logged?: SortOrder
+    email?: SortOrder
     fullname?: SortOrder
-    user_id?: SortOrder
-    user?: UserOrderByWithRelationInput
+    is_logged?: SortOrder
+    is_super?: SortOrder
   }
 
   export type AdminWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    user_id?: string
     AND?: AdminWhereInput | AdminWhereInput[]
     OR?: AdminWhereInput[]
     NOT?: AdminWhereInput | AdminWhereInput[]
     username?: StringFilter<"Admin"> | string
     password?: StringFilter<"Admin"> | string
-    is_logged?: BoolFilter<"Admin"> | boolean
+    email?: StringFilter<"Admin"> | string
     fullname?: StringFilter<"Admin"> | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "user_id">
+    is_logged?: BoolFilter<"Admin"> | boolean
+    is_super?: BoolFilter<"Admin"> | boolean
+  }, "id">
 
   export type AdminOrderByWithAggregationInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
-    is_logged?: SortOrder
+    email?: SortOrder
     fullname?: SortOrder
-    user_id?: SortOrder
+    is_logged?: SortOrder
+    is_super?: SortOrder
     _count?: AdminCountOrderByAggregateInput
     _max?: AdminMaxOrderByAggregateInput
     _min?: AdminMinOrderByAggregateInput
@@ -8090,9 +7975,10 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Admin"> | string
     username?: StringWithAggregatesFilter<"Admin"> | string
     password?: StringWithAggregatesFilter<"Admin"> | string
-    is_logged?: BoolWithAggregatesFilter<"Admin"> | boolean
+    email?: StringWithAggregatesFilter<"Admin"> | string
     fullname?: StringWithAggregatesFilter<"Admin"> | string
-    user_id?: StringWithAggregatesFilter<"Admin"> | string
+    is_logged?: BoolWithAggregatesFilter<"Admin"> | boolean
+    is_super?: BoolWithAggregatesFilter<"Admin"> | boolean
   }
 
   export type UserWhereInput = {
@@ -8102,14 +7988,12 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     username?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
-    admin?: AdminOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8119,7 +8003,6 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     username?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
   }, "id">
 
   export type UserOrderByWithAggregationInput = {
@@ -8209,7 +8092,7 @@ export namespace Prisma {
     address: string
     job_desc: string
     bwt: $Enums.BwtChoice
-    number?: string | null
+    phone_number?: string | null
     duration: number
     date: Date | string
     completed?: boolean
@@ -8222,7 +8105,7 @@ export namespace Prisma {
     address: string
     job_desc: string
     bwt: $Enums.BwtChoice
-    number?: string | null
+    phone_number?: string | null
     duration: number
     date: Date | string
     completed?: boolean
@@ -8235,7 +8118,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
-    number?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
@@ -8248,7 +8131,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
-    number?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
@@ -8261,7 +8144,7 @@ export namespace Prisma {
     address: string
     job_desc: string
     bwt: $Enums.BwtChoice
-    number?: string | null
+    phone_number?: string | null
     duration: number
     date: Date | string
     completed?: boolean
@@ -8274,7 +8157,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
-    number?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
@@ -8287,7 +8170,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     job_desc?: StringFieldUpdateOperationsInput | string
     bwt?: EnumBwtChoiceFieldUpdateOperationsInput | $Enums.BwtChoice
-    number?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: FloatFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
@@ -8416,90 +8299,94 @@ export namespace Prisma {
     id?: string
     username: string
     password: string
-    is_logged?: boolean
+    email: string
     fullname: string
-    user: UserCreateNestedOneWithoutAdminInput
+    is_logged?: boolean
+    is_super?: boolean
   }
 
   export type AdminUncheckedCreateInput = {
     id?: string
     username: string
     password: string
-    is_logged?: boolean
+    email: string
     fullname: string
-    user_id: string
+    is_logged?: boolean
+    is_super?: boolean
   }
 
   export type AdminUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    email?: StringFieldUpdateOperationsInput | string
     fullname?: StringFieldUpdateOperationsInput | string
-    user?: UserUpdateOneRequiredWithoutAdminNestedInput
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    is_super?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AdminUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    email?: StringFieldUpdateOperationsInput | string
     fullname?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    is_super?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AdminCreateManyInput = {
     id?: string
     username: string
     password: string
-    is_logged?: boolean
+    email: string
     fullname: string
-    user_id: string
+    is_logged?: boolean
+    is_super?: boolean
   }
 
   export type AdminUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    email?: StringFieldUpdateOperationsInput | string
     fullname?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    is_super?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AdminUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    email?: StringFieldUpdateOperationsInput | string
     fullname?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
+    is_logged?: BoolFieldUpdateOperationsInput | boolean
+    is_super?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserCreateInput = {
     id?: string
     username: string
     password: string
-    admin?: AdminCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: string
     username: string
     password: string
-    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    admin?: AdminUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -8666,7 +8553,7 @@ export namespace Prisma {
     address?: SortOrder
     job_desc?: SortOrder
     bwt?: SortOrder
-    number?: SortOrder
+    phone_number?: SortOrder
     duration?: SortOrder
     date?: SortOrder
     completed?: SortOrder
@@ -8683,7 +8570,7 @@ export namespace Prisma {
     address?: SortOrder
     job_desc?: SortOrder
     bwt?: SortOrder
-    number?: SortOrder
+    phone_number?: SortOrder
     duration?: SortOrder
     date?: SortOrder
     completed?: SortOrder
@@ -8696,7 +8583,7 @@ export namespace Prisma {
     address?: SortOrder
     job_desc?: SortOrder
     bwt?: SortOrder
-    number?: SortOrder
+    phone_number?: SortOrder
     duration?: SortOrder
     date?: SortOrder
     completed?: SortOrder
@@ -8866,41 +8753,34 @@ export namespace Prisma {
     min_duration?: SortOrder
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type AdminCountOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
-    is_logged?: SortOrder
+    email?: SortOrder
     fullname?: SortOrder
-    user_id?: SortOrder
+    is_logged?: SortOrder
+    is_super?: SortOrder
   }
 
   export type AdminMaxOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
-    is_logged?: SortOrder
+    email?: SortOrder
     fullname?: SortOrder
-    user_id?: SortOrder
+    is_logged?: SortOrder
+    is_super?: SortOrder
   }
 
   export type AdminMinOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
-    is_logged?: SortOrder
+    email?: SortOrder
     fullname?: SortOrder
-    user_id?: SortOrder
-  }
-
-  export type AdminNullableScalarRelationFilter = {
-    is?: AdminWhereInput | null
-    isNot?: AdminWhereInput | null
+    is_logged?: SortOrder
+    is_super?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -8998,52 +8878,6 @@ export namespace Prisma {
 
   export type EnumCategoryChoiceFieldUpdateOperationsInput = {
     set?: $Enums.CategoryChoice
-  }
-
-  export type UserCreateNestedOneWithoutAdminInput = {
-    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserUpdateOneRequiredWithoutAdminNestedInput = {
-    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
-    upsert?: UserUpsertWithoutAdminInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminInput, UserUpdateWithoutAdminInput>, UserUncheckedUpdateWithoutAdminInput>
-  }
-
-  export type AdminCreateNestedOneWithoutUserInput = {
-    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
-    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
-    connect?: AdminWhereUniqueInput
-  }
-
-  export type AdminUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
-    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
-    connect?: AdminWhereUniqueInput
-  }
-
-  export type AdminUpdateOneWithoutUserNestedInput = {
-    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
-    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
-    upsert?: AdminUpsertWithoutUserInput
-    disconnect?: AdminWhereInput | boolean
-    delete?: AdminWhereInput | boolean
-    connect?: AdminWhereUniqueInput
-    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
-  }
-
-  export type AdminUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
-    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
-    upsert?: AdminUpsertWithoutUserInput
-    disconnect?: AdminWhereInput | boolean
-    delete?: AdminWhereInput | boolean
-    connect?: AdminWhereUniqueInput
-    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
   }
 
   export type EnumRoleFieldUpdateOperationsInput = {
@@ -9248,94 +9082,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
-  export type UserCreateWithoutAdminInput = {
-    id?: string
-    username: string
-    password: string
-  }
-
-  export type UserUncheckedCreateWithoutAdminInput = {
-    id?: string
-    username: string
-    password: string
-  }
-
-  export type UserCreateOrConnectWithoutAdminInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
-  }
-
-  export type UserUpsertWithoutAdminInput = {
-    update: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
-    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutAdminInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
-  }
-
-  export type UserUpdateWithoutAdminInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type UserUncheckedUpdateWithoutAdminInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdminCreateWithoutUserInput = {
-    id?: string
-    username: string
-    password: string
-    is_logged?: boolean
-    fullname: string
-  }
-
-  export type AdminUncheckedCreateWithoutUserInput = {
-    id?: string
-    username: string
-    password: string
-    is_logged?: boolean
-    fullname: string
-  }
-
-  export type AdminCreateOrConnectWithoutUserInput = {
-    where: AdminWhereUniqueInput
-    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
-  }
-
-  export type AdminUpsertWithoutUserInput = {
-    update: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
-    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
-    where?: AdminWhereInput
-  }
-
-  export type AdminUpdateToOneWithWhereWithoutUserInput = {
-    where?: AdminWhereInput
-    data: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
-  }
-
-  export type AdminUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    is_logged?: BoolFieldUpdateOperationsInput | boolean
-    fullname?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdminUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    is_logged?: BoolFieldUpdateOperationsInput | boolean
-    fullname?: StringFieldUpdateOperationsInput | string
   }
 
 

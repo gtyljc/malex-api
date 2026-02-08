@@ -2,11 +2,20 @@
 # -------- query
 
 extend type Query {
+
+    # <ADMIN> role is required
+    # returns original config of site ( direct from DB )
     siteConfig(id: ID!): SiteConfigResponseType! @auth(role: ADMIN)
+    
+    # <GUEST> role is required
+    # returns limited config for frontend to render some elements
     contactData: SiteConfigResponseType! @auth(role: GUEST)
 }
 
 extend type Mutation {
+
+    # <ADMIN> role is required
+    # updates site config
     updateSiteConfig(id: ID!, data: SiteConfigUpdateInput): SiteConfigResponseType! @auth(role: ADMIN)
 }
 
@@ -22,7 +31,7 @@ type SiteConfigType {
     phone_number: PhoneNumber!
 }
 
-type SiteConfigResponseType implements BaseMutationResponseInterface {
+type SiteConfigResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
@@ -37,7 +46,7 @@ type ContactDataType {
     min_duration: PositiveFloat!
 }
 
-type ContactDataResponseType implements BaseMutationResponseInterface {
+type ContactDataResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!

@@ -19,7 +19,7 @@ scalar JWT
 
 # can bes used only on Query or Mutation fields;
 # argument role must be specified and means the 
-# minimal role, that GUEST must to have to access
+# minimal role, that user must have to get access
 directive @auth(role: RoleEnum) on FIELD_DEFINITION
 
 
@@ -32,10 +32,10 @@ type Mutation
 
 # -------- interfaces
 
-interface BaseMutationResponseInterface {
+interface APIResponseInterface {
     """
-        All mutation responses must include data field
-        with a type of modified entity ( always represents an array )
+        All mutation and query responses must inherit this interface
+        and include data field with a type of modified or readed entity ( always represents an array )
     """
 
     code: Int!

@@ -2,160 +2,190 @@
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import * as types from "./types";
 import dayjs from "dayjs";
-import * as tools from "./tools";
+import * as tools from "@src/tools";
+import { nanoid } from "nanoid";
 
-// converts IPv6 to IPv4
-function normalizeIp(ip: string): string {
+class JWT {
+    jwk!: CryptoKey;
+
+    constructor() {
+
+        // init jwk
+        this.setJWK().then((value) => this.jwk = value);
+    }
+
+    separateJWT(jwt: string){
+        const [ header, payload, sign ] = jwt.split(".");
+        
+        return { header, payload, sign };
+    }
+
+    async generate(_payload: types.JWTPayload) {
+        const _header: types.JWTHeader = { alg: "HS256" };
+        
+        return await new SignJWT(_payload).setProtectedHeader(_header).sign(this.jwk);
+    }
+
+    // validates jwt that got in request ( authorization header )
+    async validate(jwt: string): Promise<boolean> {
+        const options: types.VerifyOptions  = {
+            algorithms: [ "HS256" ],
+            audience: [ "ADMIN", "SUPERADMIN", "GUEST", "USER", "SUPERUSER" ],
+            issuer: "malex:api",
+            requiredClaims: [ "iss", "aud", "iat", "exp", "sub" ]
+        };
+
+        // in case of validation error will throw error
+        try { 
+            await jwtVerify(jwt, this.jwk, options);
+            
+            return true;
+        }
+        catch(error) { 
+            return false;
+        }
+    }
+
+    // gets secret from .env and creates jwk to sign jwt ( must be used only by constructor )
+    private async setJWK(): Promise<CryptoKey> {
+        const secret = new TextEncoder().encode(process.env.API_SECRET);
     
-    // IPv4-mapped IPv6 -> IPv4
-    if (ip.startsWith("::ffff:")) return ip.slice(7);
-
-    return ip;
+        return await global.crypto.subtle.importKey(
+            "raw",
+            secret,
+            {
+                name: "HMAC",
+                hash: "SHA-256"
+            }, 
+            true, 
+            [ "verify", "sign" ]
+        );
+    }
 }
 
-// checks was request from localhost sent
-function isFromLocalhost(senderIP: string): boolean {
-    const ip = normalizeIp(senderIP);
+export const jwt = new JWT();
 
-    if (ip === "127.0.0.1") return true; // IPv4 
+export class RefreshToken {
+    jwt: string;
+    db: types.AppContext["dataSources"]["db"];
 
-    if (ip === "::1") return true; // IPv6
+    constructor(jwt: string, db: types.AppContext["dataSources"]["db"]){
+        this.jwt = jwt;
+        this.db = db;
+    }
 
-    return false;
-}
+    // checks if RT is registered in DB
+    async isRegistered(): Promise<boolean> {
+        const claims = decodeJwt<types.JWTPayload>(this.jwt);
+        const { sign } = jwt.separateJWT(this.jwt);
+        const q = await this.db.getOneByFilter(
+            "refreshToken", 
+            { 
+                hash: sign,
+                is_revoked: false, 
+                role: claims.aud,
+                user_id: claims.sub,
+                expired_at: { lt: dayjs().toISOString() }
+            }
+        );
 
-// checks was request from backend sent
-export function isSentFromBackend(senderIP: string): boolean {
-    return senderIP == process.env.BACKEND_IP || isFromLocalhost(senderIP)
-}
+        // console.log(q);
 
-// parses jwt token from header ( deletes 'Bearer' keyword )
-export function getJWTFromHeader(header: string): string{
-    return header.replace("Bearer ", "")
-}
+        if (!q.qResult) return false;
 
-// returns "ready to use" secret
-async function getJWK(): Promise<CryptoKey> {
-    const secret = new TextEncoder().encode(process.env.API_SECRET);
+        return true; 
+    }
 
-    return await global.crypto.subtle.importKey(
-        "raw",
-        secret,
-        {
-            name: "HMAC",
-            hash: "SHA-256"
-        }, true, [ "verify", "sign" ]
-    );
-}
+    // revokes current RT, means flaged as revoked in DB
+    async revoke(): Promise<this> {
+        const claims = decodeJwt<types.JWTPayload>(this.jwt);
 
-// returns new JWT based on specified params
-async function getJWT(
-    header: types.JWTHeader, 
-    payload: types.JWTPayload
-): Promise<string> {
-    return await new SignJWT(payload).setProtectedHeader(header).sign(await getJWK());
-}
+        // mark RT as revoked in DB
+        await this.db.updateManyByFilter(
+            "refreshToken", 
+            { 
+                user_id: claims.sub, 
+                role: claims.aud, 
+                is_revoked: false 
+            }, 
+            { is_revoked: true }
+        );
 
-// validates JWT on header, payload ( claims ), and expiration time
-export async function validateJWT(jwt: string) {
-    const options: types.VerifyOptions  = {
-        algorithms: [ "HS256" ],
-        audience: [ "ADMIN", "SUPERADMIN", "GUEST", "USER", "SUPERUSER" ],
-        issuer: "malex:api",
-        requiredClaims: [ "iss", "aud", "iat", "exp", "sub" ]
-    };
+        return this;
+    }
 
-    // in case of validation error will throw error
-    try { return await jwtVerify(jwt, await getJWK(), options) }
-    catch(error) { console.log(error); return null }
-}
+    static async searchByAT(at: string, db: types.AppContext["dataSources"]["db"]): Promise<RefreshToken | null> {
+        const claims = decodeJwt<types.JWTPayload>(at);
+        const { sign } = jwt.separateJWT(at);
+        const q = await db.getOneByFilter(
+            "refreshToken",
+            { 
+                hash: sign,
+                is_revoked: false, 
+                role: claims.aud, 
+                user_id: claims.sub,
+                expired_at: { lt: dayjs().toDate() }
+            }
+        )
 
-// returns new RT, and register in DB
-export async function getRT(
-    user_id: string,
-    role: types.Roles, 
-    db: types.AppContext["dataSources"]["db"]
-): Promise<string> {
-    const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY), "seconds");
-    const rt = await getJWT(
-        { alg: "HS256" }, 
-        {
-            aud: role,
-            iss: "malex:api",
-            iat: dayjs().unix(),
-            exp: expiredAt.unix(),
-            sub: user_id
+        if (!tools.isEmpty(q.qResult)){
+            return null;
         }
-    );
-    const [ header, payload, sign ] = rt.split("."); 
 
-    // register RT into DB
-    await db.create("refreshToken", { hash: sign, expired_at: expiredAt.toDate(), role, user_id });
+        return new RefreshToken(q.qResult, db);
+    }
 
-    return rt;
+    // includes token reqgistration in DB
+    static async create(role: types.Roles, userId: string, db: types.AppContext["dataSources"]["db"]): Promise<RefreshToken> {
+        const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
+        const token = await jwt.generate(
+            {
+                aud: role,
+                iss: "malex:api",
+                iat: dayjs().unix(),
+                exp: expiredAt.unix(),
+                sub: userId
+            }
+        );
+        const { sign } = jwt.separateJWT(token);
+
+        // register RT into DB
+        await db.create(
+            "refreshToken",
+            { 
+                hash: sign, 
+                expired_at: expiredAt.toDate(), 
+                role, 
+                user_id: userId 
+            }
+        );
+
+        return new RefreshToken(token, db);
+    }
 }
 
-// if refresh token exists returns all it's claims, if not then null
-export async function isRTExist(rt: string, db: types.AppContext["dataSources"]["db"]) {
-    const claims = decodeJwt<types.JWTPayload>(rt);
-    const [ header, payload, sign ] = rt.split(".");
-    const isExist = !tools.isEmpty(
-        (
-            await db.getOneByFilter(
-                "refreshToken", 
-                { 
-                    hash: sign,
-                    is_revoked: false, 
-                    role: claims.aud, 
-                    user_id: claims.sub,
-                    expired_at: { lt: dayjs().toDate() }
-                }
-            )
-        ).data
-    );
-
-    if(isExist) return claims;
-
-    return null;
+export class AccessToken {
+    static async create(role: types.Roles, userId: string): Promise<string> {
+        return await jwt.generate(
+            {
+                aud: role,
+                iss: "malex:api",
+                iat: dayjs().unix(),
+                exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY!), "seconds").unix(),
+                sub: userId
+            }
+        )
+    }
 }
 
-// needs an sub param in jwt, to get user id, and then revokes 
-// RT with his id; accepts any jwt ( RT or AT )
-export async function revokeRT(jwt: string, db: types.AppContext["dataSources"]["db"]) {
-    const claims = decodeJwt<types.JWTPayload>(jwt);
-
-    // mark RT as revoked in DB
-    await db.updateManyByFilter(
-        "refreshToken", 
-        { user_id: claims.sub, role: claims.aud, is_revoked: false }, 
-        { is_revoked: true }
-    );
-
-    return claims;
-}
-
-// returns new AT
-export async function getAT(user_id: string, role: types.Roles): Promise<string> {
-    return await getJWT(
-        { alg: "HS256" }, 
-        {
-            aud: role,
-            iss: "malex:api",
-            iat: dayjs().unix(),
-            exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY), "seconds").unix(),
-            sub: user_id
-        }
-    )
-}
-
-// generates pair with access JWT and RT ( also JWT )
-export async function getAuthPair(
-    user_id: string,
-    role: types.Roles, 
+// creates new pair of AT and RT
+export async function createAuthTokens(
+    userId: string = nanoid(parseInt(process.env.USER_ID_LENGTH!)), 
+    role: types.Roles = "GUEST", 
     db: types.AppContext["dataSources"]["db"]
-): Promise<{ at: string, rt: string }> {
+){
     return {
-        at: await getAT(user_id, role),
-        rt: await getRT(user_id, role, db)
+        at: await AccessToken.create(role, userId),
+        rt: (await RefreshToken.create(role, userId, db)).jwt
     }
 }

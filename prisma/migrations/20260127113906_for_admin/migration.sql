@@ -1,0 +1,14 @@
+/*
+  Warnings:
+
+  - You are about to drop the column `user_id` on the `Admin` table. All the data in the column will be lost.
+
+*/
+-- DropForeignKey
+ALTER TABLE "Admin" DROP CONSTRAINT "Admin_user_id_fkey";
+
+-- DropIndex
+DROP INDEX "Admin_user_id_key";
+
+-- AlterTable
+ALTER TABLE "Admin" DROP COLUMN "user_id";

@@ -7,7 +7,7 @@ const GUEST_PERMISSIONS: types.Permissions = {
     role: "GUEST",
     permissions: [
         // all top GraphQL fields that can "GUEST" access
-        
+
         "createAT",
         "busyTimesAtDay",
         "busyDaysAtMonth",

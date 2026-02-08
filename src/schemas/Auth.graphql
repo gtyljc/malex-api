@@ -1,18 +1,23 @@
 
 
-# -------- query
+# -------- mutation
 
 extend type Mutation {
-    adminLogin(username: String!, password: String!): JWTResponseType! @auth(role: GUEST)
-    adminLogout: JWTResponseType! @auth(role: GUEST)
+    
+    # <GUEST> role is required
+    # creates new auth pair with initial client crenditials
+    # can be accessed from backend and from frontend
     createAT: JWTResponseType! @auth(role: GUEST)
-    createRT(user_id: ID!, role: RoleEnum!): JWTResponseType! # can access only backend
+
+    # ONLY BACKEND CAN ACCESS
+    # creates new auth pair with specified role and user_id
+    createRT(user_id: ID!, role: RoleEnum!): JWTResponseType!
 }
 
 
 # -------- types
 
-type JWTResponseType implements BaseMutationResponseInterface {
+type JWTResponseType implements APIResponseInterface {
     code: Int!
     message: String!
     success: Boolean!
@@ -20,14 +25,14 @@ type JWTResponseType implements BaseMutationResponseInterface {
 }
 
 type JWTType { 
-    at: JWT!
-    rt: JWT!
+    at: JWT! # access token
+    rt: JWT! # refresh token
 }
 
 enum RoleEnum {
     SUPERADMIN # can add new admins
     ADMIN # access to Admin Panel
-    GUEST
-    SUPERUSER # always backend
-    USER
+    GUEST # like user, but not registered
+    SUPERUSER # backend
+    USER # simple user
 }
