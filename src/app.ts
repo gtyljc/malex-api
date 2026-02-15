@@ -12,24 +12,21 @@ import schema from './schema';
 // db
 import { DatabaseSource } from "./sources";
 
+const db = new DatabaseSource();
+const cloudflare = new Cloudflare(
+    { 
+        apiToken: process.env.CLOUDFLARE_API_TOKEN,
+        maxRetries: 3 
+    }
+);
+
 const server = new ApolloServer<types.AppContext>({ schema });
 const { url } = await startStandaloneServer(
     server,
     {
-        listen: { port: parseInt(process.env.PORT) },
+        listen: { port: parseInt(process.env.PORT!) },
         context: async ({ req }: { req: IncomingMessage }) => {
-            return {
-                req,
-                dataSources: {
-                    db: new DatabaseSource(),
-                    cloudflare: new Cloudflare(
-                        { 
-                            apiToken: process.env.CLOUDFLARE_API_TOKEN,
-                            maxRetries: 3 
-                        }
-                    ),
-                }
-            }
+            return { req, dataSources: { db, cloudflare } }
         }
     }
 );

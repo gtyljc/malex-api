@@ -13,6 +13,7 @@ scalar PositiveInt
 scalar PositiveFloat
 scalar EmailAddress
 scalar JWT
+scalar TimeZone
 
 
 # -------- to extend

@@ -3,9 +3,12 @@ import { defineConfig, env } from "prisma/config";
 
 export default defineConfig(
     {
-        schema: './prisma/schema.prisma',
+        schema: './src/lib/prisma/schema.prisma',
+        typedSql: {
+            path: "./src/lib/prisma/sql"
+        },
         migrations: { 
-            path: './prisma/migrations',
+            path: './src/lib/prisma/migrations',
             seed: 'tsx prisma/seed.ts',
         },
         datasource: { 

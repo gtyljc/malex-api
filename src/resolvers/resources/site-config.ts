@@ -3,39 +3,40 @@
 
 import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
 import * as types from "@src/types";
-import { DatabaseSource } from "@src/sources";
+import * as responses from "@src/responses";
+import * as tools from "@src/tools";
 
 const __modelname = "siteConfig";
 
-// returns full config of site
-export async function getConfig(db: DatabaseSource){
-    return await db.getOneById("siteConfig", "1");
-}
-
 class SiteConfigQueryResolvers extends BaseQueryResolvers {
+    constructor(){
+        super(__modelname, { isIterrable: false });
+    }
 
-    // all necessary data for frontend about site config
-    contactData(){
-        async function inner(_, __, { dataSources: { db } }: types.AppContext) {
-            return (await getConfig(db)).apiResponse;
-        }
+    // only necessary data for frontend about site config
+    async contactData(_: any, __: any, { dataSources: { db } }: types.AppContext){
+        const config = await tools.getSiteConfig(db.dbConnection.client);
 
-        return inner;
+        return responses.f200Response(
+            [
+                {
+                    opening_at: config.opening_at,
+                    closing_at: config.closing_at,
+                    min_duration: config.min_duration,
+                    support_email: config.support_email,
+                    phone_number: config.phone_number
+                }
+            ]
+        )
     }
 }
 
 const resolvers: types.Resolvers = {
-    Query: {
-        ...new SiteConfigQueryResolvers(
-            __modelname, { isIterrable: false }
-        ).register().resolvers
-    },
-    Mutation: {
-        ...new BaseMutationResolvers(
-            __modelname,
-            { isDeletable: false, isCreatable: false, isIterrable: false }
-        ).register().resolvers,
-    }
+    Query: new SiteConfigQueryResolvers().register().resolvers,
+    Mutation: new BaseMutationResolvers(
+        __modelname,
+        { isDeletable: false, isCreatable: false, isIterrable: false }
+    ).register().resolvers
 }
 
 export default resolvers;

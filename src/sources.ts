@@ -7,8 +7,8 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import { withAccelerate } from "@prisma/extension-accelerate";
 
 // db
-import { PrismaClient } from "@db/generated/client";
-import { Prisma } from "@db/generated";
+import { PrismaClient } from "@src/lib/prisma/generated/client";
+import { Prisma } from "@src/lib/prisma/generated";
 
 export class DatabaseConnection {
     isTryingToConnect = false;
@@ -95,7 +95,6 @@ class DBQuery<RequestResultType> {
 
             // each result must be wrapped in array
             return responses.f200Response(
-
                 this.qResult instanceof Array ? this.qResult: [ this.qResult ]
             );
         }
@@ -132,6 +131,12 @@ class DBQuery<RequestResultType> {
 
 export class DatabaseSource {
     // each request to API makes new instance of object
+    
+    dbConnection: DatabaseConnection;
+
+    constructor(){
+        this.dbConnection = connection;
+    }
 
     // returns request filter part on specified ids
     private filterByIds(ids: string[]): Object {

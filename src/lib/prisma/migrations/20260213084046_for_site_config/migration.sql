@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "SiteConfig" ALTER COLUMN "opening_at" SET DATA TYPE TIMETZ(0),
+ALTER COLUMN "closing_at" SET DATA TYPE TIMETZ(0);

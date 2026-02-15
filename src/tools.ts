@@ -1,4 +1,7 @@
 
+import { getConfig } from "@lib/prisma/generated/sql";
+import { PrismaClient } from "@lib/prisma/generated";
+
 // returns new string with capitalized first letter
 export function capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1)
@@ -77,4 +80,8 @@ export function validate(cases: Array<Function>, args: Object = {}, untilFalse =
     )
 
     return isValid;
+}
+
+export async function getSiteConfig(prisma: PrismaClient): Promise<Record<any, any>> {
+    return (await prisma.$queryRawTyped(getConfig()))[0];
 }

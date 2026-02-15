@@ -58,7 +58,7 @@ class ResolversManager {
 
             ].concat(methods)
         )){
-            this.setResolver(method, (this as any)[method]());
+            this.setResolver(method, (this as any)[method].bind(this));
         }
 
         return this;
@@ -78,57 +78,46 @@ export class BaseQueryResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
-    getMany() {
-        const modelname = this.modelname;
-        
-        async function inner(
-            _: any,
-            { ids, filter, pagination, sort }: types.GetManyArgs,
-            { dataSources: { db } }: types.AppContext
-        ): Promise<types.APIResponse> {
-
-            if (
-                !tools.validate(
-                    [
-                        ({ ids, filter }: types.GetManyArgs) => [ ids && filter ],
-                        ({ filter, pagination }: types.GetManyArgs) => [
-                            filter ? (pagination?.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)): true
-                        ]
-                    ],
-                    { ids, filter }
-                )
-            ){
-                return responses.f400Response();
-            }
-
-            // if ids was specified, then return corresponding response
-            if (ids){
-                return (await db.getManyByIds(modelname, ids, sort)).apiResponse;
-            }
-
-            // if filter was specified, then use filter + pagination to found result
-            if(filter){
-                return (await db.getManyByFilter(modelname, filter, pagination, sort)).apiResponse;
-            }
-
+    async getMany(
+        _: any,
+        { ids, filter, pagination, sort }: types.GetManyArgs,
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {        
+        if (
+            !tools.validate(
+                [
+                    ({ ids, filter }: types.GetManyArgs) => [ ids && filter ],
+                    ({ filter, pagination }: types.GetManyArgs) => [
+                        filter ? (pagination?.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)): true
+                    ]
+                ],
+                { ids, filter }
+            )
+        ){
             return responses.f400Response();
         }
 
-        return inner;
-    }
-
-    getOne() {
-        const modelname = this.modelname;
-
-        async function inner(
-            _: any, 
-            { id }: types.GetOneArgs, 
-            { dataSources: { db } }: types.AppContext
-        ): Promise<types.APIResponse> {
-            return (await db.getOneById(modelname, id)).apiResponse;   
+        // if ids was specified, then return corresponding response
+        if (ids){
+            return (await db.getManyByIds(this.modelname, ids, sort)).apiResponse;
         }
 
-        return inner;
+        // if filter was specified, then use filter + pagination for search
+        if(filter){
+            return (await db.getManyByFilter(this.modelname, filter, pagination, sort)).apiResponse;
+        }
+
+        return responses.f400Response();
+    }
+
+    async getOne(
+        _: any, 
+        { id }: types.GetOneArgs, 
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {
+        console.log(this.modelname);
+
+        return (await db.getOneById(this.modelname, id)).apiResponse;   
     }
 
     register(): this {
@@ -138,10 +127,10 @@ export class BaseQueryResolvers extends ResolversManager {
         this.getManyName = this.queryResolverMarker + "s";
 
         // register resolver to get single entity
-        this.setResolver(this.getOneName, this.getOne())
+        this.setResolver(this.getOneName, this.getOne.bind(this))
 
         // register resolver to get list
-        this.isIterrable && this.setResolver(this.getManyName, this.getMany())
+        this.isIterrable && this.setResolver(this.getManyName, this.getMany.bind(this))
 
         return super.register([ "getOne", "getMany" ]);
     }
@@ -178,75 +167,45 @@ export class BaseMutationResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
-    updateOne(){
-        const modelname = this.modelname;
-
-        async function inner(
-            _: any, 
-            { id, data }: types.UpdateOneArgs, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            return (await db.updateById(modelname, id, data)).apiResponse;
-        }
-
-        return inner;
+    async updateOne(
+        _: any, 
+        { id, data }: types.UpdateOneArgs, 
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {
+        return (await db.updateById(this.modelname, id, data)).apiResponse;
     }
 
-    updateMany(){
-        const modelname = this.modelname;
-
-        async function inner(
-            _: any, 
-            { ids, data }: types.UpdateManyArgs, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            return (await db.updateManyByIds(modelname, ids, data)).apiResponse
-        }
-
-        return inner;
+    async updateMany(
+        _: any, 
+        { ids, data }: types.UpdateManyArgs, 
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {
+        return (await db.updateManyByIds(this.modelname, ids, data)).apiResponse
 
     }
 
-    deleteOne(){
-        const modelname = this.modelname;
-
-        async function inner(
-            _: any, 
-            { id }: { id: string }, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            return (await db.deleteById(modelname, id)).apiResponse;
-        }
-
-        return inner;
+    async deleteOne(
+        _: any, 
+        { id }: { id: string }, 
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {
+        return (await db.deleteById(this.modelname, id)).apiResponse;
     }
 
-    deleteMany() {
-        const modelname = this.modelname;
-
-        async function inner(
-            _: any, 
-            { ids }: { ids: string[] }, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            return (await db.deleteManyByIds(modelname, ids)).apiResponse;
-        }
-
-        return inner;
+    async deleteMany(
+        _: any, 
+        { ids }: { ids: string[] }, 
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {
+        return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
     }
 
-    create() {
-        const modelname = this.modelname;
-
-        async function inner(
-            _: any, 
-            { data }: types.CreateArgs, 
-            { dataSources: { db } }: types.AppContext
-        ) {
-            return (await db.create(modelname, data)).apiResponse;
-        }
-
-        return inner;
+    async create(
+        _: any, 
+        { data }: types.CreateArgs, 
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse> {
+        return (await db.create(this.modelname, data)).apiResponse;
     }
 
     register() {
@@ -259,19 +218,19 @@ export class BaseMutationResolvers extends ResolversManager {
         this.createName = `create${this.mutationResolverMarker}`
 
         // update one
-        this.isUpdatable && this.setResolver(this.updateOneName, this.updateOne())
+        this.isUpdatable && this.setResolver(this.updateOneName, this.updateOne.bind(this))
 
         // update many
-        this.isUpdatable && this.isIterrable && this.setResolver(this.updateManyName, this.updateMany())
+        this.isUpdatable && this.isIterrable && this.setResolver(this.updateManyName, this.updateMany.bind(this))
 
         // delete one
-        this.isDeletable && this.setResolver(this.deleteOneName, this.deleteOne())
+        this.isDeletable && this.setResolver(this.deleteOneName, this.deleteOne.bind(this))
 
         // delete many
-        this.isDeletable && this.isIterrable && this.setResolver(this.deleteManyName, this.deleteMany())
+        this.isDeletable && this.isIterrable && this.setResolver(this.deleteManyName, this.deleteMany.bind(this))
 
         // create instance of model
-        this.isCreatable && this.setResolver(this.createName, this.create())
+        this.isCreatable && this.setResolver(this.createName, this.create.bind(this))
 
         return super.register(
             [ 

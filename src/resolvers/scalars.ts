@@ -9,7 +9,8 @@ import {
     PositiveIntResolver,
     PositiveFloatResolver,
     EmailAddressResolver,
-    JWTResolver
+    JWTResolver,
+    TimeZoneResolver
 } from "graphql-scalars";
 import * as types from "../types";
 
@@ -21,7 +22,8 @@ const resolvers: types.Resolvers = {
     PositiveInt: PositiveIntResolver,
     PositiveFloat: PositiveFloatResolver,
     EmailAddress: EmailAddressResolver,
-    JWT: JWTResolver
+    JWT: JWTResolver,
+    TimeZone: TimeZoneResolver
 }
 
 export default resolvers;

@@ -29,6 +29,7 @@ type SiteConfigType {
     min_duration: PositiveFloat!
     support_email: EmailAddress!
     phone_number: PhoneNumber!
+    timezone: TimeZone!
 }
 
 type SiteConfigResponseType implements APIResponseInterface {

@@ -1,7 +1,7 @@
 
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import * as types from "./types";
-import dayjs from "dayjs";
+import { dayjs } from "@src/lib/dayjs";
 import * as tools from "@src/tools";
 import { nanoid } from "nanoid";
 
@@ -85,7 +85,7 @@ export class RefreshToken {
                 is_revoked: false, 
                 role: claims.aud,
                 user_id: claims.sub,
-                expired_at: { lt: dayjs().toISOString() }
+                expired_at: { gte: dayjs().toISOString() }
             }
         );
 
@@ -102,7 +102,7 @@ export class RefreshToken {
 
         // mark RT as revoked in DB
         await this.db.updateManyByFilter(
-            "refreshToken", 
+            "refreshToken",
             { 
                 user_id: claims.sub, 
                 role: claims.aud, 
@@ -114,7 +114,10 @@ export class RefreshToken {
         return this;
     }
 
-    static async searchByAT(at: string, db: types.AppContext["dataSources"]["db"]): Promise<RefreshToken | null> {
+    static async searchByAT(
+        at: string, 
+        db: types.AppContext["dataSources"]["db"]
+    ): Promise<RefreshToken | null> {
         const claims = decodeJwt<types.JWTPayload>(at);
         const { sign } = jwt.separateJWT(at);
         const q = await db.getOneByFilter(
@@ -136,7 +139,11 @@ export class RefreshToken {
     }
 
     // includes token reqgistration in DB
-    static async create(role: types.Roles, userId: string, db: types.AppContext["dataSources"]["db"]): Promise<RefreshToken> {
+    static async create(
+        role: types.Roles, 
+        userId: string, 
+        db: types.AppContext["dataSources"]["db"]
+    ): Promise<RefreshToken> {
         const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
         const token = await jwt.generate(
             {
@@ -183,7 +190,7 @@ export async function createAuthTokens(
     userId: string = nanoid(parseInt(process.env.USER_ID_LENGTH!)), 
     role: types.Roles = "GUEST", 
     db: types.AppContext["dataSources"]["db"]
-){
+): Promise<{ at: string, rt: string }>  {
     return {
         at: await AccessToken.create(role, userId),
         rt: (await RefreshToken.create(role, userId, db)).jwt

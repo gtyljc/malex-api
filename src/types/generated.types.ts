@@ -22,6 +22,7 @@ export type Scalars = {
   PhoneNumber: { input: any; output: any; }
   PositiveFloat: { input: any; output: any; }
   PositiveInt: { input: any; output: any; }
+  TimeZone: { input: any; output: any; }
   URL: { input: any; output: any; }
 };
 
@@ -370,6 +371,7 @@ export type SiteConfigType = {
   opening_at: Scalars['DateTimeISO']['output'];
   phone_number: Scalars['PhoneNumber']['output'];
   support_email: Scalars['EmailAddress']['output'];
+  timezone: Scalars['TimeZone']['output'];
 };
 
 export type SiteConfigUpdateInput = {
@@ -573,6 +575,7 @@ export type ResolversTypes = {
   StartUploadImageType: ResolverTypeWrapper<StartUploadImageType>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TimeUnitEnum: TimeUnitEnum;
+  TimeZone: ResolverTypeWrapper<Scalars['TimeZone']['output']>;
   URL: ResolverTypeWrapper<Scalars['URL']['output']>;
   WorkCategoryEnum: WorkCategoryEnum;
   WorkCreateInput: WorkCreateInput;
@@ -621,6 +624,7 @@ export type ResolversParentTypes = {
   StartUploadImageResponseType: StartUploadImageResponseType;
   StartUploadImageType: StartUploadImageType;
   String: Scalars['String']['output'];
+  TimeZone: Scalars['TimeZone']['output'];
   URL: Scalars['URL']['output'];
   WorkCreateInput: WorkCreateInput;
   WorkResponseType: WorkResponseType;
@@ -822,6 +826,7 @@ export type SiteConfigTypeResolvers<ContextType = any, ParentType extends Resolv
   opening_at?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
   phone_number?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
   support_email?: Resolver<ResolversTypes['EmailAddress'], ParentType, ContextType>;
+  timezone?: Resolver<ResolversTypes['TimeZone'], ParentType, ContextType>;
 };
 
 export type StartUploadImageResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['StartUploadImageResponseType'] = ResolversParentTypes['StartUploadImageResponseType']> = {
@@ -836,6 +841,10 @@ export type StartUploadImageTypeResolvers<ContextType = any, ParentType extends 
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
 };
+
+export interface TimeZoneScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['TimeZone'], any> {
+  name: 'TimeZone';
+}
 
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
   name: 'URL';
@@ -888,6 +897,7 @@ export type Resolvers<ContextType = any> = {
   SiteConfigType?: SiteConfigTypeResolvers<ContextType>;
   StartUploadImageResponseType?: StartUploadImageResponseTypeResolvers<ContextType>;
   StartUploadImageType?: StartUploadImageTypeResolvers<ContextType>;
+  TimeZone?: GraphQLScalarType;
   URL?: GraphQLScalarType;
   WorkResponseType?: WorkResponseTypeResolvers<ContextType>;
   WorkType?: WorkTypeResolvers<ContextType>;
