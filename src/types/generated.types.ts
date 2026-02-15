@@ -381,6 +381,7 @@ export type SiteConfigUpdateInput = {
   opening_at?: InputMaybe<Scalars['DateTimeISO']['input']>;
   phone_number?: InputMaybe<Scalars['PhoneNumber']['input']>;
   support_email?: InputMaybe<Scalars['EmailAddress']['input']>;
+  timezone?: InputMaybe<Scalars['TimeZone']['input']>;
 };
 
 export type SortInput = {

@@ -5,18 +5,18 @@ import * as auth from "@src/auth";
 import * as tools from "@src/tools";
 import { decodeJwt } from "jose";
 
-var adminPanelKey: string;
+var adminPanelKey = crypto.randomUUID();
 
-function updateAdminPanelKey(){
-    adminPanelKey = crypto.randomUUID();
+// function updateAdminPanelKey(){
+//     adminPanelKey = crypto.randomUUID();
 
-    console.log(`http://localhost:3000/admin?key=${adminPanelKey}`);
-}
+//     console.log(`http://localhost:3000/admin?key=${adminPanelKey}`);
+// }
 
 // initialization of Admin Panel key
-updateAdminPanelKey();
+console.log(`http://localhost:3000/admin?key=${adminPanelKey}`);
 
-setInterval(updateAdminPanelKey, parseInt(process.env.ADMIN_PANEL_KEY_REFRESH_DELAY!));
+// setInterval(updateAdminPanelKey, parseInt(process.env.ADMIN_PANEL_KEY_REFRESH_DELAY!));
 
 const resolvers: types.Resolvers = {
     Query: {
@@ -31,13 +31,10 @@ const resolvers: types.Resolvers = {
             { username, password }: types.MutationAdminLoginArgs,
             { dataSources: { db } }: types.AppContext
         ) => {
-            const q = await db.getOneByFilter("admin", { username, password, is_logged: false });
+            const q = await db.getOneByFilter("admin", { username, password });
 
             // if admin not exist
             if(!q.qResult) return responses.f403Response();
-
-            // set flag as logged in DB
-            await db.updateById("admin", q.qResult.id, { is_logged: true });
 
             return responses.f200Response([ await auth.createAuthTokens(q.qResult.user_id, "ADMIN", db) ]);
         },
@@ -55,9 +52,6 @@ const resolvers: types.Resolvers = {
 
             // revoke current RT and give new one
             const claims = decodeJwt(rt);
-
-            // reset flag is_logged
-            await db.updateById("admin", claims.sub as string, { is_logged: false });
 
             return responses.f200Response([ await auth.createAuthTokens(claims.sub, claims.aud as types.Roles, db) ]);
         }

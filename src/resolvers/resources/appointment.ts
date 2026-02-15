@@ -34,7 +34,7 @@ class AppointmentQueryResolvers extends BaseQueryResolvers {
         if(unit == "DAY") {
             let day = dayjs(start);
             let busy: types.BusyType[] = [];
-            const siteConfig = await tools.getSiteConfig(db.dbConnection.client);
+            const siteConfig = await tools.getSiteConfig(db);
             const workTime = dayjs(siteConfig.closing_at).diff(dayjs(siteConfig.starting_at));
 
             while (day.unix() < dayjs(end).unix()) {
@@ -77,13 +77,12 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
        ctx: types.AppContext 
     ): Promise<types.APIResponse> {
         const { data } = args;
-        const { dataSources: { db } } = ctx;
 
         // proof time range of appointment
         if (dayjs(data.date).unix() < dayjs().unix()) return responses.f400Response();
 
         // add default duration
-        data["duration"] = (await tools.getSiteConfig(db.dbConnection.client)).min_duration;
+        data["duration"] = (await tools.getSiteConfig(ctx.dataSources.db)).min_duration;
 
         return await super.create(_, args, ctx);
     }

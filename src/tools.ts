@@ -1,6 +1,5 @@
 
-import { getConfig } from "@lib/prisma/generated/sql";
-import { PrismaClient } from "@lib/prisma/generated";
+import { DatabaseSource } from "./sources";
 
 // returns new string with capitalized first letter
 export function capitalize(str: string): string {
@@ -57,9 +56,9 @@ export function getJWTFromHeader(header: string): string {
     return header.replace("Bearer ", "")
 }
 
-// all case functions must have one argument that respresents deserialization of object;,
+// all case functions must have one argument that respresents deserialization of object;
 // each validation case must return array like [ validationResult, nextValue ];
-// each case function gets result of previous in the "next" value
+// each case function gets result of previous in the "next" param
 export function validate(cases: Array<Function>, args: Object = {}, untilFalse = true): boolean {
     var isValid = true;
     var next: any;
@@ -82,6 +81,6 @@ export function validate(cases: Array<Function>, args: Object = {}, untilFalse =
     return isValid;
 }
 
-export async function getSiteConfig(prisma: PrismaClient): Promise<Record<any, any>> {
-    return (await prisma.$queryRawTyped(getConfig()))[0];
+export async function getSiteConfig(db: DatabaseSource): Promise<Record<any, any>> {
+    return (await db.getOneById("siteConfig", "1")).qResult;
 }

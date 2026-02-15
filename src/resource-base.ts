@@ -67,7 +67,6 @@ class ResolversManager {
 
 export class BaseQueryResolvers extends ResolversManager {
     
-    // names of base query resolvers
     protected getManyName!: string;
     protected getOneName!: string;
     protected isIterrable: boolean;
@@ -82,16 +81,20 @@ export class BaseQueryResolvers extends ResolversManager {
         _: any,
         { ids, filter, pagination, sort }: types.GetManyArgs,
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {        
+    ): Promise<types.APIResponse> {
+
         if (
             !tools.validate(
                 [
-                    ({ ids, filter }: types.GetManyArgs) => [ ids && filter ],
+                    // must be specified filter + pagination or ids
+                    ({ ids, filter, pagination }: types.GetManyArgs) => [ ids || filter && pagination ],
+
+                    // if filter was specified then pagination must be under per request limit
                     ({ filter, pagination }: types.GetManyArgs) => [
-                        filter ? (pagination?.perPage > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)): true
+                        filter && (pagination?.perPage < parseInt(process.env.PER_PAGE_LIMIT!))
                     ]
                 ],
-                { ids, filter }
+                { ids, filter, pagination }
             )
         ){
             return responses.f400Response();
@@ -115,8 +118,6 @@ export class BaseQueryResolvers extends ResolversManager {
         { id }: types.GetOneArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse> {
-        console.log(this.modelname);
-
         return (await db.getOneById(this.modelname, id)).apiResponse;   
     }
 
@@ -127,10 +128,9 @@ export class BaseQueryResolvers extends ResolversManager {
         this.getManyName = this.queryResolverMarker + "s";
 
         // register resolver to get single entity
-        this.setResolver(this.getOneName, this.getOne.bind(this))
+        this.setResolver(this.getOneName, this.getOne.bind(this));
 
-        // register resolver to get list
-        this.isIterrable && this.setResolver(this.getManyName, this.getMany.bind(this))
+        this.isIterrable && this.setResolver(this.getManyName, this.getMany.bind(this));
 
         return super.register([ "getOne", "getMany" ]);
     }

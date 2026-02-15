@@ -15,7 +15,7 @@ class SiteConfigQueryResolvers extends BaseQueryResolvers {
 
     // only necessary data for frontend about site config
     async contactData(_: any, __: any, { dataSources: { db } }: types.AppContext){
-        const config = await tools.getSiteConfig(db.dbConnection.client);
+        const config = await tools.getSiteConfig(db);
 
         return responses.f200Response(
             [

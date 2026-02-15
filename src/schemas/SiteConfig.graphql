@@ -64,4 +64,5 @@ input SiteConfigUpdateInput {
     min_duration: PositiveFloat
     support_email: EmailAddress
     phone_number: PhoneNumber
+    timezone: TimeZone
 }

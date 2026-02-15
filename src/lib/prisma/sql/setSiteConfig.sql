@@ -1,4 +1,15 @@
 
+-- args
+
+-- @param {String} $1:opening_at when enterprise is openning
+-- @param {String} $2:closing_at when enterprise is closing
+-- @param {Float} $3:min_duration minimal duration of one appointment
+-- @param {String} $4:support_email support email of enterprise
+-- @param {String} $5:phone_number telephone number of enterprise
+-- @param {String} $6:timezone default timezone of DB ( the same where enterprise is )
+
+-- /args
+
 -- writes new row if table is empty
 INSERT INTO "SiteConfig" (
     id,
