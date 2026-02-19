@@ -81,7 +81,7 @@ export class BaseQueryResolvers extends ResolversManager {
         _: any,
         { ids, filter, pagination, sort }: types.GetManyArgs,
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
 
         if (
             !tools.validate(
@@ -117,7 +117,7 @@ export class BaseQueryResolvers extends ResolversManager {
         _: any, 
         { id }: types.GetOneArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
         return (await db.getOneById(this.modelname, id)).apiResponse;   
     }
 
@@ -171,7 +171,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { id, data }: types.UpdateOneArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
         return (await db.updateById(this.modelname, id, data)).apiResponse;
     }
 
@@ -179,7 +179,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { ids, data }: types.UpdateManyArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
         return (await db.updateManyByIds(this.modelname, ids, data)).apiResponse
 
     }
@@ -188,7 +188,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { id }: { id: string }, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
         return (await db.deleteById(this.modelname, id)).apiResponse;
     }
 
@@ -196,7 +196,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { ids }: { ids: string[] }, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
         return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
     }
 
@@ -204,7 +204,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { data }: types.CreateArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<any>> {
         return (await db.create(this.modelname, data)).apiResponse;
     }
 

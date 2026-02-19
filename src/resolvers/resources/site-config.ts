@@ -14,7 +14,11 @@ class SiteConfigQueryResolvers extends BaseQueryResolvers {
     }
 
     // only necessary data for frontend about site config
-    async contactData(_: any, __: any, { dataSources: { db } }: types.AppContext){
+    async publicConfig(
+        _: any, 
+        __: any,
+        { dataSources: { db } }: types.AppContext
+    ): Promise<types.APIResponse<types.PublicConfigResponseType>> {
         const config = await tools.getSiteConfig(db);
 
         return responses.f200Response(
@@ -24,7 +28,9 @@ class SiteConfigQueryResolvers extends BaseQueryResolvers {
                     closing_at: config.closing_at,
                     min_duration: config.min_duration,
                     support_email: config.support_email,
-                    phone_number: config.phone_number
+                    phone_number: config.phone_number,
+                    c_country: config.c_country,
+                    timezone: config.timezone
                 }
             ]
         )

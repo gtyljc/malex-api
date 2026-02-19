@@ -14,7 +14,7 @@ const resolvers: types.Resolvers = {
             _,
             { user_id, role }: types.MutationCreateRtArgs,
             { req, dataSources: { db } }: types.AppContext
-        ): Promise<types.APIResponse> => {
+        ): Promise<types.APIResponse<types.JwtType>> => {
 
             // check IP of sender ( it's must be backend or localhost )
             if (!tools.isSentFromBackend(req.socket.remoteAddress as string)) return responses.f403Response();
@@ -28,7 +28,7 @@ const resolvers: types.Resolvers = {
             _,
             __,
             { req, dataSources: { db } }: types.AppContext
-        ): Promise<types.APIResponse> => {
+        ): Promise<types.APIResponse<types.JwtType>> => {
             const rt = new auth.RefreshToken(tools.getJWTFromHeader(req.headers.authorization as string), db);
 
             // check if refresh token exist

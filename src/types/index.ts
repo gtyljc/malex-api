@@ -108,8 +108,8 @@ export type CreateArgs = {
 
 // responses
 
-export type APIResponse = {
-    data: any[]
+export type APIResponse<ResponseType> = {
+    data: ResponseType[]
     pagination?: generated.PaginationType
 } & generated.ApiResponseInterface
 

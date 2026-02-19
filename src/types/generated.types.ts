@@ -14,6 +14,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  CountryCode: { input: any; output: any; }
   DateTimeISO: { input: any; output: any; }
   EmailAddress: { input: any; output: any; }
   /** Public scalars, types, interfaces, enums... */
@@ -107,23 +108,6 @@ export type BusyType = {
   __typename?: 'BusyType';
   busy: Scalars['Boolean']['output'];
   date: Scalars['DateTimeISO']['output'];
-};
-
-export type ContactDataResponseType = ApiResponseInterface & {
-  __typename?: 'ContactDataResponseType';
-  code: Scalars['Int']['output'];
-  data: Array<Maybe<ContactDataType>>;
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
-export type ContactDataType = {
-  __typename?: 'ContactDataType';
-  closing_at: Scalars['DateTimeISO']['output'];
-  min_duration: Scalars['PositiveFloat']['output'];
-  opening_at: Scalars['DateTimeISO']['output'];
-  phone_number: Scalars['PhoneNumber']['output'];
-  support_email: Scalars['EmailAddress']['output'];
 };
 
 export type FinalizeUploadImageResponseType = ApiResponseInterface & {
@@ -267,6 +251,25 @@ export type PaginationType = {
   total: Scalars['Int']['output'];
 };
 
+export type PublicConfigResponseType = ApiResponseInterface & {
+  __typename?: 'PublicConfigResponseType';
+  code: Scalars['Int']['output'];
+  data: Array<Maybe<PublicConfigType>>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type PublicConfigType = {
+  __typename?: 'PublicConfigType';
+  c_country: Scalars['CountryCode']['output'];
+  closing_at: Scalars['DateTimeISO']['output'];
+  min_duration: Scalars['PositiveFloat']['output'];
+  opening_at: Scalars['DateTimeISO']['output'];
+  phone_number: Scalars['PhoneNumber']['output'];
+  support_email: Scalars['EmailAddress']['output'];
+  timezone: Scalars['TimeZone']['output'];
+};
+
 export type PublicWorkResponseType = ApiResponseInterface & {
   __typename?: 'PublicWorkResponseType';
   code: Scalars['Int']['output'];
@@ -289,9 +292,9 @@ export type Query = {
   appointment: AppointmentResponseType;
   appointments: AppointmentResponseType;
   busyInRange: BusyResponseType;
-  contactData: SiteConfigResponseType;
   getWorks: PublicWorkResponseType;
   newWorks: PublicWorkResponseType;
+  publicConfig: PublicConfigResponseType;
   siteConfig: SiteConfigResponseType;
   work: WorkResponseType;
   works: WorkResponseType;
@@ -312,8 +315,7 @@ export type QueryAppointmentsArgs = {
 
 
 export type QueryBusyInRangeArgs = {
-  end: Scalars['DateTimeISO']['input'];
-  start: Scalars['DateTimeISO']['input'];
+  date: Scalars['DateTimeISO']['input'];
   unit: TimeUnitEnum;
 };
 
@@ -365,6 +367,7 @@ export type SiteConfigResponseType = ApiResponseInterface & {
 
 export type SiteConfigType = {
   __typename?: 'SiteConfigType';
+  c_country: Scalars['CountryCode']['output'];
   closing_at: Scalars['DateTimeISO']['output'];
   id: Scalars['ID']['output'];
   min_duration: Scalars['PositiveFloat']['output'];
@@ -375,6 +378,7 @@ export type SiteConfigType = {
 };
 
 export type SiteConfigUpdateInput = {
+  c_country?: InputMaybe<Scalars['CountryCode']['input']>;
   closing_at?: InputMaybe<Scalars['DateTimeISO']['input']>;
   id?: InputMaybe<Scalars['ID']['input']>;
   min_duration?: InputMaybe<Scalars['PositiveFloat']['input']>;
@@ -522,9 +526,9 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
     | ( AdminPanelKeyResponse )
     | ( AppointmentResponseType )
     | ( BusyResponseType )
-    | ( ContactDataResponseType )
     | ( FinalizeUploadImageResponseType )
     | ( JwtResponseType )
+    | ( PublicConfigResponseType )
     | ( PublicWorkResponseType )
     | ( SiteConfigResponseType )
     | ( StartUploadImageResponseType )
@@ -544,8 +548,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   BusyResponseType: ResolverTypeWrapper<BusyResponseType>;
   BusyType: ResolverTypeWrapper<BusyType>;
-  ContactDataResponseType: ResolverTypeWrapper<ContactDataResponseType>;
-  ContactDataType: ResolverTypeWrapper<ContactDataType>;
+  CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
   DateTimeISO: ResolverTypeWrapper<Scalars['DateTimeISO']['output']>;
   EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']['output']>;
   FinalizeUploadImageResponseType: ResolverTypeWrapper<FinalizeUploadImageResponseType>;
@@ -564,6 +567,8 @@ export type ResolversTypes = {
   PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']['output']>;
   PositiveFloat: ResolverTypeWrapper<Scalars['PositiveFloat']['output']>;
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']['output']>;
+  PublicConfigResponseType: ResolverTypeWrapper<PublicConfigResponseType>;
+  PublicConfigType: ResolverTypeWrapper<PublicConfigType>;
   PublicWorkResponseType: ResolverTypeWrapper<PublicWorkResponseType>;
   PublicWorkType: ResolverTypeWrapper<PublicWorkType>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
@@ -596,8 +601,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   BusyResponseType: BusyResponseType;
   BusyType: BusyType;
-  ContactDataResponseType: ContactDataResponseType;
-  ContactDataType: ContactDataType;
+  CountryCode: Scalars['CountryCode']['output'];
   DateTimeISO: Scalars['DateTimeISO']['output'];
   EmailAddress: Scalars['EmailAddress']['output'];
   FinalizeUploadImageResponseType: FinalizeUploadImageResponseType;
@@ -615,6 +619,8 @@ export type ResolversParentTypes = {
   PhoneNumber: Scalars['PhoneNumber']['output'];
   PositiveFloat: Scalars['PositiveFloat']['output'];
   PositiveInt: Scalars['PositiveInt']['output'];
+  PublicConfigResponseType: PublicConfigResponseType;
+  PublicConfigType: PublicConfigType;
   PublicWorkResponseType: PublicWorkResponseType;
   PublicWorkType: PublicWorkType;
   Query: Record<PropertyKey, never>;
@@ -640,7 +646,7 @@ export type AuthDirectiveArgs = {
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type ApiResponseInterfaceResolvers<ContextType = any, ParentType extends ResolversParentTypes['APIResponseInterface'] = ResolversParentTypes['APIResponseInterface']> = {
-  __resolveType: TypeResolveFn<'AdminPanelKeyResponse' | 'AppointmentResponseType' | 'BusyResponseType' | 'ContactDataResponseType' | 'FinalizeUploadImageResponseType' | 'JWTResponseType' | 'PublicWorkResponseType' | 'SiteConfigResponseType' | 'StartUploadImageResponseType' | 'WorkResponseType', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AdminPanelKeyResponse' | 'AppointmentResponseType' | 'BusyResponseType' | 'FinalizeUploadImageResponseType' | 'JWTResponseType' | 'PublicConfigResponseType' | 'PublicWorkResponseType' | 'SiteConfigResponseType' | 'StartUploadImageResponseType' | 'WorkResponseType', ParentType, ContextType>;
 };
 
 export type AdminPanelKeyResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdminPanelKeyResponse'] = ResolversParentTypes['AdminPanelKeyResponse']> = {
@@ -686,21 +692,9 @@ export type BusyTypeResolvers<ContextType = any, ParentType extends ResolversPar
   date?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
 };
 
-export type ContactDataResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ContactDataResponseType'] = ResolversParentTypes['ContactDataResponseType']> = {
-  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  data?: Resolver<Array<Maybe<ResolversTypes['ContactDataType']>>, ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ContactDataTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ContactDataType'] = ResolversParentTypes['ContactDataType']> = {
-  closing_at?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
-  min_duration?: Resolver<ResolversTypes['PositiveFloat'], ParentType, ContextType>;
-  opening_at?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
-  phone_number?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
-  support_email?: Resolver<ResolversTypes['EmailAddress'], ParentType, ContextType>;
-};
+export interface CountryCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['CountryCode'], any> {
+  name: 'CountryCode';
+}
 
 export interface DateTimeIsoScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTimeISO'], any> {
   name: 'DateTimeISO';
@@ -784,6 +778,24 @@ export interface PositiveIntScalarConfig extends GraphQLScalarTypeConfig<Resolve
   name: 'PositiveInt';
 }
 
+export type PublicConfigResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicConfigResponseType'] = ResolversParentTypes['PublicConfigResponseType']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  data?: Resolver<Array<Maybe<ResolversTypes['PublicConfigType']>>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PublicConfigTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicConfigType'] = ResolversParentTypes['PublicConfigType']> = {
+  c_country?: Resolver<ResolversTypes['CountryCode'], ParentType, ContextType>;
+  closing_at?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
+  min_duration?: Resolver<ResolversTypes['PositiveFloat'], ParentType, ContextType>;
+  opening_at?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
+  phone_number?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
+  support_email?: Resolver<ResolversTypes['EmailAddress'], ParentType, ContextType>;
+  timezone?: Resolver<ResolversTypes['TimeZone'], ParentType, ContextType>;
+};
+
 export type PublicWorkResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicWorkResponseType'] = ResolversParentTypes['PublicWorkResponseType']> = {
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   data?: Resolver<Array<Maybe<ResolversTypes['PublicWorkType']>>, ParentType, ContextType>;
@@ -803,10 +815,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   adminPanelKey?: Resolver<Maybe<ResolversTypes['AdminPanelKeyResponse']>, ParentType, ContextType>;
   appointment?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<QueryAppointmentArgs, 'id'>>;
   appointments?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, Partial<QueryAppointmentsArgs>>;
-  busyInRange?: Resolver<ResolversTypes['BusyResponseType'], ParentType, ContextType, RequireFields<QueryBusyInRangeArgs, 'end' | 'start' | 'unit'>>;
-  contactData?: Resolver<ResolversTypes['SiteConfigResponseType'], ParentType, ContextType>;
+  busyInRange?: Resolver<ResolversTypes['BusyResponseType'], ParentType, ContextType, RequireFields<QueryBusyInRangeArgs, 'date' | 'unit'>>;
   getWorks?: Resolver<ResolversTypes['PublicWorkResponseType'], ParentType, ContextType, RequireFields<QueryGetWorksArgs, 'filter' | 'pagination'>>;
   newWorks?: Resolver<ResolversTypes['PublicWorkResponseType'], ParentType, ContextType, Partial<QueryNewWorksArgs>>;
+  publicConfig?: Resolver<ResolversTypes['PublicConfigResponseType'], ParentType, ContextType>;
   siteConfig?: Resolver<ResolversTypes['SiteConfigResponseType'], ParentType, ContextType, RequireFields<QuerySiteConfigArgs, 'id'>>;
   work?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<QueryWorkArgs, 'id'>>;
   works?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, Partial<QueryWorksArgs>>;
@@ -821,6 +833,7 @@ export type SiteConfigResponseTypeResolvers<ContextType = any, ParentType extend
 };
 
 export type SiteConfigTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['SiteConfigType'] = ResolversParentTypes['SiteConfigType']> = {
+  c_country?: Resolver<ResolversTypes['CountryCode'], ParentType, ContextType>;
   closing_at?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   min_duration?: Resolver<ResolversTypes['PositiveFloat'], ParentType, ContextType>;
@@ -875,8 +888,7 @@ export type Resolvers<ContextType = any> = {
   AppointmentType?: AppointmentTypeResolvers<ContextType>;
   BusyResponseType?: BusyResponseTypeResolvers<ContextType>;
   BusyType?: BusyTypeResolvers<ContextType>;
-  ContactDataResponseType?: ContactDataResponseTypeResolvers<ContextType>;
-  ContactDataType?: ContactDataTypeResolvers<ContextType>;
+  CountryCode?: GraphQLScalarType;
   DateTimeISO?: GraphQLScalarType;
   EmailAddress?: GraphQLScalarType;
   FinalizeUploadImageResponseType?: FinalizeUploadImageResponseTypeResolvers<ContextType>;
@@ -891,6 +903,8 @@ export type Resolvers<ContextType = any> = {
   PhoneNumber?: GraphQLScalarType;
   PositiveFloat?: GraphQLScalarType;
   PositiveInt?: GraphQLScalarType;
+  PublicConfigResponseType?: PublicConfigResponseTypeResolvers<ContextType>;
+  PublicConfigType?: PublicConfigTypeResolvers<ContextType>;
   PublicWorkResponseType?: PublicWorkResponseTypeResolvers<ContextType>;
   PublicWorkType?: PublicWorkTypeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

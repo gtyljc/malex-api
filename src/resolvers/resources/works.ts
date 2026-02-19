@@ -18,7 +18,7 @@ class WorkQueryResolvers extends BaseQueryResolvers {
         _: any, 
         { num }: types.QueryNewWorksArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse> {   
+    ): Promise<types.APIResponse<types.PublicWorkType>> {   
 
         // pagination limitation
         if (num > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)){
@@ -44,7 +44,7 @@ class WorkQueryResolvers extends BaseQueryResolvers {
         _: any,
         args: types.GetManyArgs, 
         ctx: types.AppContext
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<types.PublicWorkType>> {
         const r = await super.getMany(_, { ...args, ids: [] }, ctx);
 
         r.data = r.data.map(

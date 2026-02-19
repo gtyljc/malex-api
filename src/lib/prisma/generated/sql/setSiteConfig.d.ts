@@ -7,10 +7,11 @@ import * as $runtime from "../runtime/client"
  * @param support_email support email of enterprise
  * @param phone_number telephone number of enterprise
  * @param timezone default timezone of DB ( the same where enterprise is )
+ * @param c_country country code where enterprise is
  */
-export const setSiteConfig: (opening_at: string, closing_at: string, min_duration: number, support_email: string, phone_number: string, timezone: string) => $runtime.TypedSql<setSiteConfig.Parameters, setSiteConfig.Result>
+export const setSiteConfig: (opening_at: string, closing_at: string, min_duration: number, support_email: string, phone_number: string, timezone: string, c_country: string) => $runtime.TypedSql<setSiteConfig.Parameters, setSiteConfig.Result>
 
 export namespace setSiteConfig {
-  export type Parameters = [opening_at: string, closing_at: string, min_duration: number, support_email: string, phone_number: string, timezone: string]
+  export type Parameters = [opening_at: string, closing_at: string, min_duration: number, support_email: string, phone_number: string, timezone: string, c_country: string]
   export type Result = {}
 }

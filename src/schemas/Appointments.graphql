@@ -20,7 +20,7 @@ extend type Query {
     # <GUEST> role is required
     # returns set of busy types, that corresponds to each appointment
     # in specified range;
-    busyInRange(start: DateTimeISO!, end: DateTimeISO!, unit: TimeUnitEnum!): BusyResponseType! @auth(role: GUEST)
+    busyInRange(date: DateTimeISO!, unit: TimeUnitEnum!): BusyResponseType! @auth(role: GUEST)
 }
 
 

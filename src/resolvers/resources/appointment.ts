@@ -16,53 +16,78 @@ class AppointmentQueryResolvers extends BaseQueryResolvers {
 
     async busyInRange(
         _: any,
-        { start, end, unit }: types.QueryBusyInRangeArgs, 
+        { date, unit }: types.QueryBusyInRangeArgs, 
         { dataSources: { db } }: types.AppContext
-    ){
-        const apps = (
-            await db.getManyByFilter(
-                __modelname,
-                { 
-                    AND: [
-                        { date: { gte: start } }, 
-                        { date: { lte: end } } 
-                    ]
-                }
-            )
-        ).qResult;
+    ): Promise<types.APIResponse<types.BusyResponseType>>{
+        function startOfDay(dayjs: dayjs.Dayjs): dayjs.Dayjs {
+            return dayjs.hour(0).minute(0).second(0).millisecond(0)
+        }
+
+        function endOfDay(dayjs: dayjs.Dayjs): dayjs.Dayjs {
+            return dayjs.hour(23).minute(59).second(59).millisecond(99)
+        }
+
+        date = dayjs(date);
 
         if(unit == "DAY") {
-            let day = dayjs(start);
-            let busy: types.BusyType[] = [];
-            const siteConfig = await tools.getSiteConfig(db);
-            const workTime = dayjs(siteConfig.closing_at).diff(dayjs(siteConfig.starting_at));
+            const dayOffset = dayjs().date();
+            const monthTimeRange = [
 
-            while (day.unix() < dayjs(end).unix()) {
-                let appsInDay = apps.filter(
-                    e => dayjs(e.date).isBetween(
-                        day.hour(0).minute(0).second(0).millisecond(0), 
-                        day.hour(24).minute(0).second(0).millisecond(0)
-                    )
-                );
-                day = day.add(1, "day");
-                busy = busy.concat(
-                    appsInDay.map(
-                        e => (
-                            { 
-                                date: e.date, 
-                                busy: workTime <= appsInDay.reduce((acc, e) => acc += e.duration * 3600, 0) 
-                            }
-                        )
-                    )
+                // first day of month
+                dayjs().month() == date.month() ? startOfDay(date.date(dayOffset)): startOfDay(date.date(1)),
+                
+                // last day of month
+                endOfDay(date.date(31))
+            ];
+            const siteConfig = await tools.getSiteConfig(db);
+            const workTime = dayjs(siteConfig.closing_at).unix() - dayjs(siteConfig.opening_at).unix(); // seconds
+            const apps = (
+                await db.getManyByFilter(
+                    __modelname,
+                    { 
+                        AND: [
+                            { date: { gte: monthTimeRange[0].toISOString() } }, 
+                            { date: { lte: monthTimeRange[1].toISOString() } } 
+                        ]
+                    }
                 )
+            ).qResult;
+            let day = monthTimeRange[0];
+            const busy: types.BusyType[] = [];
+
+            while (day.unix() <= monthTimeRange[1].unix()){
+                let dayTimeRange = [ startOfDay(day), endOfDay(day) ]
+                let appsInDay = apps.filter( e => dayjs(e.date).isBetween(dayTimeRange[0], dayTimeRange[1]) );
+
+                // if day is full of appointments
+                if(appsInDay.reduce((acc, e) => acc + e.duration, 0) * 3600 == workTime){
+                    busy.push({ busy: true, date: day.toISOString() });
+                }
+
+                // go to next day
+                day = day.add(1, "day");
             }
 
             return responses.f200Response(busy);
         }
 
         if(unit == "APPOINTMENT") {
+            const apps = (
+                await db.getManyByFilter(
+                    __modelname,
+                    { 
+                        AND: [
+                            { date: { gte: startOfDay(date) } }, 
+                            { date: { lte: endOfDay(date) } } 
+                        ]
+                    }
+                )
+            ).qResult;
+
             return responses.f200Response(apps.map( e => ({ date: e.date, busy: true })));
         }
+
+        return responses.f400Response();
     }
 }
 
@@ -75,7 +100,7 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
        _: any, 
        args: types.CreateArgs, 
        ctx: types.AppContext 
-    ): Promise<types.APIResponse> {
+    ): Promise<types.APIResponse<types.AppointmentType>> {
         const { data } = args;
 
         // proof time range of appointment

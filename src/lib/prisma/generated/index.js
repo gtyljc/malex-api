@@ -19,7 +19,10 @@ const {
   skip,
   Decimal,
   Debug,
-  objectEnumValues,
+  DbNull,
+  JsonNull,
+  AnyNull,
+  NullTypes,
   makeStrictEnum,
   Extensions,
   warnOnce,
@@ -36,12 +39,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.2
- * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
+ * Prisma Client JS version: 7.4.0
+ * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
  */
 Prisma.prismaVersion = {
-  client: "6.19.2",
-  engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
+  client: "7.4.0",
+  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -69,15 +72,11 @@ Prisma.defineExtension = Extensions.defineExtension
 /**
  * Shorthand utilities for JSON filtering
  */
-Prisma.DbNull = objectEnumValues.instances.DbNull
-Prisma.JsonNull = objectEnumValues.instances.JsonNull
-Prisma.AnyNull = objectEnumValues.instances.AnyNull
+Prisma.DbNull = DbNull
+Prisma.JsonNull = JsonNull
+Prisma.AnyNull = AnyNull
 
-Prisma.NullTypes = {
-  DbNull: objectEnumValues.classes.DbNull,
-  JsonNull: objectEnumValues.classes.JsonNull,
-  AnyNull: objectEnumValues.classes.AnyNull
-}
+Prisma.NullTypes = NullTypes
 
 
 
@@ -122,7 +121,8 @@ exports.Prisma.SiteConfigScalarFieldEnum = {
   min_duration: 'min_duration',
   support_email: 'support_email',
   phone_number: 'phone_number',
-  timezone: 'timezone'
+  timezone: 'timezone',
+  c_country: 'c_country'
 };
 
 exports.Prisma.AdminScalarFieldEnum = {
@@ -197,98 +197,33 @@ exports.Prisma.ModelName = {
  * Create the Client
  */
 const config = {
-  "generator": {
-    "name": "client",
-    "provider": {
-      "fromEnvVar": null,
-      "value": "prisma-client-js"
-    },
-    "output": {
-      "value": "C:\\Users\\vanya\\Desktop\\malex-api\\src\\lib\\prisma\\generated",
-      "fromEnvVar": null
-    },
-    "config": {
-      "engineType": "client"
-    },
-    "binaryTargets": [
-      {
-        "fromEnvVar": null,
-        "value": "windows",
-        "native": true
-      }
-    ],
-    "previewFeatures": [
-      "typedSql"
-    ],
-    "sourceFilePath": "C:\\Users\\vanya\\Desktop\\malex-api\\src\\lib\\prisma\\schema.prisma",
-    "isCustomOutput": true
-  },
-  "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../../../.env"
-  },
-  "relativePath": "..",
-  "clientVersion": "6.19.2",
-  "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
-  "datasourceNames": [
-    "db"
+  "previewFeatures": [
+    "typedSql"
   ],
+  "clientVersion": "7.4.0",
+  "engineVersion": "ab56fe763f921d033a6c195e7ddeb3e255bdbb57",
   "activeProvider": "postgresql",
-  "inlineDatasources": {
-    "db": {
-      "url": {
-        "fromEnvVar": "DATABASE_URL",
-        "value": null
-      }
-    }
-  },
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated\"\n  engineType      = \"client\"\n  previewFeatures = [\"typedSql\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nenum Role {\n  GUEST\n  USER\n  ADMIN\n  SUPERUSER // backend\n  SUPERADMIN\n}\n\nmodel Appointment {\n  id           String    @id @default(nanoid(10))\n  name         String    @db.VarChar(50)\n  surname      String    @db.VarChar(50)\n  address      String    @db.VarChar(255)\n  job_desc     String    @db.VarChar(500)\n  bwt          BwtChoice\n  phone_number String?   @db.VarChar(20)\n  duration     Float\n  date         DateTime  @unique @db.Timestamptz(0)\n  completed    Boolean   @default(false)\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        String         @id @default(nanoid(16))\n  img_url   String         @unique @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now()) @db.Timestamptz(0)\n}\n\nmodel SiteConfig {\n  id            String   @id @default(\"1\")\n  opening_at    DateTime @db.Timetz(0)\n  closing_at    DateTime @db.Timetz(0)\n  min_duration  Float\n  support_email String\n  phone_number  String\n  timezone      String\n}\n\nmodel Admin {\n  id           String   @id @default(nanoid(16))\n  username     String   @db.VarChar(50)\n  password     String   @db.VarChar(50)\n  email        String   @db.VarChar(50)\n  fullname     String   @db.VarChar(50)\n  is_super     Boolean  @default(false)\n  last_session DateTime @default(now()) @db.Timestamptz(0)\n}\n\nmodel User {\n  id       String @id @default(nanoid(16))\n  username String @db.VarChar(50)\n  password String @db.VarChar(50)\n}\n\nmodel RefreshToken {\n  id         String   @id @default(nanoid(16))\n  hash       String   @unique\n  created_at DateTime @default(now()) @db.Timestamptz(0)\n  expired_at DateTime @db.Timestamptz(0)\n  is_revoked Boolean  @default(false)\n  role       Role\n  user_id    String   @db.VarChar(16)\n}\n",
-  "inlineSchemaHash": "37e8d7bdf23781c43a0151b7deec686cb2051a2ebde102cda99e649b90fa7759",
-  "copyEngine": true
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated\"\n  engineType      = \"client\"\n  previewFeatures = [\"typedSql\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nenum Role {\n  GUEST\n  USER\n  ADMIN\n  SUPERUSER // backend\n  SUPERADMIN\n}\n\nmodel Appointment {\n  id           String    @id @default(nanoid(10))\n  name         String    @db.VarChar(50)\n  surname      String    @db.VarChar(50)\n  address      String    @db.VarChar(255)\n  job_desc     String    @db.VarChar(500)\n  bwt          BwtChoice\n  phone_number String?   @db.VarChar(20)\n  duration     Float\n  date         DateTime  @unique @db.Timestamp(0)\n  completed    Boolean   @default(false)\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        String         @id @default(nanoid(16))\n  img_url   String         @unique @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now()) @db.Timestamp(0)\n}\n\nmodel SiteConfig {\n  id            String   @id @default(\"1\")\n  opening_at    DateTime @db.Time(0)\n  closing_at    DateTime @db.Time(0)\n  min_duration  Float\n  support_email String   @db.VarChar(50)\n  phone_number  String   @db.VarChar(25)\n  timezone      String   @db.VarChar(50)\n  c_country     String   @db.VarChar(2)\n}\n\nmodel Admin {\n  id           String   @id @default(nanoid(16))\n  username     String   @db.VarChar(50)\n  password     String   @db.VarChar(50)\n  email        String   @db.VarChar(50)\n  fullname     String   @db.VarChar(50)\n  is_super     Boolean  @default(false)\n  last_session DateTime @default(now()) @db.Timestamp(0)\n}\n\nmodel User {\n  id       String @id @default(nanoid(16))\n  username String @db.VarChar(50)\n  password String @db.VarChar(50)\n}\n\nmodel RefreshToken {\n  id         String   @id @default(nanoid(16))\n  hash       String   @unique\n  created_at DateTime @default(now()) @db.Timestamp(0)\n  expired_at DateTime @db.Timestamp(0)\n  is_revoked Boolean  @default(false)\n  role       Role\n  user_id    String   @db.VarChar(16)\n}\n"
 }
 
-const fs = require('fs')
-
-config.dirname = __dirname
-if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
-  const alternativePaths = [
-    "src/lib/prisma/generated",
-    "lib/prisma/generated",
-  ]
-  
-  const alternativePath = alternativePaths.find((altPath) => {
-    return fs.existsSync(path.join(process.cwd(), altPath, 'schema.prisma'))
-  }) ?? alternativePaths[0]
-
-  config.dirname = path.join(process.cwd(), alternativePath)
-  config.isBundled = true
-}
-
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"completed\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":null},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SiteConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"opening_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"closing_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"min_duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"support_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"timezone\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Admin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_super\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"last_session\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"RefreshToken\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"is_revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"completed\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":null},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SiteConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"opening_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"closing_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"min_duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"support_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"timezone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"c_country\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Admin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_super\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"last_session\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"RefreshToken\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"is_revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
-config.engineWasm = undefined
+config.parameterizationSchema = {
+  strings: JSON.parse("[\"where\",\"Appointment.findUnique\",\"Appointment.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"Appointment.findFirst\",\"Appointment.findFirstOrThrow\",\"Appointment.findMany\",\"data\",\"Appointment.createOne\",\"Appointment.createMany\",\"Appointment.createManyAndReturn\",\"Appointment.updateOne\",\"Appointment.updateMany\",\"Appointment.updateManyAndReturn\",\"create\",\"update\",\"Appointment.upsertOne\",\"Appointment.deleteOne\",\"Appointment.deleteMany\",\"having\",\"_count\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"Appointment.groupBy\",\"Appointment.aggregate\",\"Work.findUnique\",\"Work.findUniqueOrThrow\",\"Work.findFirst\",\"Work.findFirstOrThrow\",\"Work.findMany\",\"Work.createOne\",\"Work.createMany\",\"Work.createManyAndReturn\",\"Work.updateOne\",\"Work.updateMany\",\"Work.updateManyAndReturn\",\"Work.upsertOne\",\"Work.deleteOne\",\"Work.deleteMany\",\"Work.groupBy\",\"Work.aggregate\",\"SiteConfig.findUnique\",\"SiteConfig.findUniqueOrThrow\",\"SiteConfig.findFirst\",\"SiteConfig.findFirstOrThrow\",\"SiteConfig.findMany\",\"SiteConfig.createOne\",\"SiteConfig.createMany\",\"SiteConfig.createManyAndReturn\",\"SiteConfig.updateOne\",\"SiteConfig.updateMany\",\"SiteConfig.updateManyAndReturn\",\"SiteConfig.upsertOne\",\"SiteConfig.deleteOne\",\"SiteConfig.deleteMany\",\"SiteConfig.groupBy\",\"SiteConfig.aggregate\",\"Admin.findUnique\",\"Admin.findUniqueOrThrow\",\"Admin.findFirst\",\"Admin.findFirstOrThrow\",\"Admin.findMany\",\"Admin.createOne\",\"Admin.createMany\",\"Admin.createManyAndReturn\",\"Admin.updateOne\",\"Admin.updateMany\",\"Admin.updateManyAndReturn\",\"Admin.upsertOne\",\"Admin.deleteOne\",\"Admin.deleteMany\",\"Admin.groupBy\",\"Admin.aggregate\",\"User.findUnique\",\"User.findUniqueOrThrow\",\"User.findFirst\",\"User.findFirstOrThrow\",\"User.findMany\",\"User.createOne\",\"User.createMany\",\"User.createManyAndReturn\",\"User.updateOne\",\"User.updateMany\",\"User.updateManyAndReturn\",\"User.upsertOne\",\"User.deleteOne\",\"User.deleteMany\",\"User.groupBy\",\"User.aggregate\",\"RefreshToken.findUnique\",\"RefreshToken.findUniqueOrThrow\",\"RefreshToken.findFirst\",\"RefreshToken.findFirstOrThrow\",\"RefreshToken.findMany\",\"RefreshToken.createOne\",\"RefreshToken.createMany\",\"RefreshToken.createManyAndReturn\",\"RefreshToken.updateOne\",\"RefreshToken.updateMany\",\"RefreshToken.updateManyAndReturn\",\"RefreshToken.upsertOne\",\"RefreshToken.deleteOne\",\"RefreshToken.deleteMany\",\"RefreshToken.groupBy\",\"RefreshToken.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"hash\",\"created_at\",\"expired_at\",\"is_revoked\",\"Role\",\"role\",\"user_id\",\"equals\",\"in\",\"notIn\",\"not\",\"lt\",\"lte\",\"gt\",\"gte\",\"contains\",\"startsWith\",\"endsWith\",\"username\",\"password\",\"email\",\"fullname\",\"is_super\",\"last_session\",\"opening_at\",\"closing_at\",\"min_duration\",\"support_email\",\"phone_number\",\"timezone\",\"c_country\",\"img_url\",\"img_id\",\"CategoryChoice\",\"category\",\"timestamp\",\"name\",\"surname\",\"address\",\"job_desc\",\"BwtChoice\",\"bwt\",\"duration\",\"date\",\"completed\",\"set\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
+  graph: "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-ACADAAAAgQEAIAMAAIIBADAEAAB-ACADAAAAgQEAIAMAAIIBADAEAAB-ACAHbwEAAAABcAEAAAABcUAAAAABckAAAAABcyAAAAABdQAAAHUCdgEAAAABAQgAAIYBACAHbwEAAAABcAEAAAABcUAAAAABckAAAAABcyAAAAABdQAAAHUCdgEAAAABAQgAAIgBADABCAAAiAEAMAdvAQDIAQAhcAEAyAEAIXFAAMkBACFyQADJAQAhcyAAygEAIXUAAMsBdSJ2AQDIAQAhAgAAAH4AIAgAAIsBACAHbwEAyAEAIXABAMgBACFxQADJAQAhckAAyQEAIXMgAMoBACF1AADLAXUidgEAyAEAIQIAAACBAQAgCAAAjQEAIAIAAACBAQAgCAAAjQEAIAMAAAB-ACAPAACGAQAgEAAAiwEAIAEAAAB-ACABAAAAgQEAIAMVAADFAQAgGAAAxwEAIBkAAMYBACAKbAAAlwEAMG0AAJQBABBuAACXAQAwbwEAmAEAIXABAJgBACFxQACZAQAhckAAmQEAIXMgAJoBACF1AACbAXUidgEAmAEAIQMAAACBAQAgAwAAkwEAMBQAAJQBACADAAAAgQEAIAMAAIIBADAEAAB-ACAKbAAAlwEAMG0AAJQBABBuAACXAQAwbwEAmAEAIXABAJgBACFxQACZAQAhckAAmQEAIXMgAJoBACF1AACbAXUidgEAmAEAIQ4VAACdAQAgGAAApAEAIBkAAKQBACB3AQAAAAF4AQAAAAR5AQAAAAR6AQCjAQAhewEAAAABfAEAAAABfQEAAAABfgEAAAABfwEAAAABgAEBAAAAAYEBAQAAAAELFQAAnQEAIBgAAKIBACAZAACiAQAgd0AAAAABeEAAAAAEeUAAAAAEekAAoQEAIXtAAAAAAXxAAAAAAX1AAAAAAX5AAAAAAQUVAACdAQAgGAAAoAEAIBkAAKABACB3IAAAAAF6IACfAQAhBxUAAJ0BACAYAACeAQAgGQAAngEAIHcAAAB1AngAAAB1CHkAAAB1CHoAAJwBdSIHFQAAnQEAIBgAAJ4BACAZAACeAQAgdwAAAHUCeAAAAHUIeQAAAHUIegAAnAF1Igh3AgAAAAF4AgAAAAR5AgAAAAR6AgCdAQAhewIAAAABfAIAAAABfQIAAAABfgIAAAABBHcAAAB1AngAAAB1CHkAAAB1CHoAAJ4BdSIFFQAAnQEAIBgAAKABACAZAACgAQAgdyAAAAABeiAAnwEAIQJ3IAAAAAF6IACgAQAhCxUAAJ0BACAYAACiAQAgGQAAogEAIHdAAAAAAXhAAAAABHlAAAAABHpAAKEBACF7QAAAAAF8QAAAAAF9QAAAAAF-QAAAAAEId0AAAAABeEAAAAAEeUAAAAAEekAAogEAIXtAAAAAAXxAAAAAAX1AAAAAAX5AAAAAAQ4VAACdAQAgGAAApAEAIBkAAKQBACB3AQAAAAF4AQAAAAR5AQAAAAR6AQCjAQAhewEAAAABfAEAAAABfQEAAAABfgEAAAABfwEAAAABgAEBAAAAAYEBAQAAAAELdwEAAAABeAEAAAAEeQEAAAAEegEApAEAIXsBAAAAAXwBAAAAAX0BAAAAAX4BAAAAAX8BAAAAAYABAQAAAAGBAQEAAAABCmwAAKUBADBtAACBAQAQbgAApQEAMG8BAKYBACFwAQCmAQAhcUAApwEAIXJAAKcBACFzIACoAQAhdQAAqQF1InYBAKYBACELdwEAAAABeAEAAAAEeQEAAAAEegEApAEAIXsBAAAAAXwBAAAAAX0BAAAAAX4BAAAAAX8BAAAAAYABAQAAAAGBAQEAAAABCHdAAAAAAXhAAAAABHlAAAAABHpAAKIBACF7QAAAAAF8QAAAAAF9QAAAAAF-QAAAAAECdyAAAAABeiAAoAEAIQR3AAAAdQJ4AAAAdQh5AAAAdQh6AACeAXUiBmwAAKoBADBtAAB7ABBuAACqAQAwbwEAmAEAIYIBAQCYAQAhgwEBAJgBACEGbAAAqwEAMG0AAGgAEG4AAKsBADBvAQCmAQAhggEBAKYBACGDAQEApgEAIQpsAACsAQAwbQAAYgAQbgAArAEAMG8BAJgBACGCAQEAmAEAIYMBAQCYAQAhhAEBAJgBACGFAQEAmAEAIYYBIACaAQAhhwFAAJkBACEKbAAArQEAMG0AAE8AEG4AAK0BADBvAQCmAQAhggEBAKYBACGDAQEApgEAIYQBAQCmAQAhhQEBAKYBACGGASAAqAEAIYcBQACnAQAhC2wAAK4BADBtAABJABBuAACuAQAwbwEAmAEAIYgBQACZAQAhiQFAAJkBACGKAQgArwEAIYsBAQCYAQAhjAEBAJgBACGNAQEAmAEAIY4BAQCYAQAhDRUAAJ0BACAWAACxAQAgFwAAsQEAIBgAALEBACAZAACxAQAgdwgAAAABeAgAAAAEeQgAAAAEeggAsAEAIXsIAAAAAXwIAAAAAX0IAAAAAX4IAAAAAQ0VAACdAQAgFgAAsQEAIBcAALEBACAYAACxAQAgGQAAsQEAIHcIAAAAAXgIAAAABHkIAAAABHoIALABACF7CAAAAAF8CAAAAAF9CAAAAAF-CAAAAAEIdwgAAAABeAgAAAAEeQgAAAAEeggAsQEAIXsIAAAAAXwIAAAAAX0IAAAAAX4IAAAAAQtsAACyAQAwbQAANgAQbgAAsgEAMG8BAKYBACGIAUAApwEAIYkBQACnAQAhigEIALMBACGLAQEApgEAIYwBAQCmAQAhjQEBAKYBACGOAQEApgEAIQh3CAAAAAF4CAAAAAR5CAAAAAR6CACxAQAhewgAAAABfAgAAAABfQgAAAABfggAAAABCGwAALQBADBtAAAwABBuAAC0AQAwbwEAmAEAIY8BAQCYAQAhkAEBAJgBACGSAQAAtQGSASKTAUAAmQEAIQcVAACdAQAgGAAAtwEAIBkAALcBACB3AAAAkgECeAAAAJIBCHkAAACSAQh6AAC2AZIBIgcVAACdAQAgGAAAtwEAIBkAALcBACB3AAAAkgECeAAAAJIBCHkAAACSAQh6AAC2AZIBIgR3AAAAkgECeAAAAJIBCHkAAACSAQh6AAC3AZIBIghsAAC4AQAwbQAAHQAQbgAAuAEAMG8BAKYBACGPAQEApgEAIZABAQCmAQAhkgEAALkBkgEikwFAAKcBACEEdwAAAJIBAngAAACSAQh5AAAAkgEIegAAtwGSASINbAAAugEAMG0AABcAEG4AALoBADBvAQCYAQAhjAEBALwBACGUAQEAmAEAIZUBAQCYAQAhlgEBAJgBACGXAQEAmAEAIZkBAAC7AZkBIpoBCACvAQAhmwFAAJkBACGcASAAmgEAIQcVAACdAQAgGAAAwQEAIBkAAMEBACB3AAAAmQECeAAAAJkBCHkAAACZAQh6AADAAZkBIg4VAAC-AQAgGAAAvwEAIBkAAL8BACB3AQAAAAF4AQAAAAV5AQAAAAV6AQC9AQAhewEAAAABfAEAAAABfQEAAAABfgEAAAABfwEAAAABgAEBAAAAAYEBAQAAAAEOFQAAvgEAIBgAAL8BACAZAAC_AQAgdwEAAAABeAEAAAAFeQEAAAAFegEAvQEAIXsBAAAAAXwBAAAAAX0BAAAAAX4BAAAAAX8BAAAAAYABAQAAAAGBAQEAAAABCHcCAAAAAXgCAAAABXkCAAAABXoCAL4BACF7AgAAAAF8AgAAAAF9AgAAAAF-AgAAAAELdwEAAAABeAEAAAAFeQEAAAAFegEAvwEAIXsBAAAAAXwBAAAAAX0BAAAAAX4BAAAAAX8BAAAAAYABAQAAAAGBAQEAAAABBxUAAJ0BACAYAADBAQAgGQAAwQEAIHcAAACZAQJ4AAAAmQEIeQAAAJkBCHoAAMABmQEiBHcAAACZAQJ4AAAAmQEIeQAAAJkBCHoAAMEBmQEiDWwAAMIBADBtAAAEABBuAADCAQAwbwEApgEAIYwBAQDEAQAhlAEBAKYBACGVAQEApgEAIZYBAQCmAQAhlwEBAKYBACGZAQAAwwGZASKaAQgAswEAIZsBQACnAQAhnAEgAKgBACEEdwAAAJkBAngAAACZAQh5AAAAmQEIegAAwQGZASILdwEAAAABeAEAAAAFeQEAAAAFegEAvwEAIXsBAAAAAXwBAAAAAX0BAAAAAX4BAAAAAX8BAAAAAYABAQAAAAGBAQEAAAABAAAAAZ0BAQAAAAEBnQFAAAAAAQGdASAAAAABAZ0BAAAAdQIAAAAAAAAAAAAAAAWdAQgAAAABngEIAAAAAZ8BCAAAAAGgAQgAAAABoQEIAAAAAQAAAAGdAQAAAJIBAgAAAAAAAAGdAQAAAJkBAgGdAQEAAAABAAAAAAUVAAYWAAcXAAgYAAkZAAoAAAAAAAUVAAYWAAcXAAgYAAkZAAoAAAADFQAQGAARGQASAAAAAxUAEBgAERkAEgAAAAUVABgWABkXABoYABsZABwAAAAAAAUVABgWABkXABoYABsZABwAAAADFQAiGAAjGQAkAAAAAxUAIhgAIxkAJAAAAAMVACoYACsZACwAAAADFQAqGAArGQAsAAAAAxUAMhgAMxkANAAAAAMVADIYADMZADQBAgECAwEFBgEGBwEHCAEJCgEKDAILDQMMDwENEQIOEgQREwESFAETFQIaGAUbGQscGwwdHAweHwwfIAwgIQwhIwwiJQIjJg0kKAwlKgImKw4nLAwoLQwpLgIqMQ8rMhMsNBQtNRQuOBQvORQwOhQxPBQyPgIzPxU0QRQ1QwI2RBY3RRQ4RhQ5RwI6Shc7Sx08TR49Th4-UR4_Uh5AUx5BVR5CVwJDWB9EWh5FXAJGXSBHXh5IXx5JYAJKYyFLZCVMZiZNZyZOaiZPayZQbCZRbiZScAJTcSdUcyZVdQJWdihXdyZYeCZZeQJafClbfS1cfy5dgAEuXoMBLl-EAS5ghQEuYYcBLmKJAQJjigEvZIwBLmWOAQJmjwEwZ5ABLmiRAS5pkgECapUBMWuWATU"
+}
 config.compilerWasm = {
-      getRuntime: async () => require('./query_compiler_bg.js'),
+      getRuntime: async () => require('./query_compiler_fast_bg.js'),
       getQueryCompilerWasmModule: async () => {
-        const queryCompilerWasmFilePath = require('path').join(config.dirname, 'query_compiler_bg.wasm')
-        const queryCompilerWasmFileBytes = require('fs').readFileSync(queryCompilerWasmFilePath)
+        const { Buffer } = require('node:buffer')
+        const { wasm } = require('./query_compiler_fast_bg.wasm-base64.js')
+        const queryCompilerWasmFileBytes = Buffer.from(wasm, 'base64')
 
         return new WebAssembly.Module(queryCompilerWasmFileBytes)
-      }
+      },
+      importName: './query_compiler_fast_bg.js',
     }
-
-
-const { warnEnvConflicts } = require('./runtime/client.js')
-
-warnEnvConflicts({
-    rootEnvPath: config.relativeEnvPaths.rootEnvPath && path.resolve(config.dirname, config.relativeEnvPaths.rootEnvPath),
-    schemaEnvPath: config.relativeEnvPaths.schemaEnvPath && path.resolve(config.dirname, config.relativeEnvPaths.schemaEnvPath)
-})
 
 const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
-
-// file annotations for bundling tools to include these files
-path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "src/lib/prisma/generated/schema.prisma")

@@ -2,6 +2,9 @@
 // hierarchy of roles and their permissions
 
 import * as types from "./types";
+import { GraphQLDirective } from "graphql";
+import schema from "./schema";
+import { getDirectiveValues } from "graphql";
 
 const GUEST_PERMISSIONS: types.Permissions = {
     role: "GUEST",

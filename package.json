@@ -1,8 +1,7 @@
 {
   "name": "malex-api",
-  "version": "0.0.1f",
-  "description": "",
-  "main": "./src/app.js",
+  "version": "0.0.1jb",
+  "description": "Malex API",
   "scripts": {
     "dev": "npx tsx watch --env-file .env src/app.ts",
     "cli": "npx tsx --env-file=.env src/cli.ts",
@@ -19,7 +18,7 @@
     "@graphql-tools/schema": "^10.0.25",
     "@graphql-tools/utils": "^10.10.3",
     "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^6.19.2",
+    "@prisma/client": "^7.4.0",
     "@prisma/extension-accelerate": "^2.0.2",
     "cloudflare": "^5.2.0",
     "commander": "^14.0.2",
@@ -39,10 +38,10 @@
     "@graphql-codegen/introspection": "5.0.0",
     "@graphql-codegen/typescript": "5.0.7",
     "@graphql-codegen/typescript-resolvers": "5.1.5",
-    "@graphql-eslint/eslint-plugin": "^4.4.0",
+    "@graphql-eslint/eslint-plugin": "^3.20.1",
     "@types/node": "^24.10.1",
-    "eslint": "^9.37.0",
-    "prisma": "^6.17.1",
+    "eslint": "^4.1.1",
+    "prisma": "^7.4.0",
     "typescript": "^5.9.3"
   }
 }

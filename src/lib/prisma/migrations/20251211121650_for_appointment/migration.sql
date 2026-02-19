@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Appointment" ALTER COLUMN "duration" SET DEFAULT 1,
-ALTER COLUMN "duration" SET DATA TYPE DOUBLE PRECISION;

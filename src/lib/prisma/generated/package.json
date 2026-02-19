@@ -1,5 +1,5 @@
 {
-  "name": "prisma-client-4cecfcd1fa782e871e29d7b9d2a5080803de42f2e04d2715aa09c34a00a411fc",
+  "name": "prisma-client-935fbbc3380b53d6ac1961d9b335a85f7c22a2502fd9b28875adeba0a4ac1fdb",
   "main": "index.js",
   "types": "index.d.ts",
   "browser": "default.js",
@@ -7,17 +7,17 @@
     "./client": {
       "require": {
         "node": "./index.js",
-        "edge-light": "./wasm.js",
-        "workerd": "./wasm.js",
-        "worker": "./wasm.js",
+        "edge-light": "./edge.js",
+        "workerd": "./edge.js",
+        "worker": "./edge.js",
         "browser": "./index-browser.js",
         "default": "./index.js"
       },
       "import": {
         "node": "./index.js",
-        "edge-light": "./wasm.js",
-        "workerd": "./wasm.js",
-        "worker": "./wasm.js",
+        "edge-light": "./edge.js",
+        "workerd": "./edge.js",
+        "worker": "./edge.js",
         "browser": "./index-browser.js",
         "default": "./index.js"
       },
@@ -27,33 +27,21 @@
     ".": {
       "require": {
         "node": "./index.js",
-        "edge-light": "./wasm.js",
-        "workerd": "./wasm.js",
-        "worker": "./wasm.js",
+        "edge-light": "./edge.js",
+        "workerd": "./edge.js",
+        "worker": "./edge.js",
         "browser": "./index-browser.js",
         "default": "./index.js"
       },
       "import": {
         "node": "./index.js",
-        "edge-light": "./wasm.js",
-        "workerd": "./wasm.js",
-        "worker": "./wasm.js",
+        "edge-light": "./edge.js",
+        "workerd": "./edge.js",
+        "worker": "./edge.js",
         "browser": "./index-browser.js",
         "default": "./index.js"
       },
       "default": "./index.js"
-    },
-    "./edge": {
-      "types": "./edge.d.ts",
-      "require": "./edge.js",
-      "import": "./edge.js",
-      "default": "./edge.js"
-    },
-    "./react-native": {
-      "types": "./react-native.d.ts",
-      "require": "./react-native.js",
-      "import": "./react-native.js",
-      "default": "./react-native.js"
     },
     "./extension": {
       "types": "./extension.d.ts",
@@ -73,11 +61,11 @@
       "import": "./index.js",
       "default": "./index.js"
     },
-    "./wasm": {
-      "types": "./wasm.d.ts",
-      "require": "./wasm.js",
-      "import": "./wasm.mjs",
-      "default": "./wasm.mjs"
+    "./edge": {
+      "types": "./edge.d.ts",
+      "require": "./edge.js",
+      "import": "./edge.js",
+      "default": "./edge.js"
     },
     "./runtime/client": {
       "types": "./runtime/client.d.ts",
@@ -89,41 +77,11 @@
       "import": "./runtime/client.mjs",
       "default": "./runtime/client.mjs"
     },
-    "./runtime/library": {
-      "types": "./runtime/library.d.ts",
-      "require": "./runtime/library.js",
-      "import": "./runtime/library.mjs",
-      "default": "./runtime/library.mjs"
-    },
-    "./runtime/binary": {
-      "types": "./runtime/binary.d.ts",
-      "require": "./runtime/binary.js",
-      "import": "./runtime/binary.mjs",
-      "default": "./runtime/binary.mjs"
-    },
-    "./runtime/wasm-engine-edge": {
-      "types": "./runtime/wasm-engine-edge.d.ts",
-      "require": "./runtime/wasm-engine-edge.js",
-      "import": "./runtime/wasm-engine-edge.mjs",
-      "default": "./runtime/wasm-engine-edge.mjs"
-    },
     "./runtime/wasm-compiler-edge": {
       "types": "./runtime/wasm-compiler-edge.d.ts",
       "require": "./runtime/wasm-compiler-edge.js",
       "import": "./runtime/wasm-compiler-edge.mjs",
       "default": "./runtime/wasm-compiler-edge.mjs"
-    },
-    "./runtime/edge": {
-      "types": "./runtime/edge.d.ts",
-      "require": "./runtime/edge.js",
-      "import": "./runtime/edge-esm.js",
-      "default": "./runtime/edge-esm.js"
-    },
-    "./runtime/react-native": {
-      "types": "./runtime/react-native.d.ts",
-      "require": "./runtime/react-native.js",
-      "import": "./runtime/react-native.js",
-      "default": "./runtime/react-native.js"
     },
     "./runtime/index-browser": {
       "types": "./runtime/index-browser.d.ts",
@@ -138,21 +96,30 @@
     },
     "./sql": {
       "require": {
-        "types": "./sql.d.ts",
-        "node": "./sql.js",
-        "default": "./sql.js"
+        "types": "./sql/index.d.ts",
+        "edge-light": "./sql/index.wasm-compiler-edge.js",
+        "workerd": "./sql/index.wasm-compiler-edge.js",
+        "worker": "./sql/index.wasm-compiler-edge.js",
+        "node": "./sql/index.js",
+        "default": "./sql/index.js"
       },
       "import": {
-        "types": "./sql.d.ts",
-        "node": "./sql.mjs",
-        "default": "./sql.mjs"
+        "types": "./sql/index.d.ts",
+        "edge-light": "./sql/index.wasm-compiler-edge.mjs",
+        "workerd": "./sql/index.wasm-compiler-edge.mjs",
+        "worker": "./sql/index.wasm-compiler-edge.mjs",
+        "node": "./sql/index.mjs",
+        "default": "./sql/index.mjs"
       },
-      "default": "./sql.js"
+      "default": "./sql/index.js"
     },
     "./*": "./*"
   },
-  "version": "6.19.2",
+  "version": "7.4.0",
   "sideEffects": false,
+  "dependencies": {
+    "@prisma/client-runtime-utils": "7.4.0"
+  },
   "imports": {
     "#wasm-compiler-loader": {
       "edge-light": "./wasm-edge-light-loader.mjs",
@@ -163,17 +130,17 @@
     "#main-entry-point": {
       "require": {
         "node": "./index.js",
-        "edge-light": "./wasm.js",
-        "workerd": "./wasm.js",
-        "worker": "./wasm.js",
+        "edge-light": "./edge.js",
+        "workerd": "./edge.js",
+        "worker": "./edge.js",
         "browser": "./index-browser.js",
         "default": "./index.js"
       },
       "import": {
         "node": "./index.js",
-        "edge-light": "./wasm.js",
-        "workerd": "./wasm.js",
-        "worker": "./wasm.js",
+        "edge-light": "./edge.js",
+        "workerd": "./edge.js",
+        "worker": "./edge.js",
         "browser": "./index-browser.js",
         "default": "./index.js"
       },

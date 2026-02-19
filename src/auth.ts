@@ -88,9 +88,7 @@ export class RefreshToken {
                 expired_at: { gte: dayjs().toISOString() }
             }
         );
-
-        // console.log(q);
-
+        
         if (!q.qResult) return false;
 
         return true; 

@@ -4,4 +4,4 @@
 // biome-ignore-all lint: generated file
 "use strict"
 const { makeTypedQueryFactory: $mkFactory } = require("../runtime/client")
-exports.setSiteConfig = /*#__PURE__*/ $mkFactory("\n\n\n\nINSERT INTO \"SiteConfig\" (\nid,\nopening_at,\nclosing_at,\nmin_duration,\nsupport_email,\nphone_number,\ntimezone\n) SELECT '1', $1, $2, $3, $4, $5, $6 WHERE NOT EXISTS (\nSELECT * FROM \"SiteConfig\"\n);")
+exports.setSiteConfig = /*#__PURE__*/ $mkFactory("\n\n\n\nINSERT INTO \"SiteConfig\" (\nid,\nopening_at,\nclosing_at,\nmin_duration,\nsupport_email,\nphone_number,\ntimezone,\nc_country\n)\nVALUES ('1', $1, $2, $3, $4, $5, $6, $7)\nON CONFLICT (id) DO NOTHING;")

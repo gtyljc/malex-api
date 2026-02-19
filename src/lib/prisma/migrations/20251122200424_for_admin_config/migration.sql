@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "admin_config" ALTER COLUMN "opening_at" SET DATA TYPE TIMESTAMP(0),
-ALTER COLUMN "closing_at" SET DATA TYPE TIMESTAMP(0);

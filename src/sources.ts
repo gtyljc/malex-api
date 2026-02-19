@@ -3,7 +3,7 @@
 import { sleep } from "./tools";
 import * as types from "./types/index";
 import * as responses from "./responses";
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaPg } from '@prisma/adapter-pg';
 import { withAccelerate } from "@prisma/extension-accelerate";
 
 // db
@@ -63,7 +63,7 @@ class DBQuery<RequestResultType> {
     success = false;
     qResult!: RequestResultType;
     errorInstance!: Error; // in case query has failed
-    apiResponse!: types.APIResponse;
+    apiResponse!: types.APIResponse<any>;
 
     constructor(
         modelname: types.Resource,
@@ -90,7 +90,7 @@ class DBQuery<RequestResultType> {
     }
 
     // wraps DB response and converts into API response
-    private wrap(): types.APIResponse {
+    private wrap(): types.APIResponse<any> {
         if(this.success){
 
             // each result must be wrapped in array

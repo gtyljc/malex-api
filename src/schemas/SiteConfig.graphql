@@ -9,7 +9,7 @@ extend type Query {
     
     # <GUEST> role is required
     # returns limited config for frontend to render some elements
-    contactData: SiteConfigResponseType! @auth(role: GUEST)
+    publicConfig: PublicConfigResponseType! @auth(role: GUEST)
 }
 
 extend type Mutation {
@@ -30,6 +30,7 @@ type SiteConfigType {
     support_email: EmailAddress!
     phone_number: PhoneNumber!
     timezone: TimeZone!
+    c_country: CountryCode!
 }
 
 type SiteConfigResponseType implements APIResponseInterface {
@@ -39,19 +40,21 @@ type SiteConfigResponseType implements APIResponseInterface {
     data: [SiteConfigType]!
 }
 
-type ContactDataType {
+type PublicConfigType {
     opening_at: DateTimeISO!
     closing_at: DateTimeISO!
     support_email: EmailAddress!
     phone_number: PhoneNumber!
     min_duration: PositiveFloat!
+    timezone: TimeZone!
+    c_country: CountryCode!
 }
 
-type ContactDataResponseType implements APIResponseInterface {
+type PublicConfigResponseType implements APIResponseInterface {
     code: Int!
     success: Boolean!
     message: String!
-    data: [ContactDataType]!
+    data: [PublicConfigType]!
 }
 
 
@@ -65,4 +68,5 @@ input SiteConfigUpdateInput {
     support_email: EmailAddress
     phone_number: PhoneNumber
     timezone: TimeZone
+    c_country: CountryCode
 }

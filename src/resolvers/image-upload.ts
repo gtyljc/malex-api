@@ -10,7 +10,7 @@ const resolvers: types.Resolvers = {
             _, 
             { id }: types.MutationStartImageUploadArgs, 
             { dataSources: { cloudflare } }: types.AppContext
-        ): Promise<types.APIResponse>{
+        ): Promise<types.APIResponse<types.StartUploadImageType>>{
             const response = await cloudflare.images.v2.directUploads.create(
                 { id, account_id: process.env.CLOUDFLARE_ACCOUNT_ID! }
             );
@@ -26,7 +26,7 @@ const resolvers: types.Resolvers = {
             _, 
             { id }: types.MutationFinalizeImageUploadArgs, 
             { dataSources: { cloudflare } }: types.AppContext
-        ): Promise<types.APIResponse>{
+        ): Promise<types.APIResponse<types.FinalizeUploadImageType>>{
             const response = await cloudflare.images.v1.get(id, { account_id: process.env.CLOUDFLARE_ACCOUNT_ID! });
 
             if (response instanceof Cloudflare.APIError){
