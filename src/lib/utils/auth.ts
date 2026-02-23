@@ -8,7 +8,6 @@ export function normalizeIp(ip: string): string {
     return ip;
 }
 
-
 // checks was request from localhost sent
 export function isFromLocalhost(senderIP: string): boolean {
     const ip = normalizeIp(senderIP);

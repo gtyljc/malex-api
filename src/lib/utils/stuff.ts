@@ -1,5 +1,6 @@
 
 import { DatabaseSource } from "@src/sources";
+import * as utils from "@lib/utils";
 
 // returns new string with capitalized first letter
 export function capitalize(str: string): string {
@@ -47,7 +48,7 @@ export function validate(cases: Array<Function>, args: Object = {}, untilFalse =
 }
 
 export function env(valueName: string){
-    return process.env[valueName];
+    return [valueName];
 }
 
 export async function getSiteConfig(db: DatabaseSource): Promise<Record<any, any>> {

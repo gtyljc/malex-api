@@ -3,9 +3,9 @@
 
 import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
 import * as types from "@src/types";
-import { dayjs } from "@src/lib/dayjs";
+import { dayjs } from "@lib/utils/dayjs";
 import * as responses from "@src/responses";
-import * as utils from "@src/utils";
+import * as utils from "@lib/utils";
 
 const __modelname = "appointment";
 

@@ -2,21 +2,21 @@
 import * as responses from "@src/responses";
 import * as types from "@src/types";
 import * as auth from "@src/auth";
-import * as utils from "@src/utils";
+import * as utils from "@lib/utils";
 import { decodeJwt } from "jose";
 
 var adminPanelKey = crypto.randomUUID();
 
-// function updateAdminPanelKey(){
-//     adminPanelKey = crypto.randomUUID();
+function updateAdminPanelKey(){
+    adminPanelKey = crypto.randomUUID();
 
-//     console.log(`http://localhost:3000/admin?key=${adminPanelKey}`);
-// }
+    console.log(`Admin Panel URL: http://localhost:3000/admin?key=${adminPanelKey}`);
+}
 
 // initialization of Admin Panel key
-console.log(`http://localhost:3000/admin?key=${adminPanelKey}`);
+console.log(`Admin Panel URL:  http://localhost:3000/admin?key=${adminPanelKey}`);
 
-// setInterval(updateAdminPanelKey, parseInt(process.env.ADMIN_PANEL_KEY_REFRESH_DELAY!));
+utils.env("NODE_ENV") != "development" && setInterval(updateAdminPanelKey, parseInt(process.env.ADMIN_PANEL_KEY_REFRESH_DELAY!));
 
 const resolvers: types.Resolvers = {
     Query: {

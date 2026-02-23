@@ -1,6 +1,7 @@
 
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import * as types from "./types";
+import { dayjs } from "@lib/utils";
 import * as utils from "@lib/utils";
 import { nanoid } from "nanoid";
 
@@ -84,10 +85,10 @@ export class RefreshToken {
                 is_revoked: false, 
                 role: claims.aud,
                 user_id: claims.sub,
-                expired_at: { gte: utils.dayjs().toISOString() }
+                expired_at: { gte: dayjs().toISOString() }
             }
         );
-        
+
         if (!q.qResult) return false;
 
         return true; 
@@ -124,7 +125,7 @@ export class RefreshToken {
                 is_revoked: false, 
                 role: claims.aud, 
                 user_id: claims.sub,
-                expired_at: { lt: utils.dayjs().toDate() }
+                expired_at: { lt: dayjs().toDate() }
             }
         )
 
@@ -141,12 +142,12 @@ export class RefreshToken {
         userId: string, 
         db: types.AppContext["dataSources"]["db"]
     ): Promise<RefreshToken> {
-        const expiredAt = utils.dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
+        const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
         const token = await jwt.generate(
             {
                 aud: role,
                 iss: "malex:api",
-                iat: utils.dayjs().unix(),
+                iat: dayjs().unix(),
                 exp: expiredAt.unix(),
                 sub: userId
             }
@@ -174,8 +175,8 @@ export class AccessToken {
             {
                 aud: role,
                 iss: "malex:api",
-                iat: utils.dayjs().unix(),
-                exp: utils.dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY!), "seconds").unix(),
+                iat: dayjs().unix(),
+                exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY!), "seconds").unix(),
                 sub: userId
             }
         )

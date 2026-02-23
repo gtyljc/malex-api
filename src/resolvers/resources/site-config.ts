@@ -4,7 +4,7 @@
 import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
 import * as types from "@src/types";
 import * as responses from "@src/responses";
-import * as utils from "@src/utils";
+import * as utils from "@lib/utils";
 
 const __modelname = "siteConfig";
 

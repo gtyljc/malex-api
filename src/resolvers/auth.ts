@@ -2,7 +2,7 @@
 import * as responses from "@src/responses";
 import * as types from "@src/types";
 import * as auth from "@src/auth";
-import * as utils from "@src/utils";
+import * as utils from "@lib/utils";
 import { decodeJwt } from "jose";
 
 const resolvers: types.Resolvers = {
