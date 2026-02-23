@@ -1,15 +1,50 @@
 
-export class PaginationLimitationError extends Error {
-    static readonly MESSAGE = "Pagination is limited to 100 objects per request!";
-    static readonly NAME = "PaginationLimitationError";
+import { logger } from "./app";
+
+export class LoggedError extends Error {
+    logError(){
+        logger.error(this.name + " : " + this.message)
+    }
 }
 
-export class IdsOrFilterWasNotSpecifiedError extends Error {
-    static readonly MESSAGE = "You must specify array of necessary ids or filter with pagination!";
-    static readonly NAME = "IdsOrFilterWasNotSpecifiedError";
+export class PaginationLimitationError extends LoggedError {
+    readonly message: string;
+    readonly name: string;
+    
+    constructor(){
+        super();
+
+        this.message = "Pagination is limited to 100 objects per request!";
+        this.name = "PaginationLimitationError"
+        
+        this.logError();
+    }
 }
 
-export class NotAuthenticatedRequestError extends Error {
-    static readonly MESSAGE = "Not authenticated request from user!";
-    static readonly NAME = "NotAuthenticatedRequestError";
+export class IdsOrFilterWasNotSpecifiedError extends LoggedError {
+    readonly message: string;
+    readonly name: string;
+    
+    constructor(){
+        super();
+
+        this.message = "You must specify array of necessary ids or filter with pagination!";
+        this.name = "IdsOrFilterWasNotSpecifiedError"
+
+        this.logError()
+    }
+}
+
+export class NotAuthenticatedRequestError extends LoggedError {
+    readonly message: string;
+    readonly name: string;
+    
+    constructor(){
+        super();
+
+        this.message = "Not authenticated request from user!";
+        this.name = "NotAuthenticatedRequestError";
+    
+        this.logError()
+    }
 }

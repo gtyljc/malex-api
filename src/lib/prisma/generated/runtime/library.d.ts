@@ -2668,7 +2668,7 @@ export declare type PrismaClientOptions = {
      *  { emit: 'stdout', level: 'warn' }
      * ]
      * \`\`\`
-     * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+     * Read more in our [docs](https://www.prisma.io/docs/reference/utils-and-interfaces/prisma-client/logging#the-log-option).
      */
     log?: Array<LogLevel | LogDefinition>;
     omit?: GlobalOmitOptions;

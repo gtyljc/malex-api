@@ -4,8 +4,8 @@ import * as types from "./types";
 import * as responses from "./responses";
 import { hasPermission } from "./permissions";
 import * as auth from "./auth";
-import * as tools from "@src/tools";
 import { decodeJwt } from "jose";
+import * as utils from "@lib/utils";
 
 // schema
 import { defaultFieldResolver } from "graphql";
@@ -30,7 +30,7 @@ const directives = [
                                 const mustBeAuthenticated = parseInt(process.env.AUTHENTICATION!);
 
                                 if (
-                                    mustBeAuthenticated && !tools.validate(
+                                    mustBeAuthenticated && !utils.validate(
                                         [
 
                                             // check if jwt was specified
@@ -43,7 +43,7 @@ const directives = [
                                             
                                             // validate jwt
                                             async ({ next }: { next: string }) => {
-                                                const jwt = tools.getJWTFromHeader(next);
+                                                const jwt = utils.getJWTFromHeader(next);
                                                 const isValid = await auth.jwt.validate(jwt);
 
                                                 return [ isValid, isValid && jwt ] ;

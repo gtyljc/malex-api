@@ -4,7 +4,7 @@
 import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
 import * as types from "@src/types";
 import * as responses from "@src/responses";
-import * as tools from "@src/tools";
+import * as utils from "@src/utils";
 
 const __modelname = "siteConfig";
 
@@ -19,7 +19,7 @@ class SiteConfigQueryResolvers extends BaseQueryResolvers {
         __: any,
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<types.PublicConfigResponseType>> {
-        const config = await tools.getSiteConfig(db);
+        const config = await utils.getSiteConfig(db);
 
         return responses.f200Response(
             [

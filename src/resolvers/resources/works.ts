@@ -5,7 +5,7 @@ import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
 import * as responses from "@src/responses";
 import * as types from "@src/types";
 import * as errors from "@src/errors";
-import * as tools from "@src/tools";
+import * as utils from "@src/utils";
 
 const __modelname = "work";
 
@@ -22,7 +22,7 @@ class WorkQueryResolvers extends BaseQueryResolvers {
 
         // pagination limitation
         if (num > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)){
-            return responses.f400Response(tools.assembleErrorMessage(errors.PaginationLimitationError));
+            return responses.f400Response(utils.assembleErrorMessage(errors.PaginationLimitationError));
         }
         
         const q = await db.getManyByFilter(__modelname, {}, { page: 1, perPage: num });

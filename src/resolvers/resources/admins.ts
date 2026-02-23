@@ -2,7 +2,7 @@
 import * as responses from "@src/responses";
 import * as types from "@src/types";
 import * as auth from "@src/auth";
-import * as tools from "@src/tools";
+import * as utils from "@src/utils";
 import { decodeJwt } from "jose";
 
 var adminPanelKey = crypto.randomUUID();
@@ -45,7 +45,7 @@ const resolvers: types.Resolvers = {
             __,
            { req, dataSources: { db } }: types.AppContext
         ) => {
-            const at = tools.getJWTFromHeader(req.headers.authorization as string);
+            const at = utils.getJWTFromHeader(req.headers.authorization as string);
             const rt = (await auth.RefreshToken.searchByAT(at, db))?.jwt;
             
             if(!rt) return responses.f403Response();

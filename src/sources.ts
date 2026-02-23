@@ -1,6 +1,6 @@
 
 // others
-import { sleep } from "./tools";
+import * as utils from "@lib/utils";
 import * as types from "./types/index";
 import * as responses from "./responses";
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -43,7 +43,7 @@ export class DatabaseConnection {
                     console.log("Can't reach the DB! Trying to reconnect...");
 
                     // delay
-                    await sleep(parseInt(process.env.DATABASE_RECONNECTION_DELAY!));
+                    await utils.sleep(parseInt(process.env.DATABASE_RECONNECTION_DELAY!));
                 }
                 else {
                     throw error;

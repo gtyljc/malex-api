@@ -5,7 +5,7 @@ import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
 import * as types from "@src/types";
 import { dayjs } from "@src/lib/dayjs";
 import * as responses from "@src/responses";
-import * as tools from "@src/tools";
+import * as utils from "@src/utils";
 
 const __modelname = "appointment";
 
@@ -39,7 +39,7 @@ class AppointmentQueryResolvers extends BaseQueryResolvers {
                 // last day of month
                 endOfDay(date.date(31))
             ];
-            const siteConfig = await tools.getSiteConfig(db);
+            const siteConfig = await utils.getSiteConfig(db);
             const workTime = dayjs(siteConfig.closing_at).unix() - dayjs(siteConfig.opening_at).unix(); // seconds
             const apps = (
                 await db.getManyByFilter(
@@ -107,7 +107,7 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
         if (dayjs(data.date).unix() < dayjs().unix()) return responses.f400Response();
 
         // add default duration
-        data["duration"] = (await tools.getSiteConfig(ctx.dataSources.db)).min_duration;
+        data["duration"] = (await utils.getSiteConfig(ctx.dataSources.db)).min_duration;
 
         return await super.create(_, args, ctx);
     }

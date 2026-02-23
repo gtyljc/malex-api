@@ -1,7 +1,7 @@
+
 import * as responses from "./responses";
-import { capitalize } from "./tools";
 import * as types from "./types/index";
-import * as tools from "./tools";
+import * as utils from "@lib/utils";
 
 class ResolversManager {
     // !!! if you want to use resolvers in high-definied object use "resolvers" property !!!
@@ -14,7 +14,7 @@ class ResolversManager {
     constructor(modelname: types.Resource){
         this.modelname = modelname;
         this.queryResolverMarker = modelname;
-        this.mutationResolverMarker = capitalize(modelname); // how resolvers will be marked
+        this.mutationResolverMarker = utils.capitalize(modelname); // how resolvers will be marked
     }
 
     // adds or updates resolver in list of resolvers
@@ -46,7 +46,7 @@ class ResolversManager {
     }
 
     protected register(methods: Array<string>): this {
-        for (let method of tools.patch<string>(
+        for (let method of utils.patch<string>(
             ResolversManager.getAllMethods(this), 
             [
 
@@ -84,7 +84,7 @@ export class BaseQueryResolvers extends ResolversManager {
     ): Promise<types.APIResponse<any>> {
 
         if (
-            !tools.validate(
+            !utils.validate(
                 [
                     // must be specified filter + pagination or ids
                     ({ ids, filter, pagination }: types.GetManyArgs) => [ ids || filter && pagination ],

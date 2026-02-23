@@ -1,8 +1,7 @@
 
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import * as types from "./types";
-import { dayjs } from "@src/lib/dayjs";
-import * as tools from "@src/tools";
+import * as utils from "@lib/utils";
 import { nanoid } from "nanoid";
 
 class JWT {
@@ -85,7 +84,7 @@ export class RefreshToken {
                 is_revoked: false, 
                 role: claims.aud,
                 user_id: claims.sub,
-                expired_at: { gte: dayjs().toISOString() }
+                expired_at: { gte: utils.dayjs().toISOString() }
             }
         );
         
@@ -125,11 +124,11 @@ export class RefreshToken {
                 is_revoked: false, 
                 role: claims.aud, 
                 user_id: claims.sub,
-                expired_at: { lt: dayjs().toDate() }
+                expired_at: { lt: utils.dayjs().toDate() }
             }
         )
 
-        if (!tools.isEmpty(q.qResult)){
+        if (!utils.isEmpty(q.qResult)){
             return null;
         }
 
@@ -142,12 +141,12 @@ export class RefreshToken {
         userId: string, 
         db: types.AppContext["dataSources"]["db"]
     ): Promise<RefreshToken> {
-        const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
+        const expiredAt = utils.dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
         const token = await jwt.generate(
             {
                 aud: role,
                 iss: "malex:api",
-                iat: dayjs().unix(),
+                iat: utils.dayjs().unix(),
                 exp: expiredAt.unix(),
                 sub: userId
             }
@@ -175,8 +174,8 @@ export class AccessToken {
             {
                 aud: role,
                 iss: "malex:api",
-                iat: dayjs().unix(),
-                exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY!), "seconds").unix(),
+                iat: utils.dayjs().unix(),
+                exp: utils.dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY!), "seconds").unix(),
                 sub: userId
             }
         )
