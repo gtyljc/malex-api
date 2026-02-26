@@ -2,9 +2,12 @@
 import * as responses from "./responses";
 import * as types from "./types/index";
 import * as utils from "@lib/utils";
+import { env } from "@lib/utils";
+import { ASyncResolverSaveCatch } from "@lib/utils";
+import * as errors from "@src/errors";
 
 class ResolversManager {
-    // !!! if you want to use resolvers in high-definied object use "resolvers" property !!!
+    // !!! if you want to use resolvers in high-defined object use "resolvers" property !!!
 
     private resolversObject: Record<string, Function> = {};
     protected mutationResolverMarker: string;
@@ -66,7 +69,6 @@ class ResolversManager {
 }
 
 export class BaseQueryResolvers extends ResolversManager {
-    
     protected getManyName!: string;
     protected getOneName!: string;
     protected isIterrable: boolean;
@@ -77,27 +79,20 @@ export class BaseQueryResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
+    @ASyncResolverSaveCatch
     async getMany(
         _: any,
         { ids, filter, pagination, sort }: types.GetManyArgs,
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<any>> {
 
-        if (
-            !utils.validate(
-                [
-                    // must be specified filter + pagination or ids
-                    ({ ids, filter, pagination }: types.GetManyArgs) => [ ids || filter && pagination ],
+        // must be specified filter + pagination or ids
+        if (!ids && !filter){
+            throw new errors.IdsOrFilterWasNotSpecifiedError();
+        }
 
-                    // if filter was specified then pagination must be under per request limit
-                    ({ filter, pagination }: types.GetManyArgs) => [
-                        filter && (pagination?.perPage < parseInt(process.env.PER_PAGE_LIMIT!))
-                    ]
-                ],
-                { ids, filter, pagination }
-            )
-        ){
-            return responses.f400Response();
+        if (filter && (pagination?.perPage < parseInt(env("PER_PAGE_LIMIT")))){
+            throw new errors.PaginationLimitError();
         }
 
         // if ids was specified, then return corresponding response
@@ -113,6 +108,7 @@ export class BaseQueryResolvers extends ResolversManager {
         return responses.f400Response();
     }
 
+    @ASyncResolverSaveCatch
     async getOne(
         _: any, 
         { id }: types.GetOneArgs, 
@@ -128,9 +124,9 @@ export class BaseQueryResolvers extends ResolversManager {
         this.getManyName = this.queryResolverMarker + "s";
 
         // register resolver to get single entity
-        this.setResolver(this.getOneName, this.getOne.bind(this));
+        this.setResolver(this.getOneName, this.getOne);
 
-        this.isIterrable && this.setResolver(this.getManyName, this.getMany.bind(this));
+        this.isIterrable && this.setResolver(this.getManyName, this.getMany);
 
         return super.register([ "getOne", "getMany" ]);
     }
@@ -167,6 +163,7 @@ export class BaseMutationResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
+    @ASyncResolverSaveCatch
     async updateOne(
         _: any, 
         { id, data }: types.UpdateOneArgs, 
@@ -175,6 +172,7 @@ export class BaseMutationResolvers extends ResolversManager {
         return (await db.updateById(this.modelname, id, data)).apiResponse;
     }
 
+    @ASyncResolverSaveCatch
     async updateMany(
         _: any, 
         { ids, data }: types.UpdateManyArgs, 
@@ -184,6 +182,7 @@ export class BaseMutationResolvers extends ResolversManager {
 
     }
 
+    @ASyncResolverSaveCatch
     async deleteOne(
         _: any, 
         { id }: { id: string }, 
@@ -192,6 +191,7 @@ export class BaseMutationResolvers extends ResolversManager {
         return (await db.deleteById(this.modelname, id)).apiResponse;
     }
 
+    @ASyncResolverSaveCatch
     async deleteMany(
         _: any, 
         { ids }: { ids: string[] }, 
@@ -200,6 +200,7 @@ export class BaseMutationResolvers extends ResolversManager {
         return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
     }
 
+    @ASyncResolverSaveCatch
     async create(
         _: any, 
         { data }: types.CreateArgs, 
@@ -218,19 +219,19 @@ export class BaseMutationResolvers extends ResolversManager {
         this.createName = `create${this.mutationResolverMarker}`
 
         // update one
-        this.isUpdatable && this.setResolver(this.updateOneName, this.updateOne.bind(this))
+        this.isUpdatable && this.setResolver(this.updateOneName, this.updateOne)
 
         // update many
-        this.isUpdatable && this.isIterrable && this.setResolver(this.updateManyName, this.updateMany.bind(this))
+        this.isUpdatable && this.isIterrable && this.setResolver(this.updateManyName, this.updateMany)
 
         // delete one
-        this.isDeletable && this.setResolver(this.deleteOneName, this.deleteOne.bind(this))
+        this.isDeletable && this.setResolver(this.deleteOneName, this.deleteOne)
 
         // delete many
-        this.isDeletable && this.isIterrable && this.setResolver(this.deleteManyName, this.deleteMany.bind(this))
+        this.isDeletable && this.isIterrable && this.setResolver(this.deleteManyName, this.deleteMany)
 
         // create instance of model
-        this.isCreatable && this.setResolver(this.createName, this.create.bind(this))
+        this.isCreatable && this.setResolver(this.createName, this.create)
 
         return super.register(
             [ 

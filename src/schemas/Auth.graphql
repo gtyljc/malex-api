@@ -11,7 +11,7 @@ extend type Mutation {
 
     # ONLY BACKEND CAN ACCESS
     # creates new auth pair with specified role and user_id
-    createRT(user_id: ID!, role: RoleEnum!): JWTResponseType!
+    createRT(user_id: ID, role: RoleEnum!): JWTResponseType!
 }
 
 

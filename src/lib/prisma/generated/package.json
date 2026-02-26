@@ -1,5 +1,5 @@
 {
-  "name": "prisma-client-935fbbc3380b53d6ac1961d9b335a85f7c22a2502fd9b28875adeba0a4ac1fdb",
+  "name": "prisma-client-f89adced2e5b5c5c4a96c93a9ad26338596ffb213d1b3b84b23adcc02d68ab40",
   "main": "index.js",
   "types": "index.d.ts",
   "browser": "default.js",
@@ -96,29 +96,23 @@
     },
     "./sql": {
       "require": {
-        "types": "./sql/index.d.ts",
-        "edge-light": "./sql/index.wasm-compiler-edge.js",
-        "workerd": "./sql/index.wasm-compiler-edge.js",
-        "worker": "./sql/index.wasm-compiler-edge.js",
-        "node": "./sql/index.js",
-        "default": "./sql/index.js"
+        "types": "./sql.d.ts",
+        "node": "./sql.js",
+        "default": "./sql.js"
       },
       "import": {
-        "types": "./sql/index.d.ts",
-        "edge-light": "./sql/index.wasm-compiler-edge.mjs",
-        "workerd": "./sql/index.wasm-compiler-edge.mjs",
-        "worker": "./sql/index.wasm-compiler-edge.mjs",
-        "node": "./sql/index.mjs",
-        "default": "./sql/index.mjs"
+        "types": "./sql.d.ts",
+        "node": "./sql.mjs",
+        "default": "./sql.mjs"
       },
-      "default": "./sql/index.js"
+      "default": "./sql.js"
     },
     "./*": "./*"
   },
-  "version": "7.4.0",
+  "version": "7.4.1",
   "sideEffects": false,
   "dependencies": {
-    "@prisma/client-runtime-utils": "7.4.0"
+    "@prisma/client-runtime-utils": "7.4.1"
   },
   "imports": {
     "#wasm-compiler-loader": {

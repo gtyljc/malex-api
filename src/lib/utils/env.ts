@@ -1,12 +1,20 @@
 
 import * as z from "zod";
 
-export const parsedEnv = z.object(
+class EnviromentFileParsingError extends Error {
+    constructor(error: z.ZodError){
+        super();
+
+        this.message = z.prettifyError(error);
+    }    
+}
+
+const envSchema = z.object(
     {
         LOG_PATH: z.string(),
         
-        SITE_CONFIG_OPENING_AT: z.iso.datetime(),
-        SITE_CONFIG_CLOSING_AT: z.iso.datetime(),
+        SITE_CONFIG_OPENING_AT: z.iso.time(),
+        SITE_CONFIG_CLOSING_AT: z.iso.time(),
         SITE_CONFIG_MIN_DURATION: z.coerce.number(),
         SITE_CONFIG_SUPPORT_EMAIL: z.email(),
         SITE_CONFIG_PHONE_NUMBER: z.string(),
@@ -33,4 +41,12 @@ export const parsedEnv = z.object(
 
         ADMIN_PANEL_KEY_REFRESH_DELAY: z.coerce.number()        
     }
-).safeParse(process.env);
+);
+
+const parsedEnv = envSchema.safeParse(process.env);
+
+if (!parsedEnv.success){
+    throw new EnviromentFileParsingError(parsedEnv.error);
+}
+
+export { envSchema, parsedEnv };

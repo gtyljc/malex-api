@@ -5,15 +5,17 @@ import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
 import * as types from "@src/types";
 import * as responses from "@src/responses";
 import * as utils from "@lib/utils";
+import { ASyncResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "siteConfig";
 
-class SiteConfigQueryResolvers extends BaseQueryResolvers {
+class Query extends BaseQueryResolvers {
     constructor(){
         super(__modelname, { isIterrable: false });
     }
 
     // only necessary data for frontend about site config
+    @ASyncResolverSaveCatch
     async publicConfig(
         _: any, 
         __: any,
@@ -38,7 +40,7 @@ class SiteConfigQueryResolvers extends BaseQueryResolvers {
 }
 
 const resolvers: types.Resolvers = {
-    Query: new SiteConfigQueryResolvers().register().resolvers,
+    Query: new Query().register().resolvers,
     Mutation: new BaseMutationResolvers(
         __modelname,
         { isDeletable: false, isCreatable: false, isIterrable: false }

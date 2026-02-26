@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.4.0
- * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
+ * Prisma Client JS version: 7.4.1
+ * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
  */
 Prisma.prismaVersion = {
-  client: "7.4.0",
-  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
+  client: "7.4.1",
+  engine: "55ae170b1ced7fc6ed07a15f110549408c501bb3"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -152,20 +152,23 @@ exports.Prisma.SiteConfigScalarFieldEnum = {
   c_country: 'c_country'
 };
 
+exports.Prisma.SuperAdminScalarFieldEnum = {
+  id: 'id'
+};
+
 exports.Prisma.AdminScalarFieldEnum = {
   id: 'id',
-  username: 'username',
-  password: 'password',
-  email: 'email',
-  fullname: 'fullname',
-  is_super: 'is_super',
-  last_session: 'last_session'
+  last_session: 'last_session',
+  super_admin_id: 'super_admin_id'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
-  password: 'password'
+  password: 'password',
+  email: 'email',
+  fullname: 'fullname',
+  admin_id: 'admin_id'
 };
 
 exports.Prisma.RefreshTokenScalarFieldEnum = {
@@ -216,6 +219,7 @@ exports.Prisma.ModelName = {
   Appointment: 'Appointment',
   Work: 'Work',
   SiteConfig: 'SiteConfig',
+  SuperAdmin: 'SuperAdmin',
   Admin: 'Admin',
   User: 'User',
   RefreshToken: 'RefreshToken'

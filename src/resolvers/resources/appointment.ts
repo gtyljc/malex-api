@@ -6,14 +6,16 @@ import * as types from "@src/types";
 import { dayjs } from "@lib/utils/dayjs";
 import * as responses from "@src/responses";
 import * as utils from "@lib/utils";
+import { ASyncResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "appointment";
 
-class AppointmentQueryResolvers extends BaseQueryResolvers {
+class Query extends BaseQueryResolvers {
     constructor(){
         super(__modelname)
     }
 
+    @ASyncResolverSaveCatch
     async busyInRange(
         _: any,
         { date, unit }: types.QueryBusyInRangeArgs, 
@@ -91,11 +93,12 @@ class AppointmentQueryResolvers extends BaseQueryResolvers {
     }
 }
 
-class AppointmentMutationResolvers extends BaseMutationResolvers {
+class Mutation extends BaseMutationResolvers {
     constructor(){
         super(__modelname, { isDeletable: false })
     }
     
+    @ASyncResolverSaveCatch
     async create(
        _: any, 
        args: types.CreateArgs, 
@@ -114,8 +117,8 @@ class AppointmentMutationResolvers extends BaseMutationResolvers {
 }
 
 const resolvers: types.Resolvers = {
-    Query: new AppointmentQueryResolvers().register().resolvers,
-    Mutation: new AppointmentMutationResolvers().register().resolvers
+    Query: new Query().register().resolvers,
+    Mutation: new Mutation().register().resolvers
 }
 
 export default resolvers;

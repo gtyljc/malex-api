@@ -6,6 +6,7 @@ import { hasPermission } from "./permissions";
 import * as auth from "./auth";
 import { decodeJwt } from "jose";
 import * as utils from "@lib/utils";
+import { env } from "@lib/utils";
 
 // schema
 import { defaultFieldResolver } from "graphql";
@@ -27,7 +28,7 @@ const directives = [
                         return {
                             ...fieldConfig,
                             resolve: async (source, args, ctx: types.AppContext, info) => {
-                                const mustBeAuthenticated = parseInt(process.env.AUTHENTICATION!);
+                                const mustBeAuthenticated = env("AUTHENTICATION");
 
                                 if (
                                     mustBeAuthenticated && !utils.validate(
@@ -35,16 +36,13 @@ const directives = [
 
                                             // check if jwt was specified
                                             ({ ctx }: { ctx: types.AppContext }) => {
-                                                if (ctx.req.headers.authorization){
-                                                    [ true, ctx.req.headers.authorization ]
-                                                }
-                                                else [ false, undefined ]
+                                                return [ ctx.req.headers.authorization, ctx.req.headers.authorization ]
                                             },
                                             
                                             // validate jwt
                                             async ({ next }: { next: string }) => {
                                                 const jwt = utils.getJWTFromHeader(next);
-                                                const isValid = await auth.jwt.validate(jwt);
+                                                const isValid = await auth.validateJWT(jwt);
 
                                                 return [ isValid, isValid && jwt ] ;
                                             },

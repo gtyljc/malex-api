@@ -2,18 +2,19 @@
 // resolvers for model "Work"
 
 import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
-import * as responses from "@src/responses";
 import * as types from "@src/types";
 import * as errors from "@src/errors";
-import * as utils from "@src/utils";
+import { env } from "@lib/utils";
+import { ASyncResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "work";
 
-class WorkQueryResolvers extends BaseQueryResolvers {
+class Query extends BaseQueryResolvers {
     constructor(){
         super(__modelname);
     }
 
+    @ASyncResolverSaveCatch
     async newWorks(
         _: any, 
         { num }: types.QueryNewWorksArgs, 
@@ -21,8 +22,8 @@ class WorkQueryResolvers extends BaseQueryResolvers {
     ): Promise<types.APIResponse<types.PublicWorkType>> {   
 
         // pagination limitation
-        if (num > parseInt(process.env.OBJECTS_PER_REQUEST_LIMIT!)){
-            return responses.f400Response(utils.assembleErrorMessage(errors.PaginationLimitationError));
+        if (num > parseInt(env("OBJECTS_PER_REQUEST_LIMIT"))){
+            throw new errors.PaginationLimitError()
         }
         
         const q = await db.getManyByFilter(__modelname, {}, { page: 1, perPage: num });
@@ -40,6 +41,7 @@ class WorkQueryResolvers extends BaseQueryResolvers {
         return q.apiResponse;
     }
 
+    @ASyncResolverSaveCatch
     async getWorks(
         _: any,
         args: types.GetManyArgs, 
@@ -62,7 +64,7 @@ class WorkQueryResolvers extends BaseQueryResolvers {
 }
 
 const resolvers: types.Resolvers = {
-    Query: new WorkQueryResolvers().register().resolvers ,
+    Query: new Query().register().resolvers ,
     Mutation: new BaseMutationResolvers(__modelname).register().resolvers
 };
 

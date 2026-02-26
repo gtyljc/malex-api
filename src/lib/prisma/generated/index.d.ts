@@ -29,6 +29,11 @@ export type Work = $Result.DefaultSelection<Prisma.$WorkPayload>
  */
 export type SiteConfig = $Result.DefaultSelection<Prisma.$SiteConfigPayload>
 /**
+ * Model SuperAdmin
+ * 
+ */
+export type SuperAdmin = $Result.DefaultSelection<Prisma.$SuperAdminPayload>
+/**
  * Model Admin
  * 
  */
@@ -207,7 +212,7 @@ export class PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
@@ -246,6 +251,16 @@ export class PrismaClient<
     * ```
     */
   get siteConfig(): Prisma.SiteConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.superAdmin`: Exposes CRUD operations for the **SuperAdmin** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SuperAdmins
+    * const superAdmins = await prisma.superAdmin.findMany()
+    * ```
+    */
+  get superAdmin(): Prisma.SuperAdminDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.admin`: Exposes CRUD operations for the **Admin** model.
@@ -326,8 +341,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.4.0
-   * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
+   * Prisma Client JS version: 7.4.1
+   * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
    */
   export type PrismaVersion = {
     client: string
@@ -713,6 +728,7 @@ export namespace Prisma {
     Appointment: 'Appointment',
     Work: 'Work',
     SiteConfig: 'SiteConfig',
+    SuperAdmin: 'SuperAdmin',
     Admin: 'Admin',
     User: 'User',
     RefreshToken: 'RefreshToken'
@@ -731,7 +747,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "appointment" | "work" | "siteConfig" | "admin" | "user" | "refreshToken"
+      modelProps: "appointment" | "work" | "siteConfig" | "superAdmin" | "admin" | "user" | "refreshToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -954,6 +970,80 @@ export namespace Prisma {
           count: {
             args: Prisma.SiteConfigCountArgs<ExtArgs>
             result: $Utils.Optional<SiteConfigCountAggregateOutputType> | number
+          }
+        }
+      }
+      SuperAdmin: {
+        payload: Prisma.$SuperAdminPayload<ExtArgs>
+        fields: Prisma.SuperAdminFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SuperAdminFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SuperAdminFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          findFirst: {
+            args: Prisma.SuperAdminFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SuperAdminFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          findMany: {
+            args: Prisma.SuperAdminFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
+          }
+          create: {
+            args: Prisma.SuperAdminCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          createMany: {
+            args: Prisma.SuperAdminCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SuperAdminCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
+          }
+          delete: {
+            args: Prisma.SuperAdminDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          update: {
+            args: Prisma.SuperAdminUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          deleteMany: {
+            args: Prisma.SuperAdminDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SuperAdminUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SuperAdminUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
+          }
+          upsert: {
+            args: Prisma.SuperAdminUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          aggregate: {
+            args: Prisma.SuperAdminAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSuperAdmin>
+          }
+          groupBy: {
+            args: Prisma.SuperAdminGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SuperAdminGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SuperAdminCountArgs<ExtArgs>
+            result: $Utils.Optional<SuperAdminCountAggregateOutputType> | number
           }
         }
       }
@@ -1294,6 +1384,7 @@ export namespace Prisma {
     appointment?: AppointmentOmit
     work?: WorkOmit
     siteConfig?: SiteConfigOmit
+    superAdmin?: SuperAdminOmit
     admin?: AdminOmit
     user?: UserOmit
     refreshToken?: RefreshTokenOmit
@@ -1372,6 +1463,36 @@ export namespace Prisma {
    */
 
 
+  /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    refresh_tokens: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    refresh_tokens?: boolean | UserCountOutputTypeCountRefresh_tokensArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRefresh_tokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RefreshTokenWhereInput
+  }
+
 
   /**
    * Models
@@ -1390,15 +1511,17 @@ export namespace Prisma {
   }
 
   export type AppointmentAvgAggregateOutputType = {
+    id: number | null
     duration: number | null
   }
 
   export type AppointmentSumAggregateOutputType = {
+    id: number | null
     duration: number | null
   }
 
   export type AppointmentMinAggregateOutputType = {
-    id: string | null
+    id: number | null
     name: string | null
     surname: string | null
     address: string | null
@@ -1411,7 +1534,7 @@ export namespace Prisma {
   }
 
   export type AppointmentMaxAggregateOutputType = {
-    id: string | null
+    id: number | null
     name: string | null
     surname: string | null
     address: string | null
@@ -1439,10 +1562,12 @@ export namespace Prisma {
 
 
   export type AppointmentAvgAggregateInputType = {
+    id?: true
     duration?: true
   }
 
   export type AppointmentSumAggregateInputType = {
+    id?: true
     duration?: true
   }
 
@@ -1573,7 +1698,7 @@ export namespace Prisma {
   }
 
   export type AppointmentGroupByOutputType = {
-    id: string
+    id: number
     name: string
     surname: string
     address: string
@@ -1662,7 +1787,7 @@ export namespace Prisma {
     name: "Appointment"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      id: number
       name: string
       surname: string
       address: string
@@ -2095,7 +2220,7 @@ export namespace Prisma {
    * Fields of the Appointment model
    */
   interface AppointmentFieldRefs {
-    readonly id: FieldRef<"Appointment", 'String'>
+    readonly id: FieldRef<"Appointment", 'Int'>
     readonly name: FieldRef<"Appointment", 'String'>
     readonly surname: FieldRef<"Appointment", 'String'>
     readonly address: FieldRef<"Appointment", 'String'>
@@ -2477,12 +2602,22 @@ export namespace Prisma {
 
   export type AggregateWork = {
     _count: WorkCountAggregateOutputType | null
+    _avg: WorkAvgAggregateOutputType | null
+    _sum: WorkSumAggregateOutputType | null
     _min: WorkMinAggregateOutputType | null
     _max: WorkMaxAggregateOutputType | null
   }
 
+  export type WorkAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type WorkSumAggregateOutputType = {
+    id: number | null
+  }
+
   export type WorkMinAggregateOutputType = {
-    id: string | null
+    id: number | null
     img_url: string | null
     img_id: string | null
     category: $Enums.CategoryChoice | null
@@ -2490,7 +2625,7 @@ export namespace Prisma {
   }
 
   export type WorkMaxAggregateOutputType = {
-    id: string | null
+    id: number | null
     img_url: string | null
     img_id: string | null
     category: $Enums.CategoryChoice | null
@@ -2506,6 +2641,14 @@ export namespace Prisma {
     _all: number
   }
 
+
+  export type WorkAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type WorkSumAggregateInputType = {
+    id?: true
+  }
 
   export type WorkMinAggregateInputType = {
     id?: true
@@ -2570,6 +2713,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: WorkAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: WorkMinAggregateInputType
@@ -2600,17 +2755,21 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: WorkCountAggregateInputType | true
+    _avg?: WorkAvgAggregateInputType
+    _sum?: WorkSumAggregateInputType
     _min?: WorkMinAggregateInputType
     _max?: WorkMaxAggregateInputType
   }
 
   export type WorkGroupByOutputType = {
-    id: string
+    id: number
     img_url: string
     img_id: string
     category: $Enums.CategoryChoice
     timestamp: Date
     _count: WorkCountAggregateOutputType | null
+    _avg: WorkAvgAggregateOutputType | null
+    _sum: WorkSumAggregateOutputType | null
     _min: WorkMinAggregateOutputType | null
     _max: WorkMaxAggregateOutputType | null
   }
@@ -2667,7 +2826,7 @@ export namespace Prisma {
     name: "Work"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      id: number
       img_url: string
       img_id: string
       category: $Enums.CategoryChoice
@@ -3095,7 +3254,7 @@ export namespace Prisma {
    * Fields of the Work model
    */
   interface WorkFieldRefs {
-    readonly id: FieldRef<"Work", 'String'>
+    readonly id: FieldRef<"Work", 'Int'>
     readonly img_url: FieldRef<"Work", 'String'>
     readonly img_id: FieldRef<"Work", 'String'>
     readonly category: FieldRef<"Work", 'CategoryChoice'>
@@ -3479,15 +3638,17 @@ export namespace Prisma {
   }
 
   export type SiteConfigAvgAggregateOutputType = {
+    id: number | null
     min_duration: number | null
   }
 
   export type SiteConfigSumAggregateOutputType = {
+    id: number | null
     min_duration: number | null
   }
 
   export type SiteConfigMinAggregateOutputType = {
-    id: string | null
+    id: number | null
     opening_at: Date | null
     closing_at: Date | null
     min_duration: number | null
@@ -3498,7 +3659,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigMaxAggregateOutputType = {
-    id: string | null
+    id: number | null
     opening_at: Date | null
     closing_at: Date | null
     min_duration: number | null
@@ -3522,10 +3683,12 @@ export namespace Prisma {
 
 
   export type SiteConfigAvgAggregateInputType = {
+    id?: true
     min_duration?: true
   }
 
   export type SiteConfigSumAggregateInputType = {
+    id?: true
     min_duration?: true
   }
 
@@ -3650,7 +3813,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigGroupByOutputType = {
-    id: string
+    id: number
     opening_at: Date
     closing_at: Date
     min_duration: number
@@ -3729,7 +3892,7 @@ export namespace Prisma {
     name: "SiteConfig"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      id: number
       opening_at: Date
       closing_at: Date
       min_duration: number
@@ -4160,7 +4323,7 @@ export namespace Prisma {
    * Fields of the SiteConfig model
    */
   interface SiteConfigFieldRefs {
-    readonly id: FieldRef<"SiteConfig", 'String'>
+    readonly id: FieldRef<"SiteConfig", 'Int'>
     readonly opening_at: FieldRef<"SiteConfig", 'DateTime'>
     readonly closing_at: FieldRef<"SiteConfig", 'DateTime'>
     readonly min_duration: FieldRef<"SiteConfig", 'Float'>
@@ -4535,75 +4698,1118 @@ export namespace Prisma {
 
 
   /**
+   * Model SuperAdmin
+   */
+
+  export type AggregateSuperAdmin = {
+    _count: SuperAdminCountAggregateOutputType | null
+    _avg: SuperAdminAvgAggregateOutputType | null
+    _sum: SuperAdminSumAggregateOutputType | null
+    _min: SuperAdminMinAggregateOutputType | null
+    _max: SuperAdminMaxAggregateOutputType | null
+  }
+
+  export type SuperAdminAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SuperAdminSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SuperAdminMinAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SuperAdminMaxAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SuperAdminCountAggregateOutputType = {
+    id: number
+    _all: number
+  }
+
+
+  export type SuperAdminAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SuperAdminSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SuperAdminMinAggregateInputType = {
+    id?: true
+  }
+
+  export type SuperAdminMaxAggregateInputType = {
+    id?: true
+  }
+
+  export type SuperAdminCountAggregateInputType = {
+    id?: true
+    _all?: true
+  }
+
+  export type SuperAdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SuperAdmin to aggregate.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SuperAdmins
+    **/
+    _count?: true | SuperAdminCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SuperAdminAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SuperAdminSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SuperAdminMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SuperAdminMaxAggregateInputType
+  }
+
+  export type GetSuperAdminAggregateType<T extends SuperAdminAggregateArgs> = {
+        [P in keyof T & keyof AggregateSuperAdmin]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSuperAdmin[P]>
+      : GetScalarType<T[P], AggregateSuperAdmin[P]>
+  }
+
+
+
+
+  export type SuperAdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SuperAdminWhereInput
+    orderBy?: SuperAdminOrderByWithAggregationInput | SuperAdminOrderByWithAggregationInput[]
+    by: SuperAdminScalarFieldEnum[] | SuperAdminScalarFieldEnum
+    having?: SuperAdminScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SuperAdminCountAggregateInputType | true
+    _avg?: SuperAdminAvgAggregateInputType
+    _sum?: SuperAdminSumAggregateInputType
+    _min?: SuperAdminMinAggregateInputType
+    _max?: SuperAdminMaxAggregateInputType
+  }
+
+  export type SuperAdminGroupByOutputType = {
+    id: number
+    _count: SuperAdminCountAggregateOutputType | null
+    _avg: SuperAdminAvgAggregateOutputType | null
+    _sum: SuperAdminSumAggregateOutputType | null
+    _min: SuperAdminMinAggregateOutputType | null
+    _max: SuperAdminMaxAggregateOutputType | null
+  }
+
+  type GetSuperAdminGroupByPayload<T extends SuperAdminGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SuperAdminGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SuperAdminGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SuperAdminGroupByOutputType[P]>
+            : GetScalarType<T[P], SuperAdminGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SuperAdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    admin?: boolean | SuperAdmin$adminArgs<ExtArgs>
+  }, ExtArgs["result"]["superAdmin"]>
+
+  export type SuperAdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+  }, ExtArgs["result"]["superAdmin"]>
+
+  export type SuperAdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+  }, ExtArgs["result"]["superAdmin"]>
+
+  export type SuperAdminSelectScalar = {
+    id?: boolean
+  }
+
+  export type SuperAdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id", ExtArgs["result"]["superAdmin"]>
+  export type SuperAdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | SuperAdmin$adminArgs<ExtArgs>
+  }
+  export type SuperAdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SuperAdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SuperAdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SuperAdmin"
+    objects: {
+      admin: Prisma.$AdminPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+    }, ExtArgs["result"]["superAdmin"]>
+    composites: {}
+  }
+
+  type SuperAdminGetPayload<S extends boolean | null | undefined | SuperAdminDefaultArgs> = $Result.GetResult<Prisma.$SuperAdminPayload, S>
+
+  type SuperAdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SuperAdminFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SuperAdminCountAggregateInputType | true
+    }
+
+  export interface SuperAdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SuperAdmin'], meta: { name: 'SuperAdmin' } }
+    /**
+     * Find zero or one SuperAdmin that matches the filter.
+     * @param {SuperAdminFindUniqueArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SuperAdminFindUniqueArgs>(args: SelectSubset<T, SuperAdminFindUniqueArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SuperAdmin that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SuperAdminFindUniqueOrThrowArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SuperAdminFindUniqueOrThrowArgs>(args: SelectSubset<T, SuperAdminFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SuperAdmin that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminFindFirstArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SuperAdminFindFirstArgs>(args?: SelectSubset<T, SuperAdminFindFirstArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SuperAdmin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminFindFirstOrThrowArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SuperAdminFindFirstOrThrowArgs>(args?: SelectSubset<T, SuperAdminFindFirstOrThrowArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SuperAdmins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SuperAdmins
+     * const superAdmins = await prisma.superAdmin.findMany()
+     * 
+     * // Get first 10 SuperAdmins
+     * const superAdmins = await prisma.superAdmin.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const superAdminWithIdOnly = await prisma.superAdmin.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SuperAdminFindManyArgs>(args?: SelectSubset<T, SuperAdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SuperAdmin.
+     * @param {SuperAdminCreateArgs} args - Arguments to create a SuperAdmin.
+     * @example
+     * // Create one SuperAdmin
+     * const SuperAdmin = await prisma.superAdmin.create({
+     *   data: {
+     *     // ... data to create a SuperAdmin
+     *   }
+     * })
+     * 
+     */
+    create<T extends SuperAdminCreateArgs>(args: SelectSubset<T, SuperAdminCreateArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SuperAdmins.
+     * @param {SuperAdminCreateManyArgs} args - Arguments to create many SuperAdmins.
+     * @example
+     * // Create many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SuperAdminCreateManyArgs>(args?: SelectSubset<T, SuperAdminCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SuperAdmins and returns the data saved in the database.
+     * @param {SuperAdminCreateManyAndReturnArgs} args - Arguments to create many SuperAdmins.
+     * @example
+     * // Create many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SuperAdmins and only return the `id`
+     * const superAdminWithIdOnly = await prisma.superAdmin.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SuperAdminCreateManyAndReturnArgs>(args?: SelectSubset<T, SuperAdminCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SuperAdmin.
+     * @param {SuperAdminDeleteArgs} args - Arguments to delete one SuperAdmin.
+     * @example
+     * // Delete one SuperAdmin
+     * const SuperAdmin = await prisma.superAdmin.delete({
+     *   where: {
+     *     // ... filter to delete one SuperAdmin
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SuperAdminDeleteArgs>(args: SelectSubset<T, SuperAdminDeleteArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SuperAdmin.
+     * @param {SuperAdminUpdateArgs} args - Arguments to update one SuperAdmin.
+     * @example
+     * // Update one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SuperAdminUpdateArgs>(args: SelectSubset<T, SuperAdminUpdateArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SuperAdmins.
+     * @param {SuperAdminDeleteManyArgs} args - Arguments to filter SuperAdmins to delete.
+     * @example
+     * // Delete a few SuperAdmins
+     * const { count } = await prisma.superAdmin.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SuperAdminDeleteManyArgs>(args?: SelectSubset<T, SuperAdminDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SuperAdmins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SuperAdminUpdateManyArgs>(args: SelectSubset<T, SuperAdminUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SuperAdmins and returns the data updated in the database.
+     * @param {SuperAdminUpdateManyAndReturnArgs} args - Arguments to update many SuperAdmins.
+     * @example
+     * // Update many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SuperAdmins and only return the `id`
+     * const superAdminWithIdOnly = await prisma.superAdmin.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SuperAdminUpdateManyAndReturnArgs>(args: SelectSubset<T, SuperAdminUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SuperAdmin.
+     * @param {SuperAdminUpsertArgs} args - Arguments to update or create a SuperAdmin.
+     * @example
+     * // Update or create a SuperAdmin
+     * const superAdmin = await prisma.superAdmin.upsert({
+     *   create: {
+     *     // ... data to create a SuperAdmin
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SuperAdmin we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SuperAdminUpsertArgs>(args: SelectSubset<T, SuperAdminUpsertArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SuperAdmins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminCountArgs} args - Arguments to filter SuperAdmins to count.
+     * @example
+     * // Count the number of SuperAdmins
+     * const count = await prisma.superAdmin.count({
+     *   where: {
+     *     // ... the filter for the SuperAdmins we want to count
+     *   }
+     * })
+    **/
+    count<T extends SuperAdminCountArgs>(
+      args?: Subset<T, SuperAdminCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SuperAdminCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SuperAdmin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SuperAdminAggregateArgs>(args: Subset<T, SuperAdminAggregateArgs>): Prisma.PrismaPromise<GetSuperAdminAggregateType<T>>
+
+    /**
+     * Group by SuperAdmin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SuperAdminGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SuperAdminGroupByArgs['orderBy'] }
+        : { orderBy?: SuperAdminGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SuperAdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSuperAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SuperAdmin model
+   */
+  readonly fields: SuperAdminFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SuperAdmin.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SuperAdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    admin<T extends SuperAdmin$adminArgs<ExtArgs> = {}>(args?: Subset<T, SuperAdmin$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SuperAdmin model
+   */
+  interface SuperAdminFieldRefs {
+    readonly id: FieldRef<"SuperAdmin", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SuperAdmin findUnique
+   */
+  export type SuperAdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin findUniqueOrThrow
+   */
+  export type SuperAdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin findFirst
+   */
+  export type SuperAdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SuperAdmins.
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuperAdmins.
+     */
+    distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
+  }
+
+  /**
+   * SuperAdmin findFirstOrThrow
+   */
+  export type SuperAdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SuperAdmins.
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuperAdmins.
+     */
+    distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
+  }
+
+  /**
+   * SuperAdmin findMany
+   */
+  export type SuperAdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmins to fetch.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SuperAdmins.
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
+  }
+
+  /**
+   * SuperAdmin create
+   */
+  export type SuperAdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SuperAdmin.
+     */
+    data?: XOR<SuperAdminCreateInput, SuperAdminUncheckedCreateInput>
+  }
+
+  /**
+   * SuperAdmin createMany
+   */
+  export type SuperAdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SuperAdmins.
+     */
+    data: SuperAdminCreateManyInput | SuperAdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SuperAdmin createManyAndReturn
+   */
+  export type SuperAdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The data used to create many SuperAdmins.
+     */
+    data: SuperAdminCreateManyInput | SuperAdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SuperAdmin update
+   */
+  export type SuperAdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SuperAdmin.
+     */
+    data: XOR<SuperAdminUpdateInput, SuperAdminUncheckedUpdateInput>
+    /**
+     * Choose, which SuperAdmin to update.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin updateMany
+   */
+  export type SuperAdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SuperAdmins.
+     */
+    data: XOR<SuperAdminUpdateManyMutationInput, SuperAdminUncheckedUpdateManyInput>
+    /**
+     * Filter which SuperAdmins to update
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * Limit how many SuperAdmins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuperAdmin updateManyAndReturn
+   */
+  export type SuperAdminUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The data used to update SuperAdmins.
+     */
+    data: XOR<SuperAdminUpdateManyMutationInput, SuperAdminUncheckedUpdateManyInput>
+    /**
+     * Filter which SuperAdmins to update
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * Limit how many SuperAdmins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuperAdmin upsert
+   */
+  export type SuperAdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SuperAdmin to update in case it exists.
+     */
+    where: SuperAdminWhereUniqueInput
+    /**
+     * In case the SuperAdmin found by the `where` argument doesn't exist, create a new SuperAdmin with this data.
+     */
+    create: XOR<SuperAdminCreateInput, SuperAdminUncheckedCreateInput>
+    /**
+     * In case the SuperAdmin was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SuperAdminUpdateInput, SuperAdminUncheckedUpdateInput>
+  }
+
+  /**
+   * SuperAdmin delete
+   */
+  export type SuperAdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    /**
+     * Filter which SuperAdmin to delete.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin deleteMany
+   */
+  export type SuperAdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SuperAdmins to delete
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * Limit how many SuperAdmins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuperAdmin.admin
+   */
+  export type SuperAdmin$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    where?: AdminWhereInput
+  }
+
+  /**
+   * SuperAdmin without action
+   */
+  export type SuperAdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Admin
    */
 
   export type AggregateAdmin = {
     _count: AdminCountAggregateOutputType | null
+    _avg: AdminAvgAggregateOutputType | null
+    _sum: AdminSumAggregateOutputType | null
     _min: AdminMinAggregateOutputType | null
     _max: AdminMaxAggregateOutputType | null
   }
 
+  export type AdminAvgAggregateOutputType = {
+    id: number | null
+    super_admin_id: number | null
+  }
+
+  export type AdminSumAggregateOutputType = {
+    id: number | null
+    super_admin_id: number | null
+  }
+
   export type AdminMinAggregateOutputType = {
-    id: string | null
-    username: string | null
-    password: string | null
-    email: string | null
-    fullname: string | null
-    is_super: boolean | null
+    id: number | null
     last_session: Date | null
+    super_admin_id: number | null
   }
 
   export type AdminMaxAggregateOutputType = {
-    id: string | null
-    username: string | null
-    password: string | null
-    email: string | null
-    fullname: string | null
-    is_super: boolean | null
+    id: number | null
     last_session: Date | null
+    super_admin_id: number | null
   }
 
   export type AdminCountAggregateOutputType = {
     id: number
-    username: number
-    password: number
-    email: number
-    fullname: number
-    is_super: number
     last_session: number
+    super_admin_id: number
     _all: number
   }
 
 
+  export type AdminAvgAggregateInputType = {
+    id?: true
+    super_admin_id?: true
+  }
+
+  export type AdminSumAggregateInputType = {
+    id?: true
+    super_admin_id?: true
+  }
+
   export type AdminMinAggregateInputType = {
     id?: true
-    username?: true
-    password?: true
-    email?: true
-    fullname?: true
-    is_super?: true
     last_session?: true
+    super_admin_id?: true
   }
 
   export type AdminMaxAggregateInputType = {
     id?: true
-    username?: true
-    password?: true
-    email?: true
-    fullname?: true
-    is_super?: true
     last_session?: true
+    super_admin_id?: true
   }
 
   export type AdminCountAggregateInputType = {
     id?: true
-    username?: true
-    password?: true
-    email?: true
-    fullname?: true
-    is_super?: true
     last_session?: true
+    super_admin_id?: true
     _all?: true
   }
 
@@ -4645,6 +5851,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: AdminAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AdminSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: AdminMinAggregateInputType
@@ -4675,19 +5893,19 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: AdminCountAggregateInputType | true
+    _avg?: AdminAvgAggregateInputType
+    _sum?: AdminSumAggregateInputType
     _min?: AdminMinAggregateInputType
     _max?: AdminMaxAggregateInputType
   }
 
   export type AdminGroupByOutputType = {
-    id: string
-    username: string
-    password: string
-    email: string
-    fullname: string
-    is_super: boolean
+    id: number
     last_session: Date
+    super_admin_id: number | null
     _count: AdminCountAggregateOutputType | null
+    _avg: AdminAvgAggregateOutputType | null
+    _sum: AdminSumAggregateOutputType | null
     _min: AdminMinAggregateOutputType | null
     _max: AdminMaxAggregateOutputType | null
   }
@@ -4708,57 +5926,54 @@ export namespace Prisma {
 
   export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    username?: boolean
-    password?: boolean
-    email?: boolean
-    fullname?: boolean
-    is_super?: boolean
     last_session?: boolean
+    super_admin_id?: boolean
+    user?: boolean | Admin$userArgs<ExtArgs>
+    super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
   }, ExtArgs["result"]["admin"]>
 
   export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    username?: boolean
-    password?: boolean
-    email?: boolean
-    fullname?: boolean
-    is_super?: boolean
     last_session?: boolean
+    super_admin_id?: boolean
+    super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
   }, ExtArgs["result"]["admin"]>
 
   export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    username?: boolean
-    password?: boolean
-    email?: boolean
-    fullname?: boolean
-    is_super?: boolean
     last_session?: boolean
+    super_admin_id?: boolean
+    super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
   }, ExtArgs["result"]["admin"]>
 
   export type AdminSelectScalar = {
     id?: boolean
-    username?: boolean
-    password?: boolean
-    email?: boolean
-    fullname?: boolean
-    is_super?: boolean
     last_session?: boolean
+    super_admin_id?: boolean
   }
 
-  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "email" | "fullname" | "is_super" | "last_session", ExtArgs["result"]["admin"]>
+  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "last_session" | "super_admin_id", ExtArgs["result"]["admin"]>
+  export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Admin$userArgs<ExtArgs>
+    super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
+  }
+  export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
+  }
+  export type AdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
+  }
 
   export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Admin"
-    objects: {}
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      super_admin: Prisma.$SuperAdminPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
-      id: string
-      username: string
-      password: string
-      email: string
-      fullname: string
-      is_super: boolean
+      id: number
       last_session: Date
+      super_admin_id: number | null
     }, ExtArgs["result"]["admin"]>
     composites: {}
   }
@@ -5153,6 +6368,8 @@ export namespace Prisma {
    */
   export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends Admin$userArgs<ExtArgs> = {}>(args?: Subset<T, Admin$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    super_admin<T extends Admin$super_adminArgs<ExtArgs> = {}>(args?: Subset<T, Admin$super_adminArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5182,13 +6399,9 @@ export namespace Prisma {
    * Fields of the Admin model
    */
   interface AdminFieldRefs {
-    readonly id: FieldRef<"Admin", 'String'>
-    readonly username: FieldRef<"Admin", 'String'>
-    readonly password: FieldRef<"Admin", 'String'>
-    readonly email: FieldRef<"Admin", 'String'>
-    readonly fullname: FieldRef<"Admin", 'String'>
-    readonly is_super: FieldRef<"Admin", 'Boolean'>
+    readonly id: FieldRef<"Admin", 'Int'>
     readonly last_session: FieldRef<"Admin", 'DateTime'>
+    readonly super_admin_id: FieldRef<"Admin", 'Int'>
   }
     
 
@@ -5205,6 +6418,10 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
     /**
      * Filter, which Admin to fetch.
      */
@@ -5224,6 +6441,10 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
      * Filter, which Admin to fetch.
      */
     where: AdminWhereUniqueInput
@@ -5241,6 +6462,10 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
     /**
      * Filter, which Admin to fetch.
      */
@@ -5290,6 +6515,10 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
      * Filter, which Admin to fetch.
      */
     where?: AdminWhereInput
@@ -5338,6 +6567,10 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
      * Filter, which Admins to fetch.
      */
     where?: AdminWhereInput
@@ -5381,9 +6614,13 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
      * The data needed to create a Admin.
      */
-    data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+    data?: XOR<AdminCreateInput, AdminUncheckedCreateInput>
   }
 
   /**
@@ -5414,6 +6651,10 @@ export namespace Prisma {
      */
     data: AdminCreateManyInput | AdminCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5428,6 +6669,10 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
     /**
      * The data needed to update a Admin.
      */
@@ -5480,6 +6725,10 @@ export namespace Prisma {
      * Limit how many Admins to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5494,6 +6743,10 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
     /**
      * The filter to search for the Admin to update in case it exists.
      */
@@ -5521,6 +6774,10 @@ export namespace Prisma {
      */
     omit?: AdminOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
      * Filter which Admin to delete.
      */
     where: AdminWhereUniqueInput
@@ -5541,6 +6798,44 @@ export namespace Prisma {
   }
 
   /**
+   * Admin.user
+   */
+  export type Admin$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Admin.super_admin
+   */
+  export type Admin$super_adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuperAdminInclude<ExtArgs> | null
+    where?: SuperAdminWhereInput
+  }
+
+  /**
    * Admin without action
    */
   export type AdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5552,6 +6847,10 @@ export namespace Prisma {
      * Omit specific fields from the Admin
      */
     omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
   }
 
 
@@ -5561,46 +6860,86 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
 
+  export type UserAvgAggregateOutputType = {
+    id: number | null
+    admin_id: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    id: number | null
+    admin_id: number | null
+  }
+
   export type UserMinAggregateOutputType = {
-    id: string | null
+    id: number | null
     username: string | null
     password: string | null
+    email: string | null
+    fullname: string | null
+    admin_id: number | null
   }
 
   export type UserMaxAggregateOutputType = {
-    id: string | null
+    id: number | null
     username: string | null
     password: string | null
+    email: string | null
+    fullname: string | null
+    admin_id: number | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     username: number
     password: number
+    email: number
+    fullname: number
+    admin_id: number
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    id?: true
+    admin_id?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    id?: true
+    admin_id?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
     username?: true
     password?: true
+    email?: true
+    fullname?: true
+    admin_id?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     username?: true
     password?: true
+    email?: true
+    fullname?: true
+    admin_id?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     username?: true
     password?: true
+    email?: true
+    fullname?: true
+    admin_id?: true
     _all?: true
   }
 
@@ -5642,6 +6981,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -5672,15 +7023,22 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
 
   export type UserGroupByOutputType = {
-    id: string
+    id: number
     username: string
     password: string
+    email: string
+    fullname: string
+    admin_id: number | null
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -5703,35 +7061,69 @@ export namespace Prisma {
     id?: boolean
     username?: boolean
     password?: boolean
+    email?: boolean
+    fullname?: boolean
+    admin_id?: boolean
+    admin?: boolean | User$adminArgs<ExtArgs>
+    refresh_tokens?: boolean | User$refresh_tokensArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     username?: boolean
     password?: boolean
+    email?: boolean
+    fullname?: boolean
+    admin_id?: boolean
+    admin?: boolean | User$adminArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     username?: boolean
     password?: boolean
+    email?: boolean
+    fullname?: boolean
+    admin_id?: boolean
+    admin?: boolean | User$adminArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
     username?: boolean
     password?: boolean
+    email?: boolean
+    fullname?: boolean
+    admin_id?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "email" | "fullname" | "admin_id", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | User$adminArgs<ExtArgs>
+    refresh_tokens?: boolean | User$refresh_tokensArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | User$adminArgs<ExtArgs>
+  }
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | User$adminArgs<ExtArgs>
+  }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {}
+    objects: {
+      admin: Prisma.$AdminPayload<ExtArgs> | null
+      refresh_tokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      id: number
       username: string
       password: string
+      email: string
+      fullname: string
+      admin_id: number | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -6126,6 +7518,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    admin<T extends User$adminArgs<ExtArgs> = {}>(args?: Subset<T, User$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    refresh_tokens<T extends User$refresh_tokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refresh_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6155,9 +7549,12 @@ export namespace Prisma {
    * Fields of the User model
    */
   interface UserFieldRefs {
-    readonly id: FieldRef<"User", 'String'>
+    readonly id: FieldRef<"User", 'Int'>
     readonly username: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly email: FieldRef<"User", 'String'>
+    readonly fullname: FieldRef<"User", 'String'>
+    readonly admin_id: FieldRef<"User", 'Int'>
   }
     
 
@@ -6174,6 +7571,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -6193,6 +7594,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -6210,6 +7615,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -6259,6 +7668,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -6307,6 +7720,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -6350,6 +7767,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * The data needed to create a User.
      */
     data: XOR<UserCreateInput, UserUncheckedCreateInput>
@@ -6383,6 +7804,10 @@ export namespace Prisma {
      */
     data: UserCreateManyInput | UserCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6397,6 +7822,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -6449,6 +7878,10 @@ export namespace Prisma {
      * Limit how many Users to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6463,6 +7896,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The filter to search for the User to update in case it exists.
      */
@@ -6490,6 +7927,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -6510,6 +7951,49 @@ export namespace Prisma {
   }
 
   /**
+   * User.admin
+   */
+  export type User$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    where?: AdminWhereInput
+  }
+
+  /**
+   * User.refresh_tokens
+   */
+  export type User$refresh_tokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RefreshToken
+     */
+    select?: RefreshTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RefreshToken
+     */
+    omit?: RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
+    where?: RefreshTokenWhereInput
+    orderBy?: RefreshTokenOrderByWithRelationInput | RefreshTokenOrderByWithRelationInput[]
+    cursor?: RefreshTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RefreshTokenScalarFieldEnum | RefreshTokenScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6521,6 +8005,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
   }
 
 
@@ -6530,28 +8018,40 @@ export namespace Prisma {
 
   export type AggregateRefreshToken = {
     _count: RefreshTokenCountAggregateOutputType | null
+    _avg: RefreshTokenAvgAggregateOutputType | null
+    _sum: RefreshTokenSumAggregateOutputType | null
     _min: RefreshTokenMinAggregateOutputType | null
     _max: RefreshTokenMaxAggregateOutputType | null
   }
 
+  export type RefreshTokenAvgAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+  }
+
+  export type RefreshTokenSumAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+  }
+
   export type RefreshTokenMinAggregateOutputType = {
-    id: string | null
+    id: number | null
     hash: string | null
     created_at: Date | null
     expired_at: Date | null
     is_revoked: boolean | null
     role: $Enums.Role | null
-    user_id: string | null
+    user_id: number | null
   }
 
   export type RefreshTokenMaxAggregateOutputType = {
-    id: string | null
+    id: number | null
     hash: string | null
     created_at: Date | null
     expired_at: Date | null
     is_revoked: boolean | null
     role: $Enums.Role | null
-    user_id: string | null
+    user_id: number | null
   }
 
   export type RefreshTokenCountAggregateOutputType = {
@@ -6565,6 +8065,16 @@ export namespace Prisma {
     _all: number
   }
 
+
+  export type RefreshTokenAvgAggregateInputType = {
+    id?: true
+    user_id?: true
+  }
+
+  export type RefreshTokenSumAggregateInputType = {
+    id?: true
+    user_id?: true
+  }
 
   export type RefreshTokenMinAggregateInputType = {
     id?: true
@@ -6635,6 +8145,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: RefreshTokenAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RefreshTokenSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: RefreshTokenMinAggregateInputType
@@ -6665,19 +8187,23 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RefreshTokenCountAggregateInputType | true
+    _avg?: RefreshTokenAvgAggregateInputType
+    _sum?: RefreshTokenSumAggregateInputType
     _min?: RefreshTokenMinAggregateInputType
     _max?: RefreshTokenMaxAggregateInputType
   }
 
   export type RefreshTokenGroupByOutputType = {
-    id: string
+    id: number
     hash: string
     created_at: Date
     expired_at: Date
     is_revoked: boolean
     role: $Enums.Role
-    user_id: string
+    user_id: number | null
     _count: RefreshTokenCountAggregateOutputType | null
+    _avg: RefreshTokenAvgAggregateOutputType | null
+    _sum: RefreshTokenSumAggregateOutputType | null
     _min: RefreshTokenMinAggregateOutputType | null
     _max: RefreshTokenMaxAggregateOutputType | null
   }
@@ -6704,6 +8230,7 @@ export namespace Prisma {
     is_revoked?: boolean
     role?: boolean
     user_id?: boolean
+    user?: boolean | RefreshToken$userArgs<ExtArgs>
   }, ExtArgs["result"]["refreshToken"]>
 
   export type RefreshTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6714,6 +8241,7 @@ export namespace Prisma {
     is_revoked?: boolean
     role?: boolean
     user_id?: boolean
+    user?: boolean | RefreshToken$userArgs<ExtArgs>
   }, ExtArgs["result"]["refreshToken"]>
 
   export type RefreshTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6724,6 +8252,7 @@ export namespace Prisma {
     is_revoked?: boolean
     role?: boolean
     user_id?: boolean
+    user?: boolean | RefreshToken$userArgs<ExtArgs>
   }, ExtArgs["result"]["refreshToken"]>
 
   export type RefreshTokenSelectScalar = {
@@ -6737,18 +8266,29 @@ export namespace Prisma {
   }
 
   export type RefreshTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hash" | "created_at" | "expired_at" | "is_revoked" | "role" | "user_id", ExtArgs["result"]["refreshToken"]>
+  export type RefreshTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | RefreshToken$userArgs<ExtArgs>
+  }
+  export type RefreshTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | RefreshToken$userArgs<ExtArgs>
+  }
+  export type RefreshTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | RefreshToken$userArgs<ExtArgs>
+  }
 
   export type $RefreshTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RefreshToken"
-    objects: {}
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      id: number
       hash: string
       created_at: Date
       expired_at: Date
       is_revoked: boolean
       role: $Enums.Role
-      user_id: string
+      user_id: number | null
     }, ExtArgs["result"]["refreshToken"]>
     composites: {}
   }
@@ -7143,6 +8683,7 @@ export namespace Prisma {
    */
   export interface Prisma__RefreshTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends RefreshToken$userArgs<ExtArgs> = {}>(args?: Subset<T, RefreshToken$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7172,13 +8713,13 @@ export namespace Prisma {
    * Fields of the RefreshToken model
    */
   interface RefreshTokenFieldRefs {
-    readonly id: FieldRef<"RefreshToken", 'String'>
+    readonly id: FieldRef<"RefreshToken", 'Int'>
     readonly hash: FieldRef<"RefreshToken", 'String'>
     readonly created_at: FieldRef<"RefreshToken", 'DateTime'>
     readonly expired_at: FieldRef<"RefreshToken", 'DateTime'>
     readonly is_revoked: FieldRef<"RefreshToken", 'Boolean'>
     readonly role: FieldRef<"RefreshToken", 'Role'>
-    readonly user_id: FieldRef<"RefreshToken", 'String'>
+    readonly user_id: FieldRef<"RefreshToken", 'Int'>
   }
     
 
@@ -7195,6 +8736,10 @@ export namespace Prisma {
      * Omit specific fields from the RefreshToken
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
     /**
      * Filter, which RefreshToken to fetch.
      */
@@ -7214,6 +8759,10 @@ export namespace Prisma {
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
+    /**
      * Filter, which RefreshToken to fetch.
      */
     where: RefreshTokenWhereUniqueInput
@@ -7231,6 +8780,10 @@ export namespace Prisma {
      * Omit specific fields from the RefreshToken
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
     /**
      * Filter, which RefreshToken to fetch.
      */
@@ -7280,6 +8833,10 @@ export namespace Prisma {
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
+    /**
      * Filter, which RefreshToken to fetch.
      */
     where?: RefreshTokenWhereInput
@@ -7328,6 +8885,10 @@ export namespace Prisma {
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
+    /**
      * Filter, which RefreshTokens to fetch.
      */
     where?: RefreshTokenWhereInput
@@ -7371,6 +8932,10 @@ export namespace Prisma {
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
+    /**
      * The data needed to create a RefreshToken.
      */
     data: XOR<RefreshTokenCreateInput, RefreshTokenUncheckedCreateInput>
@@ -7404,6 +8969,10 @@ export namespace Prisma {
      */
     data: RefreshTokenCreateManyInput | RefreshTokenCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7418,6 +8987,10 @@ export namespace Prisma {
      * Omit specific fields from the RefreshToken
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
     /**
      * The data needed to update a RefreshToken.
      */
@@ -7470,6 +9043,10 @@ export namespace Prisma {
      * Limit how many RefreshTokens to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7484,6 +9061,10 @@ export namespace Prisma {
      * Omit specific fields from the RefreshToken
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
     /**
      * The filter to search for the RefreshToken to update in case it exists.
      */
@@ -7511,6 +9092,10 @@ export namespace Prisma {
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
+    /**
      * Filter which RefreshToken to delete.
      */
     where: RefreshTokenWhereUniqueInput
@@ -7531,6 +9116,25 @@ export namespace Prisma {
   }
 
   /**
+   * RefreshToken.user
+   */
+  export type RefreshToken$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * RefreshToken without action
    */
   export type RefreshTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7542,6 +9146,10 @@ export namespace Prisma {
      * Omit specific fields from the RefreshToken
      */
     omit?: RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefreshTokenInclude<ExtArgs> | null
   }
 
 
@@ -7600,14 +9208,17 @@ export namespace Prisma {
   export type SiteConfigScalarFieldEnum = (typeof SiteConfigScalarFieldEnum)[keyof typeof SiteConfigScalarFieldEnum]
 
 
+  export const SuperAdminScalarFieldEnum: {
+    id: 'id'
+  };
+
+  export type SuperAdminScalarFieldEnum = (typeof SuperAdminScalarFieldEnum)[keyof typeof SuperAdminScalarFieldEnum]
+
+
   export const AdminScalarFieldEnum: {
     id: 'id',
-    username: 'username',
-    password: 'password',
-    email: 'email',
-    fullname: 'fullname',
-    is_super: 'is_super',
-    last_session: 'last_session'
+    last_session: 'last_session',
+    super_admin_id: 'super_admin_id'
   };
 
   export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
@@ -7616,7 +9227,10 @@ export namespace Prisma {
   export const UserScalarFieldEnum: {
     id: 'id',
     username: 'username',
-    password: 'password'
+    password: 'password',
+    email: 'email',
+    fullname: 'fullname',
+    admin_id: 'admin_id'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -7662,6 +9276,20 @@ export namespace Prisma {
   /**
    * Field references
    */
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
 
 
   /**
@@ -7753,20 +9381,6 @@ export namespace Prisma {
    */
   export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
     
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
   /**
    * Deep Input Types
    */
@@ -7776,7 +9390,7 @@ export namespace Prisma {
     AND?: AppointmentWhereInput | AppointmentWhereInput[]
     OR?: AppointmentWhereInput[]
     NOT?: AppointmentWhereInput | AppointmentWhereInput[]
-    id?: StringFilter<"Appointment"> | string
+    id?: IntFilter<"Appointment"> | number
     name?: StringFilter<"Appointment"> | string
     surname?: StringFilter<"Appointment"> | string
     address?: StringFilter<"Appointment"> | string
@@ -7802,7 +9416,7 @@ export namespace Prisma {
   }
 
   export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
     date?: Date | string
     AND?: AppointmentWhereInput | AppointmentWhereInput[]
     OR?: AppointmentWhereInput[]
@@ -7815,7 +9429,7 @@ export namespace Prisma {
     phone_number?: StringNullableFilter<"Appointment"> | string | null
     duration?: FloatFilter<"Appointment"> | number
     completed?: BoolFilter<"Appointment"> | boolean
-  }, "id" | "date">
+  }, "id" | "id" | "date">
 
   export type AppointmentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -7839,7 +9453,7 @@ export namespace Prisma {
     AND?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[]
     OR?: AppointmentScalarWhereWithAggregatesInput[]
     NOT?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Appointment"> | string
+    id?: IntWithAggregatesFilter<"Appointment"> | number
     name?: StringWithAggregatesFilter<"Appointment"> | string
     surname?: StringWithAggregatesFilter<"Appointment"> | string
     address?: StringWithAggregatesFilter<"Appointment"> | string
@@ -7855,7 +9469,7 @@ export namespace Prisma {
     AND?: WorkWhereInput | WorkWhereInput[]
     OR?: WorkWhereInput[]
     NOT?: WorkWhereInput | WorkWhereInput[]
-    id?: StringFilter<"Work"> | string
+    id?: IntFilter<"Work"> | number
     img_url?: StringFilter<"Work"> | string
     img_id?: StringFilter<"Work"> | string
     category?: EnumCategoryChoiceFilter<"Work"> | $Enums.CategoryChoice
@@ -7871,7 +9485,7 @@ export namespace Prisma {
   }
 
   export type WorkWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
     img_url?: string
     img_id?: string
     AND?: WorkWhereInput | WorkWhereInput[]
@@ -7879,7 +9493,7 @@ export namespace Prisma {
     NOT?: WorkWhereInput | WorkWhereInput[]
     category?: EnumCategoryChoiceFilter<"Work"> | $Enums.CategoryChoice
     timestamp?: DateTimeFilter<"Work"> | Date | string
-  }, "id" | "img_url" | "img_id">
+  }, "id" | "id" | "img_url" | "img_id">
 
   export type WorkOrderByWithAggregationInput = {
     id?: SortOrder
@@ -7888,15 +9502,17 @@ export namespace Prisma {
     category?: SortOrder
     timestamp?: SortOrder
     _count?: WorkCountOrderByAggregateInput
+    _avg?: WorkAvgOrderByAggregateInput
     _max?: WorkMaxOrderByAggregateInput
     _min?: WorkMinOrderByAggregateInput
+    _sum?: WorkSumOrderByAggregateInput
   }
 
   export type WorkScalarWhereWithAggregatesInput = {
     AND?: WorkScalarWhereWithAggregatesInput | WorkScalarWhereWithAggregatesInput[]
     OR?: WorkScalarWhereWithAggregatesInput[]
     NOT?: WorkScalarWhereWithAggregatesInput | WorkScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Work"> | string
+    id?: IntWithAggregatesFilter<"Work"> | number
     img_url?: StringWithAggregatesFilter<"Work"> | string
     img_id?: StringWithAggregatesFilter<"Work"> | string
     category?: EnumCategoryChoiceWithAggregatesFilter<"Work"> | $Enums.CategoryChoice
@@ -7907,7 +9523,7 @@ export namespace Prisma {
     AND?: SiteConfigWhereInput | SiteConfigWhereInput[]
     OR?: SiteConfigWhereInput[]
     NOT?: SiteConfigWhereInput | SiteConfigWhereInput[]
-    id?: StringFilter<"SiteConfig"> | string
+    id?: IntFilter<"SiteConfig"> | number
     opening_at?: DateTimeFilter<"SiteConfig"> | Date | string
     closing_at?: DateTimeFilter<"SiteConfig"> | Date | string
     min_duration?: FloatFilter<"SiteConfig"> | number
@@ -7929,7 +9545,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
     AND?: SiteConfigWhereInput | SiteConfigWhereInput[]
     OR?: SiteConfigWhereInput[]
     NOT?: SiteConfigWhereInput | SiteConfigWhereInput[]
@@ -7940,7 +9556,7 @@ export namespace Prisma {
     phone_number?: StringFilter<"SiteConfig"> | string
     timezone?: StringFilter<"SiteConfig"> | string
     c_country?: StringFilter<"SiteConfig"> | string
-  }, "id">
+  }, "id" | "id">
 
   export type SiteConfigOrderByWithAggregationInput = {
     id?: SortOrder
@@ -7962,7 +9578,7 @@ export namespace Prisma {
     AND?: SiteConfigScalarWhereWithAggregatesInput | SiteConfigScalarWhereWithAggregatesInput[]
     OR?: SiteConfigScalarWhereWithAggregatesInput[]
     NOT?: SiteConfigScalarWhereWithAggregatesInput | SiteConfigScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"SiteConfig"> | string
+    id?: IntWithAggregatesFilter<"SiteConfig"> | number
     opening_at?: DateTimeWithAggregatesFilter<"SiteConfig"> | Date | string
     closing_at?: DateTimeWithAggregatesFilter<"SiteConfig"> | Date | string
     min_duration?: FloatWithAggregatesFilter<"SiteConfig"> | number
@@ -7972,121 +9588,170 @@ export namespace Prisma {
     c_country?: StringWithAggregatesFilter<"SiteConfig"> | string
   }
 
+  export type SuperAdminWhereInput = {
+    AND?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    OR?: SuperAdminWhereInput[]
+    NOT?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    id?: IntFilter<"SuperAdmin"> | number
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+  }
+
+  export type SuperAdminOrderByWithRelationInput = {
+    id?: SortOrder
+    admin?: AdminOrderByWithRelationInput
+  }
+
+  export type SuperAdminWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    OR?: SuperAdminWhereInput[]
+    NOT?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+  }, "id">
+
+  export type SuperAdminOrderByWithAggregationInput = {
+    id?: SortOrder
+    _count?: SuperAdminCountOrderByAggregateInput
+    _avg?: SuperAdminAvgOrderByAggregateInput
+    _max?: SuperAdminMaxOrderByAggregateInput
+    _min?: SuperAdminMinOrderByAggregateInput
+    _sum?: SuperAdminSumOrderByAggregateInput
+  }
+
+  export type SuperAdminScalarWhereWithAggregatesInput = {
+    AND?: SuperAdminScalarWhereWithAggregatesInput | SuperAdminScalarWhereWithAggregatesInput[]
+    OR?: SuperAdminScalarWhereWithAggregatesInput[]
+    NOT?: SuperAdminScalarWhereWithAggregatesInput | SuperAdminScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SuperAdmin"> | number
+  }
+
   export type AdminWhereInput = {
     AND?: AdminWhereInput | AdminWhereInput[]
     OR?: AdminWhereInput[]
     NOT?: AdminWhereInput | AdminWhereInput[]
-    id?: StringFilter<"Admin"> | string
-    username?: StringFilter<"Admin"> | string
-    password?: StringFilter<"Admin"> | string
-    email?: StringFilter<"Admin"> | string
-    fullname?: StringFilter<"Admin"> | string
-    is_super?: BoolFilter<"Admin"> | boolean
+    id?: IntFilter<"Admin"> | number
     last_session?: DateTimeFilter<"Admin"> | Date | string
+    super_admin_id?: IntNullableFilter<"Admin"> | number | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    super_admin?: XOR<SuperAdminNullableScalarRelationFilter, SuperAdminWhereInput> | null
   }
 
   export type AdminOrderByWithRelationInput = {
     id?: SortOrder
-    username?: SortOrder
-    password?: SortOrder
-    email?: SortOrder
-    fullname?: SortOrder
-    is_super?: SortOrder
     last_session?: SortOrder
+    super_admin_id?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+    super_admin?: SuperAdminOrderByWithRelationInput
   }
 
   export type AdminWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
+    super_admin_id?: number
     AND?: AdminWhereInput | AdminWhereInput[]
     OR?: AdminWhereInput[]
     NOT?: AdminWhereInput | AdminWhereInput[]
-    username?: StringFilter<"Admin"> | string
-    password?: StringFilter<"Admin"> | string
-    email?: StringFilter<"Admin"> | string
-    fullname?: StringFilter<"Admin"> | string
-    is_super?: BoolFilter<"Admin"> | boolean
     last_session?: DateTimeFilter<"Admin"> | Date | string
-  }, "id">
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    super_admin?: XOR<SuperAdminNullableScalarRelationFilter, SuperAdminWhereInput> | null
+  }, "id" | "super_admin_id">
 
   export type AdminOrderByWithAggregationInput = {
     id?: SortOrder
-    username?: SortOrder
-    password?: SortOrder
-    email?: SortOrder
-    fullname?: SortOrder
-    is_super?: SortOrder
     last_session?: SortOrder
+    super_admin_id?: SortOrderInput | SortOrder
     _count?: AdminCountOrderByAggregateInput
+    _avg?: AdminAvgOrderByAggregateInput
     _max?: AdminMaxOrderByAggregateInput
     _min?: AdminMinOrderByAggregateInput
+    _sum?: AdminSumOrderByAggregateInput
   }
 
   export type AdminScalarWhereWithAggregatesInput = {
     AND?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
     OR?: AdminScalarWhereWithAggregatesInput[]
     NOT?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Admin"> | string
-    username?: StringWithAggregatesFilter<"Admin"> | string
-    password?: StringWithAggregatesFilter<"Admin"> | string
-    email?: StringWithAggregatesFilter<"Admin"> | string
-    fullname?: StringWithAggregatesFilter<"Admin"> | string
-    is_super?: BoolWithAggregatesFilter<"Admin"> | boolean
+    id?: IntWithAggregatesFilter<"Admin"> | number
     last_session?: DateTimeWithAggregatesFilter<"Admin"> | Date | string
+    super_admin_id?: IntNullableWithAggregatesFilter<"Admin"> | number | null
   }
 
   export type UserWhereInput = {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    id?: StringFilter<"User"> | string
+    id?: IntFilter<"User"> | number
     username?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    fullname?: StringFilter<"User"> | string
+    admin_id?: IntNullableFilter<"User"> | number | null
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+    refresh_tokens?: RefreshTokenListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    email?: SortOrder
+    fullname?: SortOrder
+    admin_id?: SortOrderInput | SortOrder
+    admin?: AdminOrderByWithRelationInput
+    refresh_tokens?: RefreshTokenOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
+    admin_id?: number
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     username?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-  }, "id">
+    email?: StringFilter<"User"> | string
+    fullname?: StringFilter<"User"> | string
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+    refresh_tokens?: RefreshTokenListRelationFilter
+  }, "id" | "admin_id">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    email?: SortOrder
+    fullname?: SortOrder
+    admin_id?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
     AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"User"> | string
+    id?: IntWithAggregatesFilter<"User"> | number
     username?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    email?: StringWithAggregatesFilter<"User"> | string
+    fullname?: StringWithAggregatesFilter<"User"> | string
+    admin_id?: IntNullableWithAggregatesFilter<"User"> | number | null
   }
 
   export type RefreshTokenWhereInput = {
     AND?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     OR?: RefreshTokenWhereInput[]
     NOT?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
-    id?: StringFilter<"RefreshToken"> | string
+    id?: IntFilter<"RefreshToken"> | number
     hash?: StringFilter<"RefreshToken"> | string
     created_at?: DateTimeFilter<"RefreshToken"> | Date | string
     expired_at?: DateTimeFilter<"RefreshToken"> | Date | string
     is_revoked?: BoolFilter<"RefreshToken"> | boolean
     role?: EnumRoleFilter<"RefreshToken"> | $Enums.Role
-    user_id?: StringFilter<"RefreshToken"> | string
+    user_id?: IntNullableFilter<"RefreshToken"> | number | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type RefreshTokenOrderByWithRelationInput = {
@@ -8096,11 +9761,12 @@ export namespace Prisma {
     expired_at?: SortOrder
     is_revoked?: SortOrder
     role?: SortOrder
-    user_id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
   }
 
   export type RefreshTokenWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
     hash?: string
     AND?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     OR?: RefreshTokenWhereInput[]
@@ -8109,7 +9775,8 @@ export namespace Prisma {
     expired_at?: DateTimeFilter<"RefreshToken"> | Date | string
     is_revoked?: BoolFilter<"RefreshToken"> | boolean
     role?: EnumRoleFilter<"RefreshToken"> | $Enums.Role
-    user_id?: StringFilter<"RefreshToken"> | string
+    user_id?: IntNullableFilter<"RefreshToken"> | number | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id" | "hash">
 
   export type RefreshTokenOrderByWithAggregationInput = {
@@ -8119,27 +9786,28 @@ export namespace Prisma {
     expired_at?: SortOrder
     is_revoked?: SortOrder
     role?: SortOrder
-    user_id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
     _count?: RefreshTokenCountOrderByAggregateInput
+    _avg?: RefreshTokenAvgOrderByAggregateInput
     _max?: RefreshTokenMaxOrderByAggregateInput
     _min?: RefreshTokenMinOrderByAggregateInput
+    _sum?: RefreshTokenSumOrderByAggregateInput
   }
 
   export type RefreshTokenScalarWhereWithAggregatesInput = {
     AND?: RefreshTokenScalarWhereWithAggregatesInput | RefreshTokenScalarWhereWithAggregatesInput[]
     OR?: RefreshTokenScalarWhereWithAggregatesInput[]
     NOT?: RefreshTokenScalarWhereWithAggregatesInput | RefreshTokenScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"RefreshToken"> | string
+    id?: IntWithAggregatesFilter<"RefreshToken"> | number
     hash?: StringWithAggregatesFilter<"RefreshToken"> | string
     created_at?: DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
     expired_at?: DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
     is_revoked?: BoolWithAggregatesFilter<"RefreshToken"> | boolean
     role?: EnumRoleWithAggregatesFilter<"RefreshToken"> | $Enums.Role
-    user_id?: StringWithAggregatesFilter<"RefreshToken"> | string
+    user_id?: IntNullableWithAggregatesFilter<"RefreshToken"> | number | null
   }
 
   export type AppointmentCreateInput = {
-    id?: string
     name: string
     surname: string
     address: string
@@ -8152,7 +9820,7 @@ export namespace Prisma {
   }
 
   export type AppointmentUncheckedCreateInput = {
-    id?: string
+    id?: number
     name: string
     surname: string
     address: string
@@ -8165,7 +9833,6 @@ export namespace Prisma {
   }
 
   export type AppointmentUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     surname?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
@@ -8178,7 +9845,7 @@ export namespace Prisma {
   }
 
   export type AppointmentUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     surname?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
@@ -8191,7 +9858,7 @@ export namespace Prisma {
   }
 
   export type AppointmentCreateManyInput = {
-    id?: string
+    id?: number
     name: string
     surname: string
     address: string
@@ -8204,7 +9871,6 @@ export namespace Prisma {
   }
 
   export type AppointmentUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     surname?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
@@ -8217,7 +9883,7 @@ export namespace Prisma {
   }
 
   export type AppointmentUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     surname?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
@@ -8230,7 +9896,6 @@ export namespace Prisma {
   }
 
   export type WorkCreateInput = {
-    id?: string
     img_url: string
     img_id: string
     category: $Enums.CategoryChoice
@@ -8238,7 +9903,7 @@ export namespace Prisma {
   }
 
   export type WorkUncheckedCreateInput = {
-    id?: string
+    id?: number
     img_url: string
     img_id: string
     category: $Enums.CategoryChoice
@@ -8246,7 +9911,6 @@ export namespace Prisma {
   }
 
   export type WorkUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
@@ -8254,7 +9918,7 @@ export namespace Prisma {
   }
 
   export type WorkUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
@@ -8262,7 +9926,7 @@ export namespace Prisma {
   }
 
   export type WorkCreateManyInput = {
-    id?: string
+    id?: number
     img_url: string
     img_id: string
     category: $Enums.CategoryChoice
@@ -8270,7 +9934,6 @@ export namespace Prisma {
   }
 
   export type WorkUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
@@ -8278,7 +9941,7 @@ export namespace Prisma {
   }
 
   export type WorkUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     img_url?: StringFieldUpdateOperationsInput | string
     img_id?: StringFieldUpdateOperationsInput | string
     category?: EnumCategoryChoiceFieldUpdateOperationsInput | $Enums.CategoryChoice
@@ -8286,7 +9949,6 @@ export namespace Prisma {
   }
 
   export type SiteConfigCreateInput = {
-    id?: string
     opening_at: Date | string
     closing_at: Date | string
     min_duration: number
@@ -8297,7 +9959,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigUncheckedCreateInput = {
-    id?: string
+    id?: number
     opening_at: Date | string
     closing_at: Date | string
     min_duration: number
@@ -8308,7 +9970,6 @@ export namespace Prisma {
   }
 
   export type SiteConfigUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
@@ -8319,7 +9980,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
@@ -8330,7 +9991,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigCreateManyInput = {
-    id?: string
+    id?: number
     opening_at: Date | string
     closing_at: Date | string
     min_duration: number
@@ -8341,7 +10002,6 @@ export namespace Prisma {
   }
 
   export type SiteConfigUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
@@ -8352,7 +10012,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     opening_at?: DateTimeFieldUpdateOperationsInput | Date | string
     closing_at?: DateTimeFieldUpdateOperationsInput | Date | string
     min_duration?: FloatFieldUpdateOperationsInput | number
@@ -8362,186 +10022,216 @@ export namespace Prisma {
     c_country?: StringFieldUpdateOperationsInput | string
   }
 
+  export type SuperAdminCreateInput = {
+    admin?: AdminCreateNestedOneWithoutSuper_adminInput
+  }
+
+  export type SuperAdminUncheckedCreateInput = {
+    id?: number
+    admin?: AdminUncheckedCreateNestedOneWithoutSuper_adminInput
+  }
+
+  export type SuperAdminUpdateInput = {
+    admin?: AdminUpdateOneWithoutSuper_adminNestedInput
+  }
+
+  export type SuperAdminUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    admin?: AdminUncheckedUpdateOneWithoutSuper_adminNestedInput
+  }
+
+  export type SuperAdminCreateManyInput = {
+    id?: number
+  }
+
+  export type SuperAdminUpdateManyMutationInput = {
+
+  }
+
+  export type SuperAdminUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+  }
+
   export type AdminCreateInput = {
-    id?: string
-    username: string
-    password: string
-    email: string
-    fullname: string
-    is_super?: boolean
     last_session?: Date | string
+    user?: UserCreateNestedOneWithoutAdminInput
+    super_admin?: SuperAdminCreateNestedOneWithoutAdminInput
   }
 
   export type AdminUncheckedCreateInput = {
-    id?: string
-    username: string
-    password: string
-    email: string
-    fullname: string
-    is_super?: boolean
+    id?: number
     last_session?: Date | string
+    super_admin_id?: number | null
+    user?: UserUncheckedCreateNestedOneWithoutAdminInput
   }
 
   export type AdminUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fullname?: StringFieldUpdateOperationsInput | string
-    is_super?: BoolFieldUpdateOperationsInput | boolean
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAdminNestedInput
+    super_admin?: SuperAdminUpdateOneWithoutAdminNestedInput
   }
 
   export type AdminUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fullname?: StringFieldUpdateOperationsInput | string
-    is_super?: BoolFieldUpdateOperationsInput | boolean
+    id?: IntFieldUpdateOperationsInput | number
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    super_admin_id?: NullableIntFieldUpdateOperationsInput | number | null
+    user?: UserUncheckedUpdateOneWithoutAdminNestedInput
   }
 
   export type AdminCreateManyInput = {
-    id?: string
-    username: string
-    password: string
-    email: string
-    fullname: string
-    is_super?: boolean
+    id?: number
     last_session?: Date | string
+    super_admin_id?: number | null
   }
 
   export type AdminUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fullname?: StringFieldUpdateOperationsInput | string
-    is_super?: BoolFieldUpdateOperationsInput | boolean
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AdminUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
+    last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    super_admin_id?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type UserCreateInput = {
+    username: string
+    password: string
+    email: string
+    fullname: string
+    admin?: AdminCreateNestedOneWithoutUserInput
+    refresh_tokens?: RefreshTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateInput = {
+    id?: number
+    username: string
+    password: string
+    email: string
+    fullname: string
+    admin_id?: number | null
+    refresh_tokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUpdateInput = {
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     fullname?: StringFieldUpdateOperationsInput | string
-    is_super?: BoolFieldUpdateOperationsInput | boolean
-    last_session?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserCreateInput = {
-    id?: string
-    username: string
-    password: string
-  }
-
-  export type UserUncheckedCreateInput = {
-    id?: string
-    username: string
-    password: string
-  }
-
-  export type UserUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    admin?: AdminUpdateOneWithoutUserNestedInput
+    refresh_tokens?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
+    refresh_tokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
-    id?: string
+    id?: number
     username: string
     password: string
+    email: string
+    fullname: string
+    admin_id?: number | null
   }
 
   export type UserUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type RefreshTokenCreateInput = {
-    id?: string
     hash: string
     created_at?: Date | string
     expired_at: Date | string
     is_revoked?: boolean
     role: $Enums.Role
-    user_id: string
+    user?: UserCreateNestedOneWithoutRefresh_tokensInput
   }
 
   export type RefreshTokenUncheckedCreateInput = {
-    id?: string
+    id?: number
     hash: string
     created_at?: Date | string
     expired_at: Date | string
     is_revoked?: boolean
     role: $Enums.Role
-    user_id: string
+    user_id?: number | null
   }
 
   export type RefreshTokenUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     hash?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_revoked?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    user_id?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneWithoutRefresh_tokensNestedInput
   }
 
   export type RefreshTokenUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_revoked?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    user_id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type RefreshTokenCreateManyInput = {
-    id?: string
+    id?: number
     hash: string
     created_at?: Date | string
     expired_at: Date | string
     is_revoked?: boolean
     role: $Enums.Role
-    user_id: string
+    user_id?: number | null
   }
 
   export type RefreshTokenUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     hash?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_revoked?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    user_id?: StringFieldUpdateOperationsInput | string
   }
 
   export type RefreshTokenUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_revoked?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    user_id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8627,6 +10317,7 @@ export namespace Prisma {
   }
 
   export type AppointmentAvgOrderByAggregateInput = {
+    id?: SortOrder
     duration?: SortOrder
   }
 
@@ -8657,7 +10348,24 @@ export namespace Prisma {
   }
 
   export type AppointmentSumOrderByAggregateInput = {
+    id?: SortOrder
     duration?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -8759,6 +10467,10 @@ export namespace Prisma {
     timestamp?: SortOrder
   }
 
+  export type WorkAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type WorkMaxOrderByAggregateInput = {
     id?: SortOrder
     img_url?: SortOrder
@@ -8773,6 +10485,10 @@ export namespace Prisma {
     img_id?: SortOrder
     category?: SortOrder
     timestamp?: SortOrder
+  }
+
+  export type WorkSumOrderByAggregateInput = {
+    id?: SortOrder
   }
 
   export type EnumCategoryChoiceWithAggregatesFilter<$PrismaModel = never> = {
@@ -8797,6 +10513,7 @@ export namespace Prisma {
   }
 
   export type SiteConfigAvgOrderByAggregateInput = {
+    id?: SortOrder
     min_duration?: SortOrder
   }
 
@@ -8823,55 +10540,145 @@ export namespace Prisma {
   }
 
   export type SiteConfigSumOrderByAggregateInput = {
+    id?: SortOrder
     min_duration?: SortOrder
+  }
+
+  export type AdminNullableScalarRelationFilter = {
+    is?: AdminWhereInput | null
+    isNot?: AdminWhereInput | null
+  }
+
+  export type SuperAdminCountOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SuperAdminAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SuperAdminMaxOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SuperAdminMinOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SuperAdminSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type SuperAdminNullableScalarRelationFilter = {
+    is?: SuperAdminWhereInput | null
+    isNot?: SuperAdminWhereInput | null
   }
 
   export type AdminCountOrderByAggregateInput = {
     id?: SortOrder
-    username?: SortOrder
-    password?: SortOrder
-    email?: SortOrder
-    fullname?: SortOrder
-    is_super?: SortOrder
     last_session?: SortOrder
+    super_admin_id?: SortOrder
+  }
+
+  export type AdminAvgOrderByAggregateInput = {
+    id?: SortOrder
+    super_admin_id?: SortOrder
   }
 
   export type AdminMaxOrderByAggregateInput = {
     id?: SortOrder
-    username?: SortOrder
-    password?: SortOrder
-    email?: SortOrder
-    fullname?: SortOrder
-    is_super?: SortOrder
     last_session?: SortOrder
+    super_admin_id?: SortOrder
   }
 
   export type AdminMinOrderByAggregateInput = {
     id?: SortOrder
-    username?: SortOrder
-    password?: SortOrder
-    email?: SortOrder
-    fullname?: SortOrder
-    is_super?: SortOrder
     last_session?: SortOrder
+    super_admin_id?: SortOrder
+  }
+
+  export type AdminSumOrderByAggregateInput = {
+    id?: SortOrder
+    super_admin_id?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type RefreshTokenListRelationFilter = {
+    every?: RefreshTokenWhereInput
+    some?: RefreshTokenWhereInput
+    none?: RefreshTokenWhereInput
+  }
+
+  export type RefreshTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    email?: SortOrder
+    fullname?: SortOrder
+    admin_id?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    email?: SortOrder
+    fullname?: SortOrder
+    admin_id?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    email?: SortOrder
+    fullname?: SortOrder
+    admin_id?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
   }
 
   export type EnumRoleFilter<$PrismaModel = never> = {
@@ -8888,6 +10695,11 @@ export namespace Prisma {
     expired_at?: SortOrder
     is_revoked?: SortOrder
     role?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type RefreshTokenAvgOrderByAggregateInput = {
+    id?: SortOrder
     user_id?: SortOrder
   }
 
@@ -8908,6 +10720,11 @@ export namespace Prisma {
     expired_at?: SortOrder
     is_revoked?: SortOrder
     role?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type RefreshTokenSumOrderByAggregateInput = {
+    id?: SortOrder
     user_id?: SortOrder
   }
 
@@ -8949,12 +10766,193 @@ export namespace Prisma {
     set?: boolean
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type EnumCategoryChoiceFieldUpdateOperationsInput = {
     set?: $Enums.CategoryChoice
   }
 
+  export type AdminCreateNestedOneWithoutSuper_adminInput = {
+    create?: XOR<AdminCreateWithoutSuper_adminInput, AdminUncheckedCreateWithoutSuper_adminInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutSuper_adminInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type AdminUncheckedCreateNestedOneWithoutSuper_adminInput = {
+    create?: XOR<AdminCreateWithoutSuper_adminInput, AdminUncheckedCreateWithoutSuper_adminInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutSuper_adminInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type AdminUpdateOneWithoutSuper_adminNestedInput = {
+    create?: XOR<AdminCreateWithoutSuper_adminInput, AdminUncheckedCreateWithoutSuper_adminInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutSuper_adminInput
+    upsert?: AdminUpsertWithoutSuper_adminInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutSuper_adminInput, AdminUpdateWithoutSuper_adminInput>, AdminUncheckedUpdateWithoutSuper_adminInput>
+  }
+
+  export type AdminUncheckedUpdateOneWithoutSuper_adminNestedInput = {
+    create?: XOR<AdminCreateWithoutSuper_adminInput, AdminUncheckedCreateWithoutSuper_adminInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutSuper_adminInput
+    upsert?: AdminUpsertWithoutSuper_adminInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutSuper_adminInput, AdminUpdateWithoutSuper_adminInput>, AdminUncheckedUpdateWithoutSuper_adminInput>
+  }
+
+  export type UserCreateNestedOneWithoutAdminInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SuperAdminCreateNestedOneWithoutAdminInput = {
+    create?: XOR<SuperAdminCreateWithoutAdminInput, SuperAdminUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: SuperAdminCreateOrConnectWithoutAdminInput
+    connect?: SuperAdminWhereUniqueInput
+  }
+
+  export type UserUncheckedCreateNestedOneWithoutAdminInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutAdminNestedInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    upsert?: UserUpsertWithoutAdminInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminInput, UserUpdateWithoutAdminInput>, UserUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type SuperAdminUpdateOneWithoutAdminNestedInput = {
+    create?: XOR<SuperAdminCreateWithoutAdminInput, SuperAdminUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: SuperAdminCreateOrConnectWithoutAdminInput
+    upsert?: SuperAdminUpsertWithoutAdminInput
+    disconnect?: SuperAdminWhereInput | boolean
+    delete?: SuperAdminWhereInput | boolean
+    connect?: SuperAdminWhereUniqueInput
+    update?: XOR<XOR<SuperAdminUpdateToOneWithWhereWithoutAdminInput, SuperAdminUpdateWithoutAdminInput>, SuperAdminUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUncheckedUpdateOneWithoutAdminNestedInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    upsert?: UserUpsertWithoutAdminInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminInput, UserUpdateWithoutAdminInput>, UserUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type AdminCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type RefreshTokenCreateNestedManyWithoutUserInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+  }
+
+  export type RefreshTokenUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+  }
+
+  export type AdminUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    upsert?: AdminUpsertWithoutUserInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RefreshTokenUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    upsert?: RefreshTokenUpsertWithWhereUniqueWithoutUserInput | RefreshTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    set?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    disconnect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    delete?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+  }
+
+  export type RefreshTokenUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    upsert?: RefreshTokenUpsertWithWhereUniqueWithoutUserInput | RefreshTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    set?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    disconnect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    delete?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutRefresh_tokensInput = {
+    create?: XOR<UserCreateWithoutRefresh_tokensInput, UserUncheckedCreateWithoutRefresh_tokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRefresh_tokensInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type EnumRoleFieldUpdateOperationsInput = {
     set?: $Enums.Role
+  }
+
+  export type UserUpdateOneWithoutRefresh_tokensNestedInput = {
+    create?: XOR<UserCreateWithoutRefresh_tokensInput, UserUncheckedCreateWithoutRefresh_tokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRefresh_tokensInput
+    upsert?: UserUpsertWithoutRefresh_tokensInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRefresh_tokensInput, UserUpdateWithoutRefresh_tokensInput>, UserUncheckedUpdateWithoutRefresh_tokensInput>
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -9019,6 +11017,22 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -9034,17 +11048,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedEnumBwtChoiceWithAggregatesFilter<$PrismaModel = never> = {
@@ -9140,6 +11143,33 @@ export namespace Prisma {
     _max?: NestedEnumCategoryChoiceFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -9155,6 +11185,305 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type AdminCreateWithoutSuper_adminInput = {
+    last_session?: Date | string
+    user?: UserCreateNestedOneWithoutAdminInput
+  }
+
+  export type AdminUncheckedCreateWithoutSuper_adminInput = {
+    id?: number
+    last_session?: Date | string
+    user?: UserUncheckedCreateNestedOneWithoutAdminInput
+  }
+
+  export type AdminCreateOrConnectWithoutSuper_adminInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutSuper_adminInput, AdminUncheckedCreateWithoutSuper_adminInput>
+  }
+
+  export type AdminUpsertWithoutSuper_adminInput = {
+    update: XOR<AdminUpdateWithoutSuper_adminInput, AdminUncheckedUpdateWithoutSuper_adminInput>
+    create: XOR<AdminCreateWithoutSuper_adminInput, AdminUncheckedCreateWithoutSuper_adminInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutSuper_adminInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutSuper_adminInput, AdminUncheckedUpdateWithoutSuper_adminInput>
+  }
+
+  export type AdminUpdateWithoutSuper_adminInput = {
+    last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAdminNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutSuper_adminInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUncheckedUpdateOneWithoutAdminNestedInput
+  }
+
+  export type UserCreateWithoutAdminInput = {
+    username: string
+    password: string
+    email: string
+    fullname: string
+    refresh_tokens?: RefreshTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAdminInput = {
+    id?: number
+    username: string
+    password: string
+    email: string
+    fullname: string
+    refresh_tokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAdminInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+  }
+
+  export type SuperAdminCreateWithoutAdminInput = {
+
+  }
+
+  export type SuperAdminUncheckedCreateWithoutAdminInput = {
+    id?: number
+  }
+
+  export type SuperAdminCreateOrConnectWithoutAdminInput = {
+    where: SuperAdminWhereUniqueInput
+    create: XOR<SuperAdminCreateWithoutAdminInput, SuperAdminUncheckedCreateWithoutAdminInput>
+  }
+
+  export type UserUpsertWithoutAdminInput = {
+    update: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
+    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAdminInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type UserUpdateWithoutAdminInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    refresh_tokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAdminInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    refresh_tokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type SuperAdminUpsertWithoutAdminInput = {
+    update: XOR<SuperAdminUpdateWithoutAdminInput, SuperAdminUncheckedUpdateWithoutAdminInput>
+    create: XOR<SuperAdminCreateWithoutAdminInput, SuperAdminUncheckedCreateWithoutAdminInput>
+    where?: SuperAdminWhereInput
+  }
+
+  export type SuperAdminUpdateToOneWithWhereWithoutAdminInput = {
+    where?: SuperAdminWhereInput
+    data: XOR<SuperAdminUpdateWithoutAdminInput, SuperAdminUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type SuperAdminUpdateWithoutAdminInput = {
+
+  }
+
+  export type SuperAdminUncheckedUpdateWithoutAdminInput = {
+    id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type AdminCreateWithoutUserInput = {
+    last_session?: Date | string
+    super_admin?: SuperAdminCreateNestedOneWithoutAdminInput
+  }
+
+  export type AdminUncheckedCreateWithoutUserInput = {
+    id?: number
+    last_session?: Date | string
+    super_admin_id?: number | null
+  }
+
+  export type AdminCreateOrConnectWithoutUserInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+  }
+
+  export type RefreshTokenCreateWithoutUserInput = {
+    hash: string
+    created_at?: Date | string
+    expired_at: Date | string
+    is_revoked?: boolean
+    role: $Enums.Role
+  }
+
+  export type RefreshTokenUncheckedCreateWithoutUserInput = {
+    id?: number
+    hash: string
+    created_at?: Date | string
+    expired_at: Date | string
+    is_revoked?: boolean
+    role: $Enums.Role
+  }
+
+  export type RefreshTokenCreateOrConnectWithoutUserInput = {
+    where: RefreshTokenWhereUniqueInput
+    create: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type RefreshTokenCreateManyUserInputEnvelope = {
+    data: RefreshTokenCreateManyUserInput | RefreshTokenCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdminUpsertWithoutUserInput = {
+    update: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
+    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutUserInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUpdateWithoutUserInput = {
+    last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    super_admin?: SuperAdminUpdateOneWithoutAdminNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    super_admin_id?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type RefreshTokenUpsertWithWhereUniqueWithoutUserInput = {
+    where: RefreshTokenWhereUniqueInput
+    update: XOR<RefreshTokenUpdateWithoutUserInput, RefreshTokenUncheckedUpdateWithoutUserInput>
+    create: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type RefreshTokenUpdateWithWhereUniqueWithoutUserInput = {
+    where: RefreshTokenWhereUniqueInput
+    data: XOR<RefreshTokenUpdateWithoutUserInput, RefreshTokenUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RefreshTokenUpdateManyWithWhereWithoutUserInput = {
+    where: RefreshTokenScalarWhereInput
+    data: XOR<RefreshTokenUpdateManyMutationInput, RefreshTokenUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RefreshTokenScalarWhereInput = {
+    AND?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+    OR?: RefreshTokenScalarWhereInput[]
+    NOT?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+    id?: IntFilter<"RefreshToken"> | number
+    hash?: StringFilter<"RefreshToken"> | string
+    created_at?: DateTimeFilter<"RefreshToken"> | Date | string
+    expired_at?: DateTimeFilter<"RefreshToken"> | Date | string
+    is_revoked?: BoolFilter<"RefreshToken"> | boolean
+    role?: EnumRoleFilter<"RefreshToken"> | $Enums.Role
+    user_id?: IntNullableFilter<"RefreshToken"> | number | null
+  }
+
+  export type UserCreateWithoutRefresh_tokensInput = {
+    username: string
+    password: string
+    email: string
+    fullname: string
+    admin?: AdminCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutRefresh_tokensInput = {
+    id?: number
+    username: string
+    password: string
+    email: string
+    fullname: string
+    admin_id?: number | null
+  }
+
+  export type UserCreateOrConnectWithoutRefresh_tokensInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRefresh_tokensInput, UserUncheckedCreateWithoutRefresh_tokensInput>
+  }
+
+  export type UserUpsertWithoutRefresh_tokensInput = {
+    update: XOR<UserUpdateWithoutRefresh_tokensInput, UserUncheckedUpdateWithoutRefresh_tokensInput>
+    create: XOR<UserCreateWithoutRefresh_tokensInput, UserUncheckedCreateWithoutRefresh_tokensInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRefresh_tokensInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRefresh_tokensInput, UserUncheckedUpdateWithoutRefresh_tokensInput>
+  }
+
+  export type UserUpdateWithoutRefresh_tokensInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    admin?: AdminUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    admin_id?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type RefreshTokenCreateManyUserInput = {
+    id?: number
+    hash: string
+    created_at?: Date | string
+    expired_at: Date | string
+    is_revoked?: boolean
+    role: $Enums.Role
+  }
+
+  export type RefreshTokenUpdateWithoutUserInput = {
+    hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_revoked?: BoolFieldUpdateOperationsInput | boolean
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  }
+
+  export type RefreshTokenUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_revoked?: BoolFieldUpdateOperationsInput | boolean
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  }
+
+  export type RefreshTokenUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_revoked?: BoolFieldUpdateOperationsInput | boolean
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
 

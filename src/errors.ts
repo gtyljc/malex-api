@@ -1,66 +1,65 @@
 
 import logger from "@lib/logger";
+import * as types from "@src/types";
+import * as responses from "@src/responses";
+import z from "zod";
 
 export class LoggedError extends Error {
     logError(){
-        console.log(`Error ${ this.name } was occured! Check logs to get more info.`);
+        // console.log(`Error ${ this.name } was occured! Check logs to get more info.`);
 
-        logger.error(this.name + " : " + this.message)
+        logger.error(this.name + " : " + this.message);
     }
 }
 
-export class EnviromentFileParsingError extends LoggedError {
-    readonly message: string;
-    readonly name: string;
-    
-    constructor(fields: string[]){
-        super();
-
-        this.message = `Fields ${ fields.join(", ") } have not correct type of were not specified`;
-        this.name = "EnviromentFileParsingError"
-        
-        this.logError();
-    }    
+export class ResolverError extends LoggedError {
+    apiResponse!: types.APIResponse<any>;
 }
 
-export class PaginationLimitationError extends LoggedError {
-    readonly message: string;
-    readonly name: string;
+// ------------ non-resolver error
+
+export class DatabaseConnectionError extends LoggedError {
+    constructor(){
+        super();
+
+        this.message = "Database connection is lost!";
     
+        this.logError()
+    }
+}
+
+// ------------ resolver error
+
+export class PaginationLimitError extends ResolverError {
     constructor(){
         super();
 
         this.message = "Pagination is limited to 100 objects per request!";
-        this.name = "PaginationLimitationError"
+        this.apiResponse = responses.f400Response(this.message);
         
         this.logError();
     }
 }
 
-export class IdsOrFilterWasNotSpecifiedError extends LoggedError {
-    readonly message: string;
-    readonly name: string;
-    
+export class IdsOrFilterWasNotSpecifiedError extends ResolverError {
     constructor(){
         super();
 
         this.message = "You must specify array of necessary ids or filter with pagination!";
-        this.name = "IdsOrFilterWasNotSpecifiedError"
+        this.apiResponse = responses.f400Response(this.message);
 
         this.logError()
     }
 }
 
-export class NotAuthenticatedRequestError extends LoggedError {
-    readonly message: string;
-    readonly name: string;
-    
+export class NotAuthenticatedRequestError extends ResolverError {
     constructor(){
         super();
 
         this.message = "Not authenticated request from user!";
-        this.name = "NotAuthenticatedRequestError";
-    
+        this.apiResponse = responses.f403Response(this.message);
+
         this.logError()
     }
 }
+

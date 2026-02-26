@@ -1,69 +1,71 @@
 
-import { SignJWT, jwtVerify, decodeJwt } from "jose";
+import * as jose from "jose";
 import * as types from "./types";
-import { dayjs } from "@lib/utils";
 import * as utils from "@lib/utils";
-import { nanoid } from "nanoid";
+import { dayjs } from "@lib/utils";
+import { env } from "@lib/utils";
+import logger from "@lib/logger";
 
-class JWT {
-    jwk!: CryptoKey;
-
-    constructor() {
-
-        // init jwk
-        this.setJWK().then((value) => this.jwk = value);
+const DEFAULT_PAYLOAD = (
+    { 
+        userId = null, 
+        role = "GUEST",
+        issuer = "malex:api"
+    }: {
+        userId?: string | null,
+        role?: types.Roles,
+        issuer?: string
+    } = {}
+): Record<any, string | number | null> => (
+    {
+        iss: issuer,
+        sub: userId,
+        aud: role,
+        iat: dayjs().unix(),
+        exp: dayjs().add(env("REFRESH_TOKEN_EXPIRATION_DELAY"), "seconds").unix(),
     }
+);
+const DEFAULT_HEADER = { alg: "HS256" };
 
-    separateJWT(jwt: string){
-        const [ header, payload, sign ] = jwt.split(".");
-        
-        return { header, payload, sign };
-    }
-
-    async generate(_payload: types.JWTPayload) {
-        const _header: types.JWTHeader = { alg: "HS256" };
-        
-        return await new SignJWT(_payload).setProtectedHeader(_header).sign(this.jwk);
-    }
-
-    // validates jwt that got in request ( authorization header )
-    async validate(jwt: string): Promise<boolean> {
-        const options: types.VerifyOptions  = {
-            algorithms: [ "HS256" ],
-            audience: [ "ADMIN", "SUPERADMIN", "GUEST", "USER", "SUPERUSER" ],
-            issuer: "malex:api",
-            requiredClaims: [ "iss", "aud", "iat", "exp", "sub" ]
-        };
-
-        // in case of validation error will throw error
-        try { 
-            await jwtVerify(jwt, this.jwk, options);
-            
-            return true;
-        }
-        catch(error) { 
-            return false;
-        }
-    }
-
-    // gets secret from .env and creates jwk to sign jwt ( must be used only by constructor )
-    private async setJWK(): Promise<CryptoKey> {
-        const secret = new TextEncoder().encode(process.env.API_SECRET);
+async function importJWK(): Promise<CryptoKey> {
+    const secret = new TextEncoder().encode(env("API_SECRET"));
     
-        return await global.crypto.subtle.importKey(
-            "raw",
-            secret,
-            {
-                name: "HMAC",
-                hash: "SHA-256"
-            }, 
-            true, 
-            [ "verify", "sign" ]
-        );
-    }
+    return await global.crypto.subtle.importKey(
+        "raw",
+        secret,
+        { name: "HMAC", hash: "SHA-256" }, 
+        true,
+        [ "verify", "sign" ]
+    );
 }
 
-export const jwt = new JWT();
+async function generateJWT(
+    payload: jose.JWTPayload, 
+    header: jose.JWTHeaderParameters = DEFAULT_HEADER
+): Promise<string>{
+    return await new jose.SignJWT(payload)
+        .setProtectedHeader(header)
+        .sign(await importJWK());
+}
+
+export async function validateJWT(
+    jwt: string, 
+    options = {
+        algorithms: [ DEFAULT_HEADER.alg ],
+        audience: [ "ADMIN", "SUPERADMIN", "GUEST", "USER", "SUPERUSER" ],
+        issuer: DEFAULT_PAYLOAD().iss,
+        requiredClaims: Object.keys(DEFAULT_PAYLOAD())
+    }
+): Promise<boolean> {
+    try {
+        await jose.jwtVerify(jwt, await importJWK(), options);
+        
+        return true;
+    }
+    catch(error) { 
+        return false;
+    }
+}
 
 export class RefreshToken {
     jwt: string;
@@ -74,10 +76,9 @@ export class RefreshToken {
         this.db = db;
     }
 
-    // checks if RT is registered in DB
     async isRegistered(): Promise<boolean> {
-        const claims = decodeJwt<types.JWTPayload>(this.jwt);
-        const { sign } = jwt.separateJWT(this.jwt);
+        const claims = jose.decodeJwt(this.jwt);
+        const { sign } = utils.separateJWT(this.jwt);
         const q = await this.db.getOneByFilter(
             "refreshToken", 
             { 
@@ -94,9 +95,11 @@ export class RefreshToken {
         return true; 
     }
 
-    // revokes current RT, means flaged as revoked in DB
+    // means flaged as revoked in DB
     async revoke(): Promise<this> {
-        const claims = decodeJwt<types.JWTPayload>(this.jwt);
+        const claims = jose.decodeJwt(this.jwt);
+
+        logger.info(`Revoking RT with sign ${ utils.separateJWT(this.jwt).sign }`)
 
         // mark RT as revoked in DB
         await this.db.updateManyByFilter(
@@ -109,6 +112,8 @@ export class RefreshToken {
             { is_revoked: true }
         );
 
+        logger.info(`RT with sign ${ utils.separateJWT(this.jwt).sign } is revoked!`)
+
         return this;
     }
 
@@ -116,8 +121,8 @@ export class RefreshToken {
         at: string, 
         db: types.AppContext["dataSources"]["db"]
     ): Promise<RefreshToken | null> {
-        const claims = decodeJwt<types.JWTPayload>(at);
-        const { sign } = jwt.separateJWT(at);
+        const claims = jose.decodeJwt(at);
+        const { sign } = utils.separateJWT(at);
         const q = await db.getOneByFilter(
             "refreshToken",
             { 
@@ -138,21 +143,21 @@ export class RefreshToken {
 
     // includes token reqgistration in DB
     static async create(
-        role: types.Roles, 
-        userId: string, 
-        db: types.AppContext["dataSources"]["db"]
+        { 
+            userId,
+            role,
+            db
+        }: {
+            userId: string,
+            role: types.Roles,
+            db: types.AppContext["dataSources"]["db"]
+        }
     ): Promise<RefreshToken> {
-        const expiredAt = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRATION_DELAY!), "seconds");
-        const token = await jwt.generate(
-            {
-                aud: role,
-                iss: "malex:api",
-                iat: dayjs().unix(),
-                exp: expiredAt.unix(),
-                sub: userId
-            }
-        );
-        const { sign } = jwt.separateJWT(token);
+        const expiredAt = dayjs().add(parseInt(env("REFRESH_TOKEN_EXPIRATION_DELAY")), "seconds");
+        const token = await generateJWT(DEFAULT_PAYLOAD({ userId, role }));
+        const { sign } = utils.separateJWT(token);
+        
+        logger.info(`Creating RT with sign ${ sign }`)
 
         // register RT into DB
         await db.create(
@@ -165,32 +170,34 @@ export class RefreshToken {
             }
         );
 
+        logger.info(`RT with sign ${ sign } was successfully created`)
+
         return new RefreshToken(token, db);
     }
 }
 
 export class AccessToken {
-    static async create(role: types.Roles, userId: string): Promise<string> {
-        return await jwt.generate(
-            {
-                aud: role,
-                iss: "malex:api",
-                iat: dayjs().unix(),
-                exp: dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRATION_DELAY!), "seconds").unix(),
-                sub: userId
-            }
-        )
+    static async create(
+        { userId, role }: { userId: string, role: types.Roles }
+    ): Promise<string> {
+        return await generateJWT(DEFAULT_PAYLOAD({ userId, role }))
     }
 }
 
-// creates new pair of AT and RT
-export async function createAuthTokens(
-    userId: string = nanoid(parseInt(process.env.USER_ID_LENGTH!)), 
-    role: types.Roles = "GUEST", 
-    db: types.AppContext["dataSources"]["db"]
-): Promise<{ at: string, rt: string }>  {
+// creates new pair of RT and AT
+export async function createPair(
+    { 
+        db, 
+        userId, 
+        role 
+    }: { 
+        db: types.AppContext["dataSources"]["db"], 
+        userId: string, 
+        role: types.Roles 
+    }
+): Promise<{ at: string, rt: string }>{
     return {
-        at: await AccessToken.create(role, userId),
-        rt: (await RefreshToken.create(role, userId, db)).jwt
+        at: await AccessToken.create({ userId, role }),
+        rt: (await RefreshToken.create({ userId, role, db })).jwt
     }
 }

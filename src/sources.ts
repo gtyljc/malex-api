@@ -3,8 +3,12 @@
 import * as utils from "@lib/utils";
 import * as types from "./types/index";
 import * as responses from "./responses";
+import * as errors from "@src/errors";
 import { PrismaPg } from '@prisma/adapter-pg';
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { env } from "@lib/utils";
+import logger from "@lib/logger";
+import { nanoid } from "nanoid";
 
 // db
 import { PrismaClient } from "@src/lib/prisma/generated/client";
@@ -15,7 +19,7 @@ export class DatabaseConnection {
     client: any;
 
     constructor(){
-        const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+        const adapter = new PrismaPg({ connectionString: env("DATABASE_URL") });
 
         this.client = new PrismaClient({ adapter }).$extends(withAccelerate());
     }
@@ -31,8 +35,8 @@ export class DatabaseConnection {
         while (this.isTryingToConnect) {
             try {
                 await this.client.$connect(); // trying to connect
-                
-                console.log("Connection to DB established!");
+
+                logger.info("Connection to DB established!");
 
                 this.isTryingToConnect = false;
 
@@ -40,10 +44,12 @@ export class DatabaseConnection {
             }
             catch (error) {
                 if (error instanceof Prisma.PrismaClientInitializationError) {
-                    console.log("Can't reach the DB! Trying to reconnect...");
+                    logger.warn("Can't reach the DB! Trying to reconnect...");
+
+                    new errors.DatabaseConnectionError();
 
                     // delay
-                    await utils.sleep(parseInt(process.env.DATABASE_RECONNECTION_DELAY!));
+                    await utils.sleep(parseInt(env("DATABASE_RECONNECTION_DELAY")));
                 }
                 else {
                     throw error;
@@ -56,9 +62,10 @@ export class DatabaseConnection {
 export const connection = new DatabaseConnection();
 
 class DBQuery<RequestResultType> {
-    errorCases: Array<(error: Error) => Promise<void>>;
+    queryId: string;
+    errorHandlers: Map<string, Function>;
     method: types.DBMethod;
-    queryBody: Object;
+    queryBody: Record<any, any>;
     modelname: types.Resource;
     success = false;
     qResult!: RequestResultType;
@@ -68,22 +75,21 @@ class DBQuery<RequestResultType> {
     constructor(
         modelname: types.Resource,
         method: types.DBMethod,
-        queryBody: Object = {}
+        queryBody: Record<any, any> = {}
     ){
-        this.errorCases = [
+        this.queryId = nanoid(10);
+        this.errorHandlers = new Map();
 
-            // in case of lost connection to DB (on start)
-            async (error: Error) => {
-                error instanceof Prisma.PrismaClientInitializationError &&
-                await connection.establishConnection()
-            },
+        this.errorHandlers.set(
+            Prisma.PrismaClientInitializationError.name, 
+            async (error: Error) => { await connection.establishConnection() }
+        );
 
-            // in case of lost connection to DB (during requesting)
-            async (error: Error) => {
-                (error instanceof Prisma.PrismaClientKnownRequestError && error.code == "P1001") &&
-                await connection.establishConnection()
-            }
-        ];
+        this.errorHandlers.set(
+            Prisma.PrismaClientKnownRequestError.name,
+            async (error: Error) => { await connection.establishConnection() }
+        )
+        
         this.method = method;
         this.queryBody = queryBody;
         this.modelname = modelname;
@@ -105,22 +111,37 @@ class DBQuery<RequestResultType> {
 
     async send(): Promise<this> {
         try {
+            logger.info(`Executing query with method ${ this.method } on model ${ this.modelname } with ID ${ this.queryId }`)
+
             const r = await connection.client[this.modelname][this.method](this.queryBody);
 
             // set result to instance
             this.qResult = r;
             this.success = true;
+
+            logger.info(`Query with ID ${ this.queryId } is successfully finished`)
         }
-        catch (error) {
-            console.error(error);
+        catch (error: any) {
+            logger.error(error);
 
             this.success = false;
             this.errorInstance = error as Error;
 
             // going through cases
-            for (let func of this.errorCases){
-                await func(error as Error);
+            for (let [ key, value ] of this.errorHandlers.entries()){
+                if (error.name == key){
+                    let r = value();
+
+                    if (r instanceof Promise){
+                        r = await r;
+                    }
+                    
+                    return this;
+                }
             }
+
+            // when don't match cases
+            throw error;
         }
 
         this.apiResponse = this.wrap();
@@ -140,7 +161,7 @@ export class DatabaseSource {
 
     // returns request filter part on specified ids
     private filterByIds(ids: string[]): Object {
-        return { id: { in: ids } }
+        return { id: { in: ids.map(e => parseInt(e)) } }
     }
 
     // returns request orderBy part
@@ -152,7 +173,7 @@ export class DatabaseSource {
     }
 
     async getOneById(modelname: types.Resource, id: string) {
-        return await new DBQuery<any>(modelname, "findUnique", { where: { id } }).send();
+        return await new DBQuery<any>(modelname, "findUnique", { where: { id: parseInt(id) } }).send();
     }
 
     async getOneByFilter(modelname: types.Resource, filter: Object) {

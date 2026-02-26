@@ -2,6 +2,7 @@
 import * as responses from "../responses";
 import * as types from "../types/index";
 import Cloudflare from "cloudflare";
+import { env } from "@lib/utils";
 
 // resolvers for image upload
 const resolvers: types.Resolvers = {
@@ -12,7 +13,7 @@ const resolvers: types.Resolvers = {
             { dataSources: { cloudflare } }: types.AppContext
         ): Promise<types.APIResponse<types.StartUploadImageType>>{
             const response = await cloudflare.images.v2.directUploads.create(
-                { id, account_id: process.env.CLOUDFLARE_ACCOUNT_ID! }
+                { id, account_id: env("CLOUDFLARE_ACCOUNT_ID") }
             );
 
             if (response instanceof Cloudflare.APIError){
@@ -27,7 +28,9 @@ const resolvers: types.Resolvers = {
             { id }: types.MutationFinalizeImageUploadArgs, 
             { dataSources: { cloudflare } }: types.AppContext
         ): Promise<types.APIResponse<types.FinalizeUploadImageType>>{
-            const response = await cloudflare.images.v1.get(id, { account_id: process.env.CLOUDFLARE_ACCOUNT_ID! });
+            const response = await cloudflare.images.v1.get(
+                id, { account_id: env("CLOUDFLARE_ACCOUNT_ID") }
+            );
 
             if (response instanceof Cloudflare.APIError){
                 return responses.f500Response();

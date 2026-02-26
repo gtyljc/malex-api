@@ -19,11 +19,9 @@ const resolvers: types.Resolvers = {
             // check IP of sender ( it's must be backend or localhost )
             if (!utils.isSentFromBackend(req.socket.remoteAddress as string)) return responses.f403Response();
 
-            return responses.f200Response([ await auth.createAuthTokens(user_id, role, db) ]);
+            return responses.f200Response([ await auth.createPair({ db, userId: user_id, role }) ]);
         },
 
-        // creates referesh token, that is needed to get new acess token;
-        // access to this field has only backend
         createAT: async(
             _,
             __,
@@ -39,7 +37,13 @@ const resolvers: types.Resolvers = {
 
             const claims = decodeJwt(rt.jwt);
 
-            return responses.f200Response([ await auth.createAuthTokens(claims.sub, claims.aud as types.Roles, db) ]);
+            return responses.f200Response(
+                [ 
+                    await auth.createPair(
+                        { db, userId: claims.sub!, role: claims.aud as types.Roles }
+                    ) 
+                ]
+            );
         }
     }
 }
