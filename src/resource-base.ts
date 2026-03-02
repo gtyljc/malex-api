@@ -3,7 +3,7 @@ import * as responses from "./responses";
 import * as types from "./types/index";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
-import { ASyncResolverSaveCatch } from "@lib/utils";
+import { ResolverSaveCatch } from "@lib/utils";
 import * as errors from "@src/errors";
 
 class ResolversManager {
@@ -79,7 +79,7 @@ export class BaseQueryResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async getMany(
         _: any,
         { ids, filter, pagination, sort }: types.GetManyArgs,
@@ -108,7 +108,7 @@ export class BaseQueryResolvers extends ResolversManager {
         return responses.f400Response();
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async getOne(
         _: any, 
         { id }: types.GetOneArgs, 
@@ -163,7 +163,7 @@ export class BaseMutationResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async updateOne(
         _: any, 
         { id, data }: types.UpdateOneArgs, 
@@ -172,7 +172,7 @@ export class BaseMutationResolvers extends ResolversManager {
         return (await db.updateById(this.modelname, id, data)).apiResponse;
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async updateMany(
         _: any, 
         { ids, data }: types.UpdateManyArgs, 
@@ -182,7 +182,7 @@ export class BaseMutationResolvers extends ResolversManager {
 
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async deleteOne(
         _: any, 
         { id }: { id: string }, 
@@ -191,7 +191,7 @@ export class BaseMutationResolvers extends ResolversManager {
         return (await db.deleteById(this.modelname, id)).apiResponse;
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async deleteMany(
         _: any, 
         { ids }: { ids: string[] }, 
@@ -200,7 +200,7 @@ export class BaseMutationResolvers extends ResolversManager {
         return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async create(
         _: any, 
         { data }: types.CreateArgs, 

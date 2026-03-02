@@ -87,7 +87,7 @@ class DBQuery<RequestResultType> {
 
         this.errorHandlers.set(
             Prisma.PrismaClientKnownRequestError.name,
-            async (error: Error) => { await connection.establishConnection() }
+            async (error: Error) => { await connection.establishConnection(); console.log(error.prototype) }
         )
         
         this.method = method;
@@ -111,7 +111,7 @@ class DBQuery<RequestResultType> {
 
     async send(): Promise<this> {
         try {
-            logger.info(`Executing query with method ${ this.method } on model ${ this.modelname } with ID ${ this.queryId }`)
+            logger.debug(`Executing query with method "${ this.method }" on model "${ this.modelname }" with ID "${ this.queryId }"`)
 
             const r = await connection.client[this.modelname][this.method](this.queryBody);
 
@@ -119,7 +119,7 @@ class DBQuery<RequestResultType> {
             this.qResult = r;
             this.success = true;
 
-            logger.info(`Query with ID ${ this.queryId } is successfully finished`)
+            logger.debug(`Query with method "${ this.method }" on model "${ this.modelname }" with ID "${ this.queryId }" is successfully finished`)
         }
         catch (error: any) {
             logger.error(error);

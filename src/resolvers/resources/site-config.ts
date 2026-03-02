@@ -5,7 +5,7 @@ import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
 import * as types from "@src/types";
 import * as responses from "@src/responses";
 import * as utils from "@lib/utils";
-import { ASyncResolverSaveCatch } from "@lib/utils";
+import { ResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "siteConfig";
 
@@ -15,7 +15,7 @@ class Query extends BaseQueryResolvers {
     }
 
     // only necessary data for frontend about site config
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async publicConfig(
         _: any, 
         __: any,

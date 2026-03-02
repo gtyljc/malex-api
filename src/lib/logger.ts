@@ -4,10 +4,11 @@ import { env } from "./utils";
 import path from "node:path";
 
 const BASE_DIR = process.cwd();
-const logger = pino(
+
+export default pino(
     {
         name: "RootLogger",
-        level: "info",
+        level: env("LOG_LEVEL"),
         transport: {
             target: "pino-pretty",
             translateTime: "SYS:standard",
@@ -19,5 +20,3 @@ const logger = pino(
         { dest: path.join(BASE_DIR, env("LOG_PATH")) }
     )
 );
-
-export default logger;

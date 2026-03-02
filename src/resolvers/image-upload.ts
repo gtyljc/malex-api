@@ -3,6 +3,7 @@ import * as responses from "../responses";
 import * as types from "../types/index";
 import Cloudflare from "cloudflare";
 import { env } from "@lib/utils";
+import logger from "@lib/logger";
 
 // resolvers for image upload
 const resolvers: types.Resolvers = {

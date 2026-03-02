@@ -5,7 +5,7 @@ import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
 import * as types from "@src/types";
 import * as errors from "@src/errors";
 import { env } from "@lib/utils";
-import { ASyncResolverSaveCatch } from "@lib/utils";
+import { ResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "work";
 
@@ -14,12 +14,12 @@ class Query extends BaseQueryResolvers {
         super(__modelname);
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async newWorks(
         _: any, 
         { num }: types.QueryNewWorksArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<types.PublicWorkType>> {   
+    ): Promise<types.APIResponse<types.PublicWorkType>> {
 
         // pagination limitation
         if (num > parseInt(env("OBJECTS_PER_REQUEST_LIMIT"))){
@@ -41,7 +41,7 @@ class Query extends BaseQueryResolvers {
         return q.apiResponse;
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async getWorks(
         _: any,
         args: types.GetManyArgs, 

@@ -3,7 +3,7 @@
   "version": "0.0.1jb",
   "description": "Malex API",
   "scripts": {
-    "dev": "npx tsx watch --env-file .env src/app.ts",
+    "dev": "npx tsx watch --env-file .env src/app.ts --no-cache",
     "cli": "npx tsx --env-file=.env src/cli.ts",
     "codegen": "graphql-codegen --config codegen.ts"
   },
@@ -26,6 +26,7 @@
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
     "graphql": "^16.11.0",
     "graphql-config": "^5.1.5",
     "graphql-scalars": "^1.25.0",

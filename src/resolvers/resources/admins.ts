@@ -4,7 +4,7 @@ import * as types from "@src/types";
 import * as auth from "@src/auth";
 import * as utils from "@lib/utils";
 import { decodeJwt } from "jose";
-import { ASyncResolverSaveCatch } from "@lib/utils";
+import { ResolverSaveCatch } from "@lib/utils";
 import logger from "@lib/logger";
 
 class AdminPanelKey {
@@ -44,7 +44,7 @@ const APKey = new AdminPanelKey();
 
 class Query {
     
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     adminPanelKey() {
         return responses.f200Response([ APKey.key ]);
     }
@@ -52,7 +52,7 @@ class Query {
 
 class Mutation {
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async adminLogin(
         _,
         { username, password }: types.MutationAdminLoginArgs,
@@ -73,7 +73,7 @@ class Mutation {
     }
 
     // revokes admin RT
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async adminLogout(_, __,{ req, dataSources: { db } }: types.AppContext) {
         const at = utils.getJWTFromHeader(req.headers.authorization as string);
         const rt = (await auth.RefreshToken.searchByAT(at, db))?.jwt;

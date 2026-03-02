@@ -6,7 +6,8 @@ import * as types from "@src/types";
 import { dayjs } from "@lib/utils/dayjs";
 import * as responses from "@src/responses";
 import * as utils from "@lib/utils";
-import { ASyncResolverSaveCatch } from "@lib/utils";
+import { ResolverSaveCatch } from "@lib/utils";
+import logger from "@lib/logger";
 
 const __modelname = "appointment";
 
@@ -15,7 +16,7 @@ class Query extends BaseQueryResolvers {
         super(__modelname)
     }
 
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async busyInRange(
         _: any,
         { date, unit }: types.QueryBusyInRangeArgs, 
@@ -28,6 +29,8 @@ class Query extends BaseQueryResolvers {
         function endOfDay(dayjs: dayjs.Dayjs): dayjs.Dayjs {
             return dayjs.hour(23).minute(59).second(59).millisecond(99)
         }
+
+        logger.debug(`Get request for "busyInRange" Query field`)
 
         date = dayjs(date);
 
@@ -98,7 +101,7 @@ class Mutation extends BaseMutationResolvers {
         super(__modelname, { isDeletable: false })
     }
     
-    @ASyncResolverSaveCatch
+    @ResolverSaveCatch
     async create(
        _: any, 
        args: types.CreateArgs, 

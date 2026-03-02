@@ -9,10 +9,28 @@ class EnviromentFileParsingError extends Error {
     }    
 }
 
+function parseBoolean(value: string, ctx: z.core.ParsePayload){
+    if (value === "true" || value === "1"){
+        return true;
+    }
+
+    if (value === "false" || value === "0"){
+        return false;
+    }
+
+    ctx.issues.push(
+        {
+            code: "custom",
+            message: "Not a boolean value!",
+            input: value,
+        }
+    )
+
+    return z.NEVER;
+}
+
 const envSchema = z.object(
-    {
-        LOG_PATH: z.string(),
-        
+    {    
         SITE_CONFIG_OPENING_AT: z.iso.time(),
         SITE_CONFIG_CLOSING_AT: z.iso.time(),
         SITE_CONFIG_MIN_DURATION: z.coerce.number(),
@@ -27,7 +45,9 @@ const envSchema = z.object(
         CLOUDFLARE_API_TOKEN: z.string(),
         CLOUDFLARE_ACCOUNT_ID: z.string(),
 
-        PORT: z.string(),
+        LOG_PATH: z.string(),
+        LOG_LEVEL: z.enum([ "info", "debug", "error" ]),
+        BASE_URL: z.url(),
         NODE_ENV: z.enum([ "development", "production" ]),
         PER_PAGE_LIMIT: z.coerce.number(),
 
@@ -35,7 +55,7 @@ const envSchema = z.object(
         REFRESH_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
         ACCESS_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
 
-        AUTHENTICATION: z.coerce.boolean(),
+        AUTHENTICATION: z.transform(parseBoolean),
 
         USER_ID_LENGTH: z.coerce.number(),
 

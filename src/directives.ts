@@ -1,7 +1,6 @@
 
 // others
 import * as types from "./types";
-import * as responses from "./responses";
 import { hasPermission } from "./permissions";
 import * as auth from "./auth";
 import { decodeJwt } from "jose";
@@ -12,6 +11,59 @@ import { env } from "@lib/utils";
 import { defaultFieldResolver } from "graphql";
 import { GraphQLSchema } from "graphql"
 import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
+import { ResolverSaveCatch } from "@lib/utils";
+import * as errors from "@src/errors";
+
+class AuthDirectiveResolver{
+    fieldName: string;
+    baseResolver: Function;
+
+    constructor(
+        { fieldName, baseResolver }: 
+        { fieldName: string, baseResolver: Function }
+    ) {
+        this.fieldName = fieldName;
+        this.baseResolver = baseResolver;
+    }
+
+    // must be "binded"
+    @ResolverSaveCatch
+    async resolve(...args: any[]){
+        const ctx = args[2];
+        const authChecks = [
+
+            // check if jwt was specified
+            ({ ctx }: { ctx: types.AppContext }) => {
+                return [ ctx.req.headers.authorization, ctx.req.headers.authorization ]
+            },
+            
+            // validate jwt
+            async ({ next }: { next: string }) => {
+                const jwt = utils.getJWTFromHeader(next);
+                const isValid = await auth.validateJWT(jwt);
+
+                return [ isValid, isValid && jwt ] ;
+            },
+
+            // checks if user has permissions on execution
+            ({ next }: { next: string }) => {
+                const claims = decodeJwt(next);
+                
+                return [ hasPermission(claims.aud as types.Roles, this.fieldName) ];
+            }
+        ];
+
+        if (env("AUTHENTICATION") && !utils.validate(authChecks, { ctx })){
+            throw new errors.NotAuthenticatedRequestError();
+        }
+
+        let r = this.baseResolver(...args);
+
+        if (r instanceof Promise) r = await r;
+
+        return r;
+    }
+}
 
 const directives = [
     function AuthDirective(schema: GraphQLSchema){
@@ -23,47 +75,13 @@ const directives = [
 
                     if(authDirective){
                         const { resolve = defaultFieldResolver, astNode: { name } } = fieldConfig;
-                        // const { role } = authDirective; // get "role" directive argument
+                        const authDirectiveResolver = new AuthDirectiveResolver({ fieldName: name.value, baseResolver: resolve });
 
-                        return {
-                            ...fieldConfig,
-                            resolve: async (source, args, ctx: types.AppContext, info) => {
-                                const mustBeAuthenticated = env("AUTHENTICATION");
-
-                                if (
-                                    mustBeAuthenticated && !utils.validate(
-                                        [
-
-                                            // check if jwt was specified
-                                            ({ ctx }: { ctx: types.AppContext }) => {
-                                                return [ ctx.req.headers.authorization, ctx.req.headers.authorization ]
-                                            },
-                                            
-                                            // validate jwt
-                                            async ({ next }: { next: string }) => {
-                                                const jwt = utils.getJWTFromHeader(next);
-                                                const isValid = await auth.validateJWT(jwt);
-
-                                                return [ isValid, isValid && jwt ] ;
-                                            },
-
-                                            // checks if user has permissions on execution
-                                            ({ next }: { next: string }) => {
-                                                const claims = decodeJwt(next);
-                                                
-                                                return [ hasPermission(claims.aud as types.Roles, name.value) ];
-                                            }
-                                        ],
-                                        { ctx }
-                                    )
-                                ){
-                                    return responses.f403Response();
-                                }
-
-                                return await resolve(source, args, ctx, info);
-                            }
-                        };
-                    }
+                        return { 
+                            ...fieldConfig, 
+                            resolve: authDirectiveResolver.resolve.bind(authDirectiveResolver)
+                        }
+                    };
                 }
             }
         )

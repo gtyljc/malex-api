@@ -20,6 +20,15 @@ import { expressMiddleware } from '@as-integrations/express5';
 import express from "express";
 import schema from './schema';
 import http from "http";
+import { rateLimit } from 'express-rate-limit'
+
+function emptyMiddleware(
+    req: http.IncomingMessage, 
+    res: http.OutgoingMessage, 
+    next: Function
+){
+    next();
+}
 
 async function initApp(
     { 
@@ -30,21 +39,39 @@ async function initApp(
         sources: { db: DatabaseSource, cloudflare: Cloudflare } 
     }
 ){
-    logger.info("Initializing app...")
+    logger.info("Initializing API...")
 
     // set default timezone to server
     utils.dayjs.tz.setDefault((await utils.getSiteConfig(db)).timezone);
 
     // run server
     const app = express();
-    const server = new ApolloServer<types.AppContext>({ schema, logger });
+    const limiter = env("RATE_LIMITER") ? rateLimit(
+        {
+            windowMs: env("WINDOW_DURATION"),
+            limit: env("PER_WINDOW_LIMIT"),
+            legacyHeaders: false,
+            validate: {
+                trustProxy: true,
+                ip: true
+            }
+        }
+    ): emptyMiddleware;
     const httpServer = http.createServer(app);
+    const server = new ApolloServer<types.AppContext>(
+        { 
+            schema, 
+            logger,
+            plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+        }
+    );
     const url = new URL(env("BASE_URL"));
 
     await server.start();
 
     app.use(
         "/graphql",
+        limiter,
         express.json(),
         expressMiddleware(
             server, 
@@ -58,7 +85,7 @@ async function initApp(
 
     httpServer.listen({ port: url.port })
 
-    logger.info("App successfully started at: ", env("BASE_URL"));
+    logger.info("API successfully started at: " + env("BASE_URL"));
 }
 
 // sources

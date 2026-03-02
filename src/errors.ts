@@ -2,7 +2,6 @@
 import logger from "@lib/logger";
 import * as types from "@src/types";
 import * as responses from "@src/responses";
-import z from "zod";
 
 export class LoggedError extends Error {
     logError(){

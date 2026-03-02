@@ -1,32 +1,20 @@
 
 // these two catchers must be applied only on resolver methods
 
-export function SyncResolverSaveCatch(
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-){
-    const original = descriptor.value;
-    
-    descriptor.value = function (...args: any[]){    
-        try {
-            return original.apply(this, args);
-        }
-        catch (error: any) {
-            return error.apiResponse;
-        }
-    }
-}
+import logger from "@lib/logger";
 
-export function ASyncResolverSaveCatch(
+export function ResolverSaveCatch(
     target: any,
     propertyKey: string,
     descriptor: PropertyDescriptor
 ){
     const original = descriptor.value;
-    
-    descriptor.value = async function (...args: any[]){
+    const mLogger = logger;
+
+    descriptor.value = async function (...args: any[]){        
         try {
+            mLogger.info("Got request from");
+
             return await original.apply(this, args);
         }
         catch (error: any) {
