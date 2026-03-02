@@ -186,7 +186,7 @@ export class AccessToken {
 
 // creates new pair of RT and AT
 export async function createPair(
-    { 
+    {
         db, 
         userId, 
         role 
@@ -199,5 +199,5 @@ export async function createPair(
     return {
         at: await AccessToken.create({ userId, role }),
         rt: (await RefreshToken.create({ userId, role, db })).jwt
-    }
+    };
 }

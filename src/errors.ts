@@ -29,6 +29,17 @@ export class DatabaseConnectionError extends LoggedError {
 
 // ------------ resolver error
 
+export class DatabaseDriverError extends ResolverError {
+    constructor(prismaError: Error){
+        super();
+
+        this.message = prismaError.stack!;
+        this.apiResponse = responses.f500Response();
+        
+        this.logError();
+    }
+}
+
 export class PaginationLimitError extends ResolverError {
     constructor(){
         super();

@@ -82,12 +82,18 @@ class DBQuery<RequestResultType> {
 
         this.errorHandlers.set(
             Prisma.PrismaClientInitializationError.name, 
-            async (error: Error) => { await connection.establishConnection() }
+            async (error: Error) => { 
+                error instanceof Prisma.PrismaClientInitializationError &&
+                error.errorCode == "P1001" && await connection.establishConnection() 
+            }
         );
 
         this.errorHandlers.set(
             Prisma.PrismaClientKnownRequestError.name,
-            async (error: Error) => { await connection.establishConnection(); console.log(error.prototype) }
+            async (error: Error) => {
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code == "P1001" && await connection.establishConnection()
+            }
         )
         
         this.method = method;
@@ -96,7 +102,7 @@ class DBQuery<RequestResultType> {
     }
 
     // wraps DB response and converts into API response
-    private wrap(): types.APIResponse<any> {
+    private wrapQResult(): types.APIResponse<any> {
         if(this.success){
 
             // each result must be wrapped in array
@@ -118,14 +124,14 @@ class DBQuery<RequestResultType> {
             // set result to instance
             this.qResult = r;
             this.success = true;
+            this.apiResponse = this.wrapQResult();
 
             logger.debug(`Query with method "${ this.method }" on model "${ this.modelname }" with ID "${ this.queryId }" is successfully finished`)
         }
         catch (error: any) {
-            logger.error(error);
-
             this.success = false;
             this.errorInstance = error as Error;
+            this.apiResponse = this.wrapQResult();
 
             // going through cases
             for (let [ key, value ] of this.errorHandlers.entries()){
@@ -141,10 +147,8 @@ class DBQuery<RequestResultType> {
             }
 
             // when don't match cases
-            throw error;
+            throw new errors.DatabaseDriverError(error);
         }
-
-        this.apiResponse = this.wrap();
 
         return this;
     }

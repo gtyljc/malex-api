@@ -1,6 +1,7 @@
 
 import { DatabaseSource } from "@src/sources";
 import { parsedEnv } from "./env";
+import * as errors from "./errors";
 
 // returns new string with capitalized first letter
 export function capitalize(str: string): string {
@@ -53,9 +54,15 @@ export function validate(cases: Array<Function>, args: Object = {}, untilFalse =
 }
 
 export function env(valueName: string): any | undefined {
-    return parsedEnv?.data?.[valueName];
+    const envValue = parsedEnv.data[valueName]; 
+
+    if(envValue !== undefined){
+        return envValue;
+    }
+
+    throw new errors.EnviromentVariableDoesNotExistError(valueName);
 }
 
 export async function getSiteConfig(db: DatabaseSource): Promise<Record<any, any>> {
-    return (await db.getOneById("siteConfig", 1)).qResult;
+    return (await db.getOneById("siteConfig", "1")).qResult;
 }

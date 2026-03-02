@@ -1,13 +1,8 @@
 
+// was made for validation of .env file ( because of it's transfer )
+
 import * as z from "zod";
-
-class EnviromentFileParsingError extends Error {
-    constructor(error: z.ZodError){
-        super();
-
-        this.message = z.prettifyError(error);
-    }    
-}
+import * as errors from "./errors";
 
 function parseBoolean(value: string, ctx: z.core.ParsePayload){
     if (value === "true" || value === "1"){
@@ -45,11 +40,15 @@ const envSchema = z.object(
         CLOUDFLARE_API_TOKEN: z.string(),
         CLOUDFLARE_ACCOUNT_ID: z.string(),
 
+        BACKEND_ORIGIN: z.url(),
+        PER_WINDOW_LIMIT: z.coerce.number(), 
+        WINDOW_DURATION: z.coerce.number(),
         LOG_PATH: z.string(),
         LOG_LEVEL: z.enum([ "info", "debug", "error" ]),
         BASE_URL: z.url(),
         NODE_ENV: z.enum([ "development", "production" ]),
         PER_PAGE_LIMIT: z.coerce.number(),
+        RATE_LIMITER: z.transform(parseBoolean),
 
         API_SECRET: z.string(),
         REFRESH_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
@@ -66,7 +65,7 @@ const envSchema = z.object(
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success){
-    throw new EnviromentFileParsingError(parsedEnv.error);
+    throw new errors.EnviromentFileParsingError(parsedEnv.error);
 }
 
 export { envSchema, parsedEnv };
