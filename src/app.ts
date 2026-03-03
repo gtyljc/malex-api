@@ -59,11 +59,7 @@ const EXPRESS_MIDDLEWARE_OPTIONS = {
 };
 
 function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloServer<any>){
-    function emptyMiddleware(
-        req: http.IncomingMessage, 
-        res: http.OutgoingMessage, 
-        next: Function
-    ){
+    function emptyMiddleware(_, __, next: Function){
         next();
     }
 

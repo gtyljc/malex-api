@@ -12,7 +12,7 @@ export const ROLES: Array<types.Role> = [
     "SUPERADMIN", 
     "GUEST", 
     "USER", 
-    "SUPERUSER" 
+    "SUPERUSER"
 ]
 
 const DEFAULT_PAYLOAD = (
@@ -63,13 +63,7 @@ export async function validateJWT(
     jwt: string,
     options = {
         algorithms: [ DEFAULT_HEADER.alg ],
-        audience: [ 
-            "ADMIN", 
-            "SUPERADMIN", 
-            "GUEST", 
-            "USER", 
-            "SUPERUSER" 
-        ],
+        audience: ROLES,
         issuer: DEFAULT_PAYLOAD().iss,
         requiredClaims: Object.keys(DEFAULT_PAYLOAD())
     }

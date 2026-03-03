@@ -1,27 +1,28 @@
 
-import http from "http";
 import crypto from "node:crypto";
 import { env } from "@lib/utils";
 import { createClient } from "redis";
+import { Response, Request } from "express";
 import * as responses from "@src/responses";
 import z from "zod";
 import { createPair, ROLES } from "./jwt-auth";
 import { dayjs } from "@lib/utils";
 
 const DEFAULT_HASH_FUNC = "SHA-256";
-const DEFAULT_SIGN_ENCRYPTION = "hex";
+const DEFAULT_ENCODING = "hex";
 
 async function hashRaw(raw: string){
     const encoder = new TextEncoder();
     const data = encoder.encode(raw);
-
+    const buffer = new Uint8Array(await crypto.subtle.digest(DEFAULT_HASH_FUNC, data));
+    
     // hash
-    return new Uint8Array(await crypto.subtle.digest(DEFAULT_HASH_FUNC, data)).toHex();
+    return Buffer.from(buffer).toString(DEFAULT_ENCODING);
 }
 
 // route function
 export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
-    async function middleware(req: http.IncomingMessage, res: http.OutgoingMessage){
+    async function middleware(req: Request, res: Response){
         const headersSchema = z.object(
             {
                 "x-timestamp": z.coerce.number(),
@@ -42,9 +43,14 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
                 "role": z.enum(ROLES)
             }
         )
+        
+        console.log(req.body);
+
         const parsedBody = bodySchema.safeParse(req.body);
 
         if (!parsedBody.success){
+            console.log(parsedBody.error);
+
             return res.json(responses.f400Response());
         }
 
@@ -54,11 +60,11 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
         const reqNonce = parsedHeaders.data["x-nonce"]!;
         const reqHashedBody = parsedHeaders.data["x-body-hash"]!;
         const reqSign = parsedHeaders.data["x-signature"]!;
-        const reqRawBody = req.body; // json middlware must be included
-        const resultStringToSign = reqMethod + reqPath + reqNonce + reqHashedBody;
+        const reqRawBody = req.body; // json middleware must be included
+        const resultStringToSign = reqMethod + reqPath + reqTimestamp.toString() + reqNonce + reqHashedBody;
         const resultSign = crypto.createHmac(DEFAULT_HASH_FUNC, env("RT_CREATE_SECRET"))
             .update(resultStringToSign)
-            .digest(DEFAULT_SIGN_ENCRYPTION);
+            .digest(DEFAULT_ENCODING);
         const redisKey = `rt_req:${ reqSign }`;
 
         // check signature
