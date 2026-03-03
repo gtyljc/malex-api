@@ -4,6 +4,7 @@
 import * as generated from "./generated.types";
 import { DatabaseSource } from "../sources";
 import { IncomingMessage } from "http";
+import { createClient } from "redis";
 import Cloudflare from "cloudflare";
 
 // app
@@ -13,6 +14,7 @@ export type AppContext = {
     dataSources: { 
         db: DatabaseSource
         cloudflare: Cloudflare
+        redis: ReturnType<typeof createClient>
     }
 }
 

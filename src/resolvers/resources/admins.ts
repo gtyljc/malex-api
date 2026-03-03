@@ -1,7 +1,7 @@
 
 import * as responses from "@src/responses";
 import * as types from "@src/types";
-import * as auth from "@src/auth";
+import * as auth from "@src/jwt-auth";
 import * as utils from "@lib/utils";
 import { decodeJwt } from "jose";
 import { ResolverSaveCatch } from "@lib/utils";

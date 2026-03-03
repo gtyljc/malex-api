@@ -2,7 +2,7 @@
 // others
 import * as types from "./types";
 import { hasPermission } from "./permissions";
-import * as auth from "./auth";
+import * as auth from "./jwt-auth";
 import { decodeJwt } from "jose";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";

@@ -3,14 +3,17 @@
 // others
 import "dotenv/config";
 import * as utils from "@lib/utils"; // don't move, its important
-import Cloudflare from "cloudflare";
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
 
 // types
 import { IncomingMessage } from "http";
 import * as types from "./types/index";
+
+// sources
 import { DatabaseSource } from "./sources";
+import Cloudflare from "cloudflare";
+import { createClient } from "redis";
 
 // apollo server
 import { ApolloServer } from '@apollo/server';
@@ -30,6 +33,7 @@ const cloudflare = new Cloudflare(
         maxRetries: 3
     }
 );
+const redis = createClient({ url: env("REDIS_URL") });
 
 // configuration
 const LIMITER_OPTIONS = {
@@ -41,7 +45,6 @@ const LIMITER_OPTIONS = {
         ip: true
     }
 };
-
 const CORS_OPTIONS = {
     origin: [ env("BACKEND_ORIGIN") ],
     methods: [ "POST" ],
@@ -50,9 +53,9 @@ const CORS_OPTIONS = {
 };
 const EXPRESS_MIDDLEWARE_OPTIONS = {
     context: async ({ req }: { req: IncomingMessage }) => {
-        return { req, dataSources: { db, cloudflare } }
+        return { req, dataSources: { db, cloudflare, redis } }
     }
-}
+};
 
 async function initApp(){
     function emptyMiddleware(

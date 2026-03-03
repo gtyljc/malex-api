@@ -9,9 +9,9 @@ extend type Mutation {
     # can be accessed from backend and from frontend
     createAT: JWTResponseType! @auth(role: GUEST)
 
-    # ONLY BACKEND CAN ACCESS
-    # creates new auth pair with specified role and user_id
-    createRT(user_id: ID, role: RoleEnum!): JWTResponseType!
+    # # ONLY BACKEND CAN ACCESS
+    # # creates new auth pair with specified role and user_id
+    # createRT(user_id: ID, role: RoleEnum!): JWTResponseType!
 }
 
 
