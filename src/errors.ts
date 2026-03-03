@@ -4,32 +4,27 @@ import * as types from "@src/types";
 import * as responses from "@src/responses";
 
 export class LoggedError extends Error {
-    logError(){
+    apiResponse!: types.APIResponse<any>;
+
+    logError(logLevel: "error" | "debug" | "info" = "error"){
         // console.log(`Error ${ this.name } was occured! Check logs to get more info.`);
 
-        logger.error(this.name + " : " + this.message);
+        logger[logLevel](this.name + " : " + this.message);
     }
 }
-
-export class ResolverError extends LoggedError {
-    apiResponse!: types.APIResponse<any>;
-}
-
-// ------------ non-resolver error
 
 export class DatabaseConnectionError extends LoggedError {
     constructor(){
         super();
 
         this.message = "Database connection is lost!";
+        this.apiResponse = responses.f500Response();
     
         this.logError()
     }
 }
 
-// ------------ resolver error
-
-export class DatabaseDriverError extends ResolverError {
+export class DatabaseDriverError extends LoggedError {
     constructor(prismaError: Error){
         super();
 
@@ -40,7 +35,7 @@ export class DatabaseDriverError extends ResolverError {
     }
 }
 
-export class PaginationLimitError extends ResolverError {
+export class PaginationLimitError extends LoggedError {
     constructor(){
         super();
 
@@ -51,7 +46,7 @@ export class PaginationLimitError extends ResolverError {
     }
 }
 
-export class IdsOrFilterWasNotSpecifiedError extends ResolverError {
+export class IdsOrFilterWasNotSpecifiedError extends LoggedError {
     constructor(){
         super();
 
@@ -62,14 +57,35 @@ export class IdsOrFilterWasNotSpecifiedError extends ResolverError {
     }
 }
 
-export class NotAuthenticatedRequestError extends ResolverError {
+export class NotAuthenticatedRequestError extends LoggedError {
     constructor(){
         super();
 
         this.message = "Not authenticated request from user!";
-        this.apiResponse = responses.f403Response(this.message);
+        this.apiResponse = responses.f403Response();
 
         this.logError()
     }
 }
 
+export class JWTValidationError extends LoggedError {
+    constructor(){
+        super();
+
+        this.message = "Specified JWT has not correct form!";
+        this.apiResponse = responses.f400Response();
+
+        this.logError("debug");
+    }
+}
+
+export class RTRegistrationError extends LoggedError {
+    constructor(hash: string){
+        super();
+
+        this.message = `Registration of RT with hash ${ hash } has failed!`;
+        this.apiResponse = responses.f500Response();
+
+        this.logError();
+    }
+}

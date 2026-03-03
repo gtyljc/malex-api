@@ -49,7 +49,7 @@ class AuthDirectiveResolver{
             ({ next }: { next: string }) => {
                 const claims = decodeJwt(next);
                 
-                return [ hasPermission(claims.aud as types.Roles, this.fieldName) ];
+                return [ hasPermission(claims.aud as types.Role, this.fieldName) ];
             }
         ];
 

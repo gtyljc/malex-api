@@ -81,7 +81,7 @@ const SUPERADMIN_PERMISSIONS: types.Permissions = {
     ].concat(ADMIN_PERMISSIONS.permissions)
 }
 
-export function hasPermission(role: types.Roles, fieldName: string){
+export function hasPermission(role: types.Role, fieldName: string){
     const rolePerms = [
         GUEST_PERMISSIONS,
         USER_PERMISSIONS,

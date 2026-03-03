@@ -20,7 +20,7 @@ export type AppContext = {
 
 // permissions
 
-export type Roles = "ADMIN" | "USER" | "GUEST" | "SUPERUSER" | "SUPERADMIN"
+export type Role = "ADMIN" | "USER" | "GUEST" | "SUPERUSER" | "SUPERADMIN";
 export type Permissions = {
     role: Roles,
     permissions: string[]

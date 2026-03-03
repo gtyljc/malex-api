@@ -24,6 +24,7 @@ import cors from "cors";
 import schema from './schema';
 import http from "http";
 import { rateLimit } from 'express-rate-limit'
+import { validateRTCreateRequest } from "./refresh-token";
 
 // sources
 const db = new DatabaseSource();
@@ -57,7 +58,7 @@ const EXPRESS_MIDDLEWARE_OPTIONS = {
     }
 };
 
-async function initApp(){
+function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloServer<any>){
     function emptyMiddleware(
         req: http.IncomingMessage, 
         res: http.OutgoingMessage, 
@@ -66,6 +67,28 @@ async function initApp(){
         next();
     }
 
+    const limiter = env("RATE_LIMITER") ? rateLimit(LIMITER_OPTIONS): emptyMiddleware;
+
+    // to apollo server
+    app.use(
+        "/graphql",
+        cors(CORS_OPTIONS),
+        limiter,
+        express.json(),
+        expressMiddleware(apolloServer, EXPRESS_MIDDLEWARE_OPTIONS)
+    )
+
+    const createRTPath = "/rt/create";
+
+    // to create RT
+    app.post(
+        createRTPath,
+        express.json(),
+        validateRTCreateRequest(redis)
+    )
+}
+
+async function initApp(){
     logger.info("Initializing API...")
 
     // set default timezone to server
@@ -73,7 +96,6 @@ async function initApp(){
 
     // run server
     const app = express();
-    const limiter = env("RATE_LIMITER") ? rateLimit(LIMITER_OPTIONS): emptyMiddleware;
     const httpServer = http.createServer(app);
     const apolloServer = new ApolloServer<types.AppContext>(
         { 
@@ -85,13 +107,7 @@ async function initApp(){
 
     await apolloServer.start();
 
-    app.use(
-        "/graphql",
-        cors(CORS_OPTIONS),
-        limiter,
-        express.json(),
-        expressMiddleware(apolloServer, EXPRESS_MIDDLEWARE_OPTIONS)
-    )
+    setUpMiddlewares(app, apolloServer);
 
     const url = new URL(env("BASE_URL"));
 

@@ -5,6 +5,15 @@ import * as utils from "@lib/utils";
 import { dayjs } from "@lib/utils";
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
+import * as errors from "@src/errors";
+
+export const ROLES: Array<types.Role> = [ 
+    "ADMIN", 
+    "SUPERADMIN", 
+    "GUEST", 
+    "USER", 
+    "SUPERUSER" 
+]
 
 const DEFAULT_PAYLOAD = (
     { 
@@ -13,7 +22,7 @@ const DEFAULT_PAYLOAD = (
         issuer = "malex:api"
     }: {
         userId?: string | null,
-        role?: types.Roles,
+        role?: types.Role,
         issuer?: string
     } = {}
 ): Record<any, string | number | null> => (
@@ -39,6 +48,7 @@ async function importSecret(raw: string): Promise<CryptoKey> {
     );
 }
 
+// generation with already specified options
 async function generateJWT(
     payload: jose.JWTPayload, 
     header: jose.JWTHeaderParameters = DEFAULT_HEADER
@@ -48,11 +58,18 @@ async function generateJWT(
         .sign(await importSecret(env("API_SECRET")));
 }
 
+// validation with already specified options
 export async function validateJWT(
-    jwt: string, 
+    jwt: string,
     options = {
         algorithms: [ DEFAULT_HEADER.alg ],
-        audience: [ "ADMIN", "SUPERADMIN", "GUEST", "USER", "SUPERUSER" ],
+        audience: [ 
+            "ADMIN", 
+            "SUPERADMIN", 
+            "GUEST", 
+            "USER", 
+            "SUPERUSER" 
+        ],
         issuer: DEFAULT_PAYLOAD().iss,
         requiredClaims: Object.keys(DEFAULT_PAYLOAD())
     }
@@ -63,131 +80,100 @@ export async function validateJWT(
         return true;
     }
     catch(error) { 
-        return false;
+        throw new errors.JWTValidationError();
     }
 }
 
 export class RefreshToken {
-    jwt: string;
+    jwt: string; // must be already validated
     redis: types.AppContext["dataSources"]["redis"];
+    redisKey: string;
 
     constructor(jwt: string, redis: types.AppContext["dataSources"]["redis"]){
         this.jwt = jwt;
         this.redis = redis;
+        this.redisKey = RefreshToken.createRedisKey(this.jwt);
     }
 
     async isRegistered(): Promise<boolean> {
-        const claims = jose.decodeJwt(this.jwt);
-        const { sign } = utils.separateJWT(this.jwt);
-        const r = await this.redis.set(
-            `${ claims.sub }:${ claims.aud }:rt`,
-            {
-                is_revoked: false,
-                role: claims.aud,
-                user_id: claims.sub,
-                expired_at: { gte: dayjs().toISOString() }
-            },
-            {
-                EX: 300,
-                NX: true
-            }
-        )
-        
-        await this.db.getOneByFilter(
-            "refreshToken", 
-            { 
-                hash: sign,
-                is_revoked: false, 
-                role: claims.aud,
-                user_id: claims.sub,
-                expired_at: { gte: dayjs().toISOString() }
-            }
-        );
-
-        if (!q.qResult) return false;
-
-        return true; 
+        return (await this.redis.exists(this.redisKey)) == 1;
     }
 
     // means flaged as revoked in DB
     async revoke(): Promise<this> {
-        const claims = jose.decodeJwt(this.jwt);
+        logger.info(`Revoking RT with sign ${ utils.separateJWT(this.jwt).sign }`);
 
-        logger.info(`Revoking RT with sign ${ utils.separateJWT(this.jwt).sign }`)
+        await this.redis.del(this.redisKey);
 
-        // mark RT as revoked in DB
-        await this.db.updateManyByFilter(
-            "refreshToken",
-            { 
-                user_id: claims.sub, 
-                role: claims.aud, 
-                is_revoked: false 
-            }, 
-            { is_revoked: true }
-        );
-
-        logger.info(`RT with sign ${ utils.separateJWT(this.jwt).sign } is revoked!`)
+        logger.info(`RT with sign ${ utils.separateJWT(this.jwt).sign } is revoked!`);
 
         return this;
     }
 
     static async searchByAT(
-        db: types.AppContext["dataSources"]["db"],
-        at: string
+        at: string,
+        redis: types.AppContext["dataSources"]["redis"]
     ): Promise<RefreshToken | null> {
-        const claims = jose.decodeJwt(at);
-        const { sign } = utils.separateJWT(at);
-        const q = await db.getOneByFilter(
-            "refreshToken",
-            { 
-                hash: sign,
-                is_revoked: false, 
-                role: claims.aud, 
-                user_id: claims.sub,
-                expired_at: { lt: dayjs().toDate() }
-            }
-        )
+        const r = await redis.get(RefreshToken.createRedisKey(at));
 
-        if (!utils.isEmpty(q.qResult)){
-            return null;
-        }
+        if (!r) return null;
 
-        return new RefreshToken(q.qResult, db);
+        return new RefreshToken(at, redis);
     }
 
-    // includes token reqgistration in DB
     static async create(
-        db: types.AppContext["dataSources"]["db"],
-        { userId, role }: { userId: string, role: types.Roles }
-    ): Promise<RefreshToken> {
-        const expiredAt = dayjs().add(parseInt(env("REFRESH_TOKEN_EXPIRATION_DELAY")), "seconds");
-        const token = await generateJWT(DEFAULT_PAYLOAD({ userId, role }));
-        const { sign } = utils.separateJWT(token);
-        
+        redis: types.AppContext["dataSources"]["redis"],
+        { userId, role }: { userId: string | null, role: types.Role }
+    ): Promise<RefreshToken | null> {
+        const jwt = await generateJWT(DEFAULT_PAYLOAD({ userId, role }));
+        const redisKey = RefreshToken.createRedisKey(jwt);
+        const { sign } = utils.separateJWT(jwt);
+    
         logger.info(`Creating RT with sign ${ sign }`)
 
-        // register RT into DB
-        await db.create(
-            "refreshToken",
-            { 
-                hash: sign, 
-                expired_at: expiredAt.toDate(), 
-                role, 
-                user_id: userId 
+        if (await redis.exists(redisKey) == 1) throw new errors.RTRegistrationError(sign);
+
+        // register
+        await redis.set(
+            redisKey, 
+            {
+                sign,
+                role,
+                user_id: userId,
+                created_at: dayjs().unix(),
+                expired_at: dayjs().add(env("REFRESH_TOKEN_EXPIRATION_DELAY"), "s").unix()
+            },
+            {
+                NX: true,
+                EX: env("REFRESH_TOKEN_EXPIRATION_DELAY")
             }
         );
 
         logger.info(`RT with sign ${ sign } was successfully created`)
 
-        return new RefreshToken(token, db);
+        return new RefreshToken(jwt, redis);
+    }
+
+    static createRedisKey(jwt: string){
+        return `rt:${ jose.decodeJwt(jwt).sub }`;
     }
 }
 
 export class AccessToken {
     static async create(
-        { userId, role }: 
-        { userId: string, role: types.Roles }
+        { userId, role }:
+        { userId: string | null, role: types.Role }
     ): Promise<string> {
         return await generateJWT(DEFAULT_PAYLOAD({ userId, role }))
+    }
+}
+
+export async function createPair(
+    redis: types.AppContext["dataSources"]["redis"], 
+    { userId, role }: { userId: string | null, role: types.Role }
+): Promise<{ rt: string, at: string }> {
+    return {
+        at: await AccessToken.create({ userId, role }),
+        rt: (await RefreshToken.create(redis, { userId, role }))?.jwt
     }
 }

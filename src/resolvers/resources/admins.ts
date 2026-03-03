@@ -86,7 +86,7 @@ class Mutation {
         return responses.f200Response(
             [ 
                 await auth.createPair(
-                    { db, role: claims.aud as types.Roles, userId: claims.sub as string }
+                    { db, role: claims.aud as types.Role, userId: claims.sub as string }
                 ) 
             ]
         );

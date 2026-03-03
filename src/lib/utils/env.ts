@@ -40,6 +40,8 @@ const envSchema = z.object(
         CLOUDFLARE_API_TOKEN: z.string(),
         CLOUDFLARE_ACCOUNT_ID: z.string(),
 
+        REDIS_URL: z.url(),
+
         BACKEND_ORIGIN: z.url(),
         PER_WINDOW_LIMIT: z.coerce.number(), 
         WINDOW_DURATION: z.coerce.number(),
@@ -55,6 +57,7 @@ const envSchema = z.object(
         API_SECRET: z.string(),
         REFRESH_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
         ACCESS_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
+        JWT_DEFAULT_ISSUER: z.string(),
 
         AUTHENTICATION: z.transform(parseBoolean),
 
