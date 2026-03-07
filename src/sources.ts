@@ -1,7 +1,7 @@
 
 // others
 import * as utils from "@lib/utils";
-import * as types from "./types/index";
+import * as types from "./lib/types/index";
 import * as responses from "./responses";
 import * as errors from "@src/errors";
 import { PrismaPg } from '@prisma/adapter-pg';

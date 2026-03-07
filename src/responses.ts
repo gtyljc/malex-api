@@ -1,5 +1,5 @@
 
-import * as types from "./types";
+import * as types from "./lib/types";
 
 export function f200Response(data: any[]): types.APIResponse<any> {    
     return {

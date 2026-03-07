@@ -1,8 +1,8 @@
 
 // others
-import * as types from "./types";
+import * as types from "@lib/types";
 import { hasPermission } from "./permissions";
-import * as auth from "./jwt-auth";
+import * as auth from "@src/jwt-auth";
 import { decodeJwt } from "jose";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
@@ -39,7 +39,7 @@ class AuthDirectiveResolver{
             
             // validate jwt
             async ({ next }: { next: string }) => {
-                const jwt = utils.getJWTFromHeader(next);
+                const jwt = auth.JWT.getJWTFromHeader(next);
                 const isValid = await auth.validateJWT(jwt);
 
                 return [ isValid, isValid && jwt ] ;

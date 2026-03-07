@@ -13,7 +13,7 @@ import {
     TimeZoneResolver,
     CountryCodeResolver
 } from "graphql-scalars";
-import * as types from "../types";
+import * as types from "../lib/types";
 
 const resolvers: types.Resolvers = {
     JSONObject: JSONObjectResolver,

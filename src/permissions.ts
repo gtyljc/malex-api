@@ -1,7 +1,7 @@
 
 // hierarchy of roles and their permissions
 
-import * as types from "./types";
+import * as types from "./lib/types";
 
 const GUEST_PERMISSIONS: types.Permissions = {
     role: "GUEST",

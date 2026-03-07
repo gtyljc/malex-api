@@ -2,7 +2,7 @@
 // resolvers for model "Work"
 
 import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
-import * as types from "@src/types";
+import * as types from "@lib/types";
 import * as errors from "@src/errors";
 import { env } from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";

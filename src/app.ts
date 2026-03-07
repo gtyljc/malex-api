@@ -8,7 +8,7 @@ import logger from "@lib/logger";
 
 // types
 import { IncomingMessage } from "http";
-import * as types from "./types/index";
+import * as types from "./lib/types/index";
 
 // sources
 import { DatabaseSource } from "./sources";
@@ -34,7 +34,7 @@ const cloudflare = new Cloudflare(
         maxRetries: 3
     }
 );
-const redis = createClient({ url: env("REDIS_URL") });
+const redis = await createClient({ url: env("REDIS_URL") }).connect();
 
 // configuration
 const LIMITER_OPTIONS = {

@@ -2,7 +2,7 @@
 // resolvers for model "Appointment"
 
 import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
-import * as types from "@src/types";
+import * as types from "@lib/types";
 import { dayjs } from "@lib/utils/dayjs";
 import * as responses from "@src/responses";
 import * as utils from "@lib/utils";

@@ -1,6 +1,6 @@
 
 import * as responses from "./responses";
-import * as types from "./types/index";
+import * as types from "./lib/types/index";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";

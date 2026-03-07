@@ -1,6 +1,6 @@
 
 import logger from "@lib/logger";
-import * as types from "@src/types";
+import * as types from "@lib/types";
 import * as responses from "@src/responses";
 
 export class LoggedError extends Error {
@@ -76,6 +76,17 @@ export class JWTValidationError extends LoggedError {
         this.apiResponse = responses.f400Response();
 
         this.logError("debug");
+    }
+}
+
+export class RTCreationError extends LoggedError {
+    constructor(apiResponse: types.APIResponse<any>){
+        super();
+
+        this.message = `Creation of RT has failed!`;
+        this.apiResponse = apiResponse;
+
+        this.logError();
     }
 }
 

@@ -2,7 +2,7 @@
 // resolvers for model "SiteConfig"
 
 import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
-import * as types from "@src/types";
+import * as types from "@lib/types";
 import * as responses from "@src/responses";
 import * as utils from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";
