@@ -12,6 +12,7 @@
 			"@lib/*": [ "./src/lib/*" ],
 			"@src/*": [ "./src/*" ],
 		},
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"noEmitOnError": true
 	},
 }

@@ -5,6 +5,7 @@ import { dayjs } from "@lib/utils";
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
 import * as errors from "@src/errors";
+import { nanoid } from "nanoid";
 
 export const ROLES: Array<types.Role> = [ 
     "ADMIN", 
@@ -14,17 +15,16 @@ export const ROLES: Array<types.Role> = [
     "SUPERUSER"
 ]
 
+interface DefaultPayloadParams {
+    userId?: string | null,
+    role?: types.Role,
+    issuer?: string
+}
+
 const DEFAULT_PAYLOAD = (
-    { 
-        userId = null, 
-        role = "GUEST",
-        issuer = env("JWT_DEFAULT_ISSUER")
-    }: {
-        userId?: string | null,
-        role?: types.Role,
-        issuer?: string
-    } = {}
-): Record<any, string | number | null> => (
+    { userId = null, role = "GUEST", issuer = env("JWT_DEFAULT_ISSUER")}: 
+    DefaultPayloadParams = {}
+): types.DefaultPayload => (
     {
         iss: issuer,
         sub: userId,
@@ -33,7 +33,7 @@ const DEFAULT_PAYLOAD = (
         exp: dayjs().add(env("REFRESH_TOKEN_EXPIRATION_DELAY"), "seconds").unix(),
     }
 );
-const DEFAULT_HEADER = { alg: "HS256" };
+const DEFAULT_HEADER: types.DefaultHeader = { alg: "HS256" };
 
 async function importSecret(raw: string): Promise<CryptoKey> {
     const secret = new TextEncoder().encode(raw);
@@ -49,8 +49,8 @@ async function importSecret(raw: string): Promise<CryptoKey> {
 
 // generation with already specified options
 async function generateJWT(
-    payload: jose.JWTPayload, 
-    header: jose.JWTHeaderParameters = DEFAULT_HEADER
+    payload: types.DefaultPayload, 
+    header: types.DefaultHeader = DEFAULT_HEADER
 ): Promise<string>{
     return await new jose.SignJWT(payload)
         .setProtectedHeader(header)
@@ -68,12 +68,16 @@ export async function validateJWT(
     }
 ): Promise<boolean> {
     try {
-        await jose.jwtVerify(jwt, await importSecret(env("API_SECRET")), options);
+        await jose.jwtVerify<types.DefaultPayload>(
+            jwt, 
+            await importSecret(env("API_SECRET")), 
+            options
+        );
         
         return true;
     }
     catch(error) { 
-        throw new errors.JWTValidationError();
+        throw new errors.JWTValidationError(jwt);
     }
 }
 
@@ -101,12 +105,16 @@ export class RefreshToken {
         this.redisKey = RefreshToken.createRedisKey(this.jwt);
     }
 
-    static createRedisKey(jwt: string){
+    static createRedisKey(jwt: string,){
         return `rt:${ jose.decodeJwt(jwt).sub }`;
     }
 
     async isRegistered(): Promise<boolean> {
-        return (await this.redis.exists(this.redisKey)) == 1;
+        const r = await this.redis.exists(this.redisKey);
+
+        if (r != 1) throw new errors.RTIsNotRegistered(this.jwt);
+
+        return true;
     }
 
     // means flaged as revoked in DB
@@ -135,6 +143,11 @@ export class RefreshToken {
         redis: types.AppContext["dataSources"]["redis"],
         { userId, role }: { userId: string | null, role: types.Role }
     ): Promise<RefreshToken | null> {
+        
+        // everybody must have an ID, because of this reason it will
+        // generate absolutly random ID instead
+        userId = userId ? userId: nanoid(env("RT_GUEST_ID_LENGTH"));
+
         const jwt = await generateJWT(DEFAULT_PAYLOAD({ userId, role }));
         const redisKey = RefreshToken.createRedisKey(jwt);
         const { sign } = JWT.separateJWT(jwt);
@@ -149,10 +162,10 @@ export class RefreshToken {
 
         logger.info(`Creating RT with sign ${ sign }`);
 
-        if (await redis.exists(redisKey) == 1) throw new errors.RTRegistrationError(sign);
+        // if (await redis.exists(redisKey) == 1) throw new errors.RTRegistrationError(sign);
 
         // register
-        await redis.set(redisKey, JSON.stringify(jwtData), { NX: true, EX: rtExpirationDelay });
+        // await redis.set(redisKey, JSON.stringify(jwtData), { NX: true, EX: rtExpirationDelay });
 
         logger.info(`RT with sign ${ sign } was successfully created`);
 
@@ -169,12 +182,12 @@ export class AccessToken {
     }
 }
 
-// export async function createPair(
-//     redis: types.AppContext["dataSources"]["redis"], 
-//     { userId, role }: { userId: string | null, role: types.Role }
-// ): Promise<{ rt: string, at: string }> {
-//     return {
-//         at: await AccessToken.create({ userId, role }),
-//         rt: (await RefreshToken.create(redis, { userId, role }))?.jwt
-//     }
-// }
+export async function createPair(
+    redis: types.AppContext["dataSources"]["redis"], 
+    { userId, role }: { userId: string | null, role: types.Role }
+): Promise<{ rt: string, at: string }> {
+    return {
+        at: await AccessToken.create({ userId, role }),
+        rt: (await RefreshToken.create(redis, { userId, role }))?.jwt
+    }
+}

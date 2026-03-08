@@ -17,7 +17,7 @@ export function isEmpty(array: Array<any>): boolean {
 }
 
 // removes element and returns new array
-export function patch<Type>(array: Array<Type>, changes: Array<Type>): Array<Type>{
+export function patch<Type>(array: Array<Type>, changes: Array<Type>): Array<Type> {
     return array.filter(e => !changes.includes(e));
 }
 
@@ -30,13 +30,13 @@ export function validate(cases: Array<Function>, args: Object = {}, untilFalse =
 
     cases.forEach(
         async (func) => {
-            if(isValid){
+            if (isValid) {
                 let r = func({ ...args, next });
 
                 // for async cases
-                r = r instanceof Promise ? await r: r;
+                r = r instanceof Promise ? await r : r;
 
-                if(r instanceof Array){
+                if (r instanceof Array) {
                     next = r[1];
 
                     if (!r[0] && untilFalse) isValid = false;
@@ -54,9 +54,9 @@ export function validate(cases: Array<Function>, args: Object = {}, untilFalse =
 }
 
 export function env(valueName: string): any | undefined {
-    const envValue = parsedEnv.data[valueName]; 
+    const envValue = parsedEnv.data[valueName];
 
-    if(envValue !== undefined){
+    if (envValue !== undefined) {
         return envValue;
     }
 
@@ -65,4 +65,32 @@ export function env(valueName: string): any | undefined {
 
 export async function getSiteConfig(db: DatabaseSource): Promise<Record<any, any>> {
     return (await db.getOneById("siteConfig", "1")).qResult;
+}
+
+type CookieOptions = {
+    path?: string;
+    domain?: string;
+    httpOnly?: boolean;
+    secure?: boolean;
+    sameSite?: "Strict" | "Lax" | "None";
+    maxAge?: number;
+    expires?: Date;
+};
+
+export function serializeCookie(
+    name: string,
+    value: string,
+    options: CookieOptions = {}
+): string {
+    const parts = [`${name}=${encodeURIComponent(value)}`];
+
+    if (options.path) parts.push(`Path=${options.path}`);
+    if (options.domain) parts.push(`Domain=${options.domain}`);
+    if (options.httpOnly) parts.push("HttpOnly");
+    if (options.secure) parts.push("Secure");
+    if (options.sameSite) parts.push(`SameSite=${options.sameSite}`);
+    if (options.maxAge !== undefined) parts.push(`Max-Age=${options.maxAge}`);
+    if (options.expires) parts.push(`Expires=${options.expires.toUTCString()}`);
+
+    return parts.join("; ");
 }

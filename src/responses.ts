@@ -1,7 +1,7 @@
 
 import * as types from "./lib/types";
 
-export function f200Response(data: any[]): types.APIResponse<any> {    
+export function f200Response(data: any[] = []): types.APIResponse<any> {    
     return {
         code: 200,
         message: "Success",

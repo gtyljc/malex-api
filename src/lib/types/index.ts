@@ -3,32 +3,45 @@
 
 import * as generated from "./generated.types";
 import { DatabaseSource } from "../../sources";
-import { IncomingMessage } from "http";
 import { createClient } from "redis";
 import Cloudflare from "cloudflare";
+import { JWTPayload, JWTHeaderParameters } from "jose";
+import { IncomingMessage, OutgoingMessage } from "http";
 
-// app
+interface Cookies {
+    a_token: string,
+    r_token: string
+}
+
+interface AppRequest extends IncomingMessage {
+    cookies: Cookies | undefined,
+    body: Record<string, any>
+}
 
 export type AppContext = {
-    req: IncomingMessage,
+    req: AppRequest,
+    res: OutgoingMessage,
     dataSources: { 
         db: DatabaseSource
         cloudflare: Cloudflare
         redis: ReturnType<typeof createClient>
     }
 }
-
-// permissions
-
 export type Role = "ADMIN" | "USER" | "GUEST" | "SUPERUSER" | "SUPERADMIN";
 export type Permissions = {
-    role: Roles,
+    role: Role,
     permissions: string[]
 }
-
-
-// source
-
+export interface DefaultPayload extends JWTPayload {
+    iss: string,
+    sub: string | null,
+    aud: Role,
+    iat: number,
+    exp: number
+}
+export interface DefaultHeader extends JWTHeaderParameters  {
+    alg: string
+}
 export type DBMethod = (
     "findUnique" |
     "findFirst" | 
@@ -73,9 +86,6 @@ export type DeleteManyArgs = {
 export type CreateArgs = {
     data: Record<string, any>
 }
-
-// responses
-
 export type APIResponse<ResponseType> = {
     data: ResponseType[]
     pagination?: generated.PaginationType

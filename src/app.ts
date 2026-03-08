@@ -7,7 +7,7 @@ import { env } from "@lib/utils";
 import logger from "@lib/logger";
 
 // types
-import { IncomingMessage } from "http";
+import { IncomingMessage, OutgoingMessage } from "http";
 import * as types from "./lib/types/index";
 
 // sources
@@ -25,6 +25,7 @@ import schema from './schema';
 import http from "http";
 import { rateLimit } from 'express-rate-limit'
 import { validateRTCreateRequest } from "./refresh-token";
+import cookiesParser from "cookie-parser";
 
 // sources
 const db = new DatabaseSource();
@@ -50,11 +51,12 @@ const CORS_OPTIONS = {
     origin: [ env("BACKEND_ORIGIN") ],
     methods: [ "POST" ],
     allowedHeaders: [ "Authorization", "Content-Type" ],
-    maxAge: 86400 // 24 hours
+    maxAge: 86400, // 24 hours
+    credentials: true
 };
 const EXPRESS_MIDDLEWARE_OPTIONS = {
-    context: async ({ req }: { req: IncomingMessage }) => {
-        return { req, dataSources: { db, cloudflare, redis } }
+    context: async ({ req, res }: { req: IncomingMessage, res: OutgoingMessage }) => {
+        return { req, res, dataSources: { db, cloudflare, redis } }
     }
 };
 
@@ -69,6 +71,7 @@ function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloS
     app.use(
         "/graphql",
         cors(CORS_OPTIONS),
+        cookiesParser(),
         limiter,
         express.json(),
         expressMiddleware(apolloServer, EXPRESS_MIDDLEWARE_OPTIONS)

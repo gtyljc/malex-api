@@ -69,11 +69,22 @@ export class NotAuthenticatedRequestError extends LoggedError {
 }
 
 export class JWTValidationError extends LoggedError {
-    constructor(){
+    constructor(jwt: string){
         super();
 
-        this.message = "Specified JWT has not correct form!";
-        this.apiResponse = responses.f400Response();
+        this.message = `JWT ${ jwt } wasn't validated!"`;
+        this.apiResponse = responses.f403Response();
+
+        this.logError("debug");
+    }
+}
+
+export class RTIsNotRegistered extends LoggedError {
+    constructor(jwt: string){
+        super();
+
+        this.message = `RT ${ jwt } isn't registered at DB!"`;
+        this.apiResponse = responses.f403Response();
 
         this.logError("debug");
     }

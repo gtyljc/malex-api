@@ -5,12 +5,12 @@ import { createClient } from "redis";
 import { Response, Request } from "express";
 import * as responses from "@src/responses";
 import z from "zod";
-import { ROLES } from "@src/jwt-auth";
+import { ROLES } from "@src/auth";
 import { dayjs } from "@lib/utils";
 import * as errors from "@src/errors";
 import logger from "@lib/logger";
 import * as types from "@lib/types";
-import * as auth from "@src/jwt-auth";
+import * as auth from "@src/auth";
 
 async function hashRaw(raw: string){
     const encoder = new TextEncoder();
@@ -23,7 +23,6 @@ async function hashRaw(raw: string){
     return Buffer.from(buffer).toString(env("RT_CREATE_REQUEST_ENCODING"));
 };
 
-// route function
 export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
     async function middleware(req: Request, res: Response): Response {
         try {
@@ -58,7 +57,10 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
             const reqSign = parsedHeaders.data["x-signature"]!;
             const reqRawBody = req.body; // json middleware must be included
             const resultStringToSign = reqMethod + reqPath + reqTimestamp.toString() + reqNonce + reqHashedBody;
-            const resultSign = crypto.createHmac(env("RT_CREATE_REQUEST_HASH_FUNC"), env("RT_CREATE_SECRET"))
+            const resultSign = crypto.createHmac(
+                env("RT_CREATE_REQUEST_HASH_FUNC"), 
+                env("RT_CREATE_REQUEST_SECRET")
+            )
                 .update(resultStringToSign)
                 .digest(env("RT_CREATE_REQUEST_ENCODING"));
             const redisKey = `rt_req:${ reqNonce }`;
@@ -93,12 +95,12 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
 
             const role = parsedBody.data["role"];
             const userId = parsedBody.data["userId"];
-            const r: types.JwtType = {
-                rt: (await auth.RefreshToken.create(redis, { userId, role }))?.jwt,
-                at: await auth.AccessToken.create({ userId, role })
-            };
 
-            return res.json();
+            return res.json(
+                responses.f200Response(
+                    [ await auth.createPair(redis, { role, userId }) ]
+                )
+            );
         }
         catch(error: any) {
             if (error.apiResponse){

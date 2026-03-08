@@ -52,9 +52,10 @@ const envSchema = z.object(
         PER_PAGE_LIMIT: z.coerce.number(),
         RATE_LIMITER: z.transform(parseBoolean),
 
+        RT_GUEST_ID_LENGTH: z.coerce.number(),
         RT_CREATE_REQUEST_EXPIRATION_DELAY: z.coerce.number(),
         RT_CREATE_REQUEST_HASH_FUNC: z.coerce.string(),
-        RT_CREATE_REQUEST_ENCRYPTION: z.coerce.string(), 
+        RT_CREATE_REQUEST_ENCODING: z.coerce.string(), 
         RT_CREATE_REQUEST_SECRET: z.string(),
         API_SECRET: z.string(),
         REFRESH_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
