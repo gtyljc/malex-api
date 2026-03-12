@@ -1,5 +1,15 @@
 
 
+# -------- query
+
+extend type Query {
+
+    # <ADMIN> role is required
+    # checks if response has "ADMIN" jwts
+    checkAdmin: AuthResponseType! @auth(role: ADMIN)
+}
+
+
 # -------- mutation
 
 extend type Mutation {
@@ -7,27 +17,29 @@ extend type Mutation {
     # <GUEST> role is required
     # creates new auth pair with initial client crenditials
     # can be accessed from backend and from frontend
-    createAT: JWTResponseType! @auth(role: GUEST)
+    createAT: AuthResponseType! @auth(role: GUEST)
 
-    # # ONLY BACKEND CAN ACCESS
-    # # creates new auth pair with specified role and user_id
-    # createRT(user_id: ID, role: RoleEnum!): JWTResponseType!
+    # <GUEST> role is required
+    # gets username and password and then returns new auth tokens
+    # with role "ADMIN"
+    adminLogin(username: String!, password: String!): AuthResponseType @auth(role: GUEST)
+    
+    # <ADMIN> role is required
+    # revokes admin's refresh token and gives new pair with role "GUEST"
+    adminLogout: AuthResponseType! @auth(role: ADMIN)
 }
 
 
 # -------- types
 
-type JWTResponseType implements APIResponseInterface {
+type AuthResponseType implements APIResponseInterface {
     code: Int!
     message: String!
     success: Boolean!
-    data: [JWTType]!
+    data: [ Boolean ]
 }
 
-type JWTType { 
-    at: JWT! # access token
-    rt: JWT! # refresh token
-}
+# -------- enums
 
 enum RoleEnum {
     SUPERADMIN # can add new admins

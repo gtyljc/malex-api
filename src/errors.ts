@@ -9,7 +9,7 @@ export class LoggedError extends Error {
     logError(logLevel: "error" | "debug" | "info" = "error"){
         // console.log(`Error ${ this.name } was occured! Check logs to get more info.`);
 
-        logger[logLevel](this.name + " : " + this.message);
+        logger[logLevel](this.message);
     }
 }
 
@@ -20,7 +20,7 @@ export class DatabaseConnectionError extends LoggedError {
         this.message = "Database connection is lost!";
         this.apiResponse = responses.f500Response();
     
-        this.logError()
+        this.logError();
     }
 }
 

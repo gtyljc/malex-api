@@ -38,7 +38,7 @@ extend type Mutation {
     
     # <ADMIN> role is required
     # creates appointment with specified data
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: SUPERUSER)
+    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: GUEST)
 }
 
 

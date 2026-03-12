@@ -8,21 +8,9 @@ extend type Query {
     adminPanelKey: AdminPanelKeyResponse @auth(role: GUEST)
 }
 
-extend type Mutation {
-
-    # <GUEST> role is required
-    # gets username and password and then returns new auth tokens
-    # with role "ADMIN"
-    adminLogin(username: String!, password: String!): JWTResponseType! @auth(role: GUEST)
-    
-    # <ADMIN> role is required
-    # revokes admin's refresh token and gives new pair with
-    # role "GUEST"
-    adminLogout: JWTResponseType! @auth(role: ADMIN)
-}
-
 
 # -------- types
+
 
 type AdminPanelKeyResponse implements APIResponseInterface {
     code: Int!

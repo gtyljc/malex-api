@@ -1,11 +1,10 @@
 
 import * as responses from "@src/responses";
 import * as types from "@lib/types";
-import * as auth from "@src/auth";
 import * as utils from "@lib/utils";
-import { decodeJwt } from "jose";
 import { ResolverSaveCatch } from "@lib/utils";
 import logger from "@lib/logger";
+// import loadArgon2idWasm from 'argon2id';
 
 class AdminPanelKey {
     private currentValue: string;
@@ -50,52 +49,8 @@ class Query {
     }
 }
 
-class Mutation {
-
-    @ResolverSaveCatch
-    async adminLogin(
-        _,
-        { username, password }: types.MutationAdminLoginArgs,
-        { dataSources: { db } }: types.AppContext
-    ){
-        const q = await db.getOneByFilter("admin", { username, password });
-
-        // if admin not exist
-        if(!q.qResult) return responses.f403Response();
-
-        return responses.f200Response(
-            [ 
-                await auth.createPair(
-                    { db, role: "ADMIN", userId: q.qResult.user.id }
-                ) 
-            ]
-        );
-    }
-
-    // revokes admin RT
-    @ResolverSaveCatch
-    async adminLogout(_, __,{ req, dataSources: { db } }: types.AppContext) {
-        const at = utils.getJWTFromHeader(req.headers.authorization as string);
-        const rt = (await auth.RefreshToken.searchByAT(at, db))?.jwt;
-        
-        if(!rt) return responses.f403Response();
-
-        // revoke current RT and give new one
-        const claims = decodeJwt(rt);
-
-        return responses.f200Response(
-            [ 
-                await auth.createPair(
-                    { db, role: claims.aud as types.Role, userId: claims.sub as string }
-                ) 
-            ]
-        );
-    }
-}
-
 const resolvers: types.Resolvers = {
-    Query: new Query(),
-    Mutation: new Mutation()
+    Query: new Query()
 }
 
 export default resolvers;

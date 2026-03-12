@@ -22,7 +22,7 @@ class Query extends BaseQueryResolvers {
     ): Promise<types.APIResponse<types.PublicWorkType>> {
 
         // pagination limitation
-        if (num > parseInt(env("OBJECTS_PER_REQUEST_LIMIT"))){
+        if (num > parseInt(env("PER_PAGE_LIMIT"))){
             throw new errors.PaginationLimitError()
         }
         

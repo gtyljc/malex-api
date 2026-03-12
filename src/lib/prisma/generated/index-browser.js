@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.4.1
- * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
+ * Prisma Client JS version: 7.4.2
+ * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
  */
 Prisma.prismaVersion = {
-  client: "7.4.1",
-  engine: "55ae170b1ced7fc6ed07a15f110549408c501bb3"
+  client: "7.4.2",
+  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -171,16 +171,6 @@ exports.Prisma.UserScalarFieldEnum = {
   admin_id: 'admin_id'
 };
 
-exports.Prisma.RefreshTokenScalarFieldEnum = {
-  id: 'id',
-  hash: 'hash',
-  created_at: 'created_at',
-  expired_at: 'expired_at',
-  is_revoked: 'is_revoked',
-  role: 'role',
-  user_id: 'user_id'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -207,22 +197,13 @@ exports.CategoryChoice = exports.$Enums.CategoryChoice = {
   MOUNTING: 'MOUNTING'
 };
 
-exports.Role = exports.$Enums.Role = {
-  GUEST: 'GUEST',
-  USER: 'USER',
-  ADMIN: 'ADMIN',
-  SUPERUSER: 'SUPERUSER',
-  SUPERADMIN: 'SUPERADMIN'
-};
-
 exports.Prisma.ModelName = {
   Appointment: 'Appointment',
   Work: 'Work',
   SiteConfig: 'SiteConfig',
   SuperAdmin: 'SuperAdmin',
   Admin: 'Admin',
-  User: 'User',
-  RefreshToken: 'RefreshToken'
+  User: 'User'
 };
 
 /**

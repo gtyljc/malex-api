@@ -35,12 +35,13 @@ const envSchema = z.object(
         SITE_CONFIG_COUNTRY: z.string(),
 
         DATABASE_URL: z.url(),
-        DATABASE_RECONNECTION_DELAY: z.coerce.number(),
+        DATABASE_RECONNECT_DELAY: z.coerce.number(),
 
         CLOUDFLARE_API_TOKEN: z.string(),
         CLOUDFLARE_ACCOUNT_ID: z.string(),
 
         REDIS_URL: z.url(),
+        REDIS_RECONNECT_DELAY: z.coerce.number(),
 
         BACKEND_ORIGIN: z.url(),
         PER_WINDOW_LIMIT: z.coerce.number(), 
@@ -57,7 +58,8 @@ const envSchema = z.object(
         RT_CREATE_REQUEST_HASH_FUNC: z.coerce.string(),
         RT_CREATE_REQUEST_ENCODING: z.coerce.string(), 
         RT_CREATE_REQUEST_SECRET: z.string(),
-        API_SECRET: z.string(),
+        API_SIGN_SECRET: z.string(),
+        API_PASSWORD_PEPPER: z.string(),
         REFRESH_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
         ACCESS_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
         JWT_DEFAULT_ISSUER: z.string(),

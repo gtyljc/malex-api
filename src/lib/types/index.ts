@@ -28,10 +28,6 @@ export type AppContext = {
     }
 }
 export type Role = "ADMIN" | "USER" | "GUEST" | "SUPERUSER" | "SUPERADMIN";
-export type Permissions = {
-    role: Role,
-    permissions: string[]
-}
 export interface DefaultPayload extends JWTPayload {
     iss: string,
     sub: string | null,

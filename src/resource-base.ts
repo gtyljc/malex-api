@@ -35,7 +35,7 @@ class ResolversManager {
     }
 
     // get all methods from object
-    protected static getAllMethods(obj: Object): Array<string> { 
+    protected getAllMethods(obj: Object): Array<string> { 
         const methods = new Set<string>();
 
         while (obj && obj !== Object.prototype) { 
@@ -48,20 +48,22 @@ class ResolversManager {
         return [...methods]; 
     }
 
-    protected register(methods: Array<string>): this {
-        for (let method of utils.patch<string>(
-            ResolversManager.getAllMethods(this), 
-            [
-
-                // except base methods
-                "getAllMethods",
-                "setResolver",
-                "getResolver",
-                "register"
-
-            ].concat(methods)
-        )){
-            this.setResolver(method, (this as any)[method].bind(this));
+    protected register(except: string[] = [], alias: Record<string, any> = {}): this {
+        for (
+            let methodName of utils.patch<string>(
+                this.getAllMethods(this),
+                [
+                    "getAllMethods",
+                    "setResolver",
+                    "getResolver",
+                    "register"
+                ].concat(except)
+            )
+        ){
+            this.setResolver(
+                alias[methodName] ? alias[methodName]: methodName, 
+                (this as any)[methodName].bind(this)
+            );
         }
 
         return this;
@@ -123,12 +125,15 @@ export class BaseQueryResolvers extends ResolversManager {
         this.getOneName = this.queryResolverMarker;
         this.getManyName = this.queryResolverMarker + "s";
 
-        // register resolver to get single entity
-        this.setResolver(this.getOneName, this.getOne);
+        const exceptMethods = []
+        const methodAlias = { 
+            "getOne": this.getOneName, 
+            "getMany": this.getManyName 
+        };
 
-        this.isIterrable && this.setResolver(this.getManyName, this.getMany);
+        !this.isIterrable && exceptMethods.push("getMany");
 
-        return super.register([ "getOne", "getMany" ]);
+        return super.register(exceptMethods, methodAlias);
     }
 }
 
@@ -218,29 +223,37 @@ export class BaseMutationResolvers extends ResolversManager {
         this.deleteManyName = `deleteMany${this.mutationResolverMarker}s`;
         this.createName = `create${this.mutationResolverMarker}`
 
+        const exceptMethods = [];
+        const methodAlias = {
+            "updateOne": this.updateOneName,
+            "updateMany": this.updateManyName,
+            "deleteOne": this.deleteOneName,
+            "deleteMany": this.deleteManyName,
+            "create": this.createName
+        }
+
         // update one
-        this.isUpdatable && this.setResolver(this.updateOneName, this.updateOne)
+        !this.isUpdatable && exceptMethods.push("updateOne");
 
         // update many
-        this.isUpdatable && this.isIterrable && this.setResolver(this.updateManyName, this.updateMany)
-
+   
+        if (this.isUpdatable){
+            if (!this.isIterrable) exceptMethods.push("updateMany");
+        }
+        else exceptMethods.push("updateMany");
+    
         // delete one
-        this.isDeletable && this.setResolver(this.deleteOneName, this.deleteOne)
+        !this.isDeletable && exceptMethods.push("deleteOne");
 
         // delete many
-        this.isDeletable && this.isIterrable && this.setResolver(this.deleteManyName, this.deleteMany)
+        if (this.isDeletable){
+            if (!this.isIterrable) exceptMethods.push("deleteMany");
+        }
+        else exceptMethods.push("deleteMany");
 
         // create instance of model
-        this.isCreatable && this.setResolver(this.createName, this.create)
+        !this.isCreatable && exceptMethods.push("create");
 
-        return super.register(
-            [ 
-                "updateOne",
-                "updateMany",
-                "deleteOne",
-                "deleteMany",
-                "create"
-            ]
-        );
+        return super.register(exceptMethods, methodAlias);
     }
 }

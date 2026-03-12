@@ -2,11 +2,8 @@
 // others
 import { hasPermission } from "./permissions";
 import { decodeJwt } from "jose";
-import * as utils from "@lib/utils";
-import { env } from "@lib/utils";
 import { validateJWT, JWT } from "@src/auth";
 import * as responses from "@src/responses";
-import * as errors from "@src/errors";
 import * as types from "@lib/types";
 import * as z from "zod";
 
@@ -16,13 +13,18 @@ import { GraphQLSchema } from "graphql"
 import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
 import { ResolverSaveCatch } from "@lib/utils";
 
+interface DirectiveResolverParams {
+    fieldName: string,
+    baseResolver: Function
+}
+
 class DirectiveResolver {
     fieldName: string;
     baseResolver: Function;
 
     constructor(
         { fieldName, baseResolver }: 
-        { fieldName: string, baseResolver: Function }
+        DirectiveResolverParams
     ) {
         this.fieldName = fieldName;
         this.baseResolver = baseResolver;
@@ -59,7 +61,7 @@ class AuthDirectiveResolver extends DirectiveResolver {
                 return responses.f403Response();
             }
 
-            return await this.runBaseResolver();
+            return await this.runBaseResolver(...args);
         }
 
         // all next logic is for simple user
@@ -71,8 +73,6 @@ class AuthDirectiveResolver extends DirectiveResolver {
         )
         const parsedCookies = cookiesSchema.safeParse(req.cookies);
 
-        console.log(req.cookies)
-
         if (!parsedCookies.success){
             return responses.f400Response();
         }
@@ -81,8 +81,10 @@ class AuthDirectiveResolver extends DirectiveResolver {
         const jwtClaims = decodeJwt<types.DefaultPayload>(jwt);
 
         if (await validateJWT(jwt) && hasPermission(jwtClaims.aud, this.fieldName)){
-            return await this.runBaseResolver();
+            return await this.runBaseResolver(...args);
         }
+
+        return responses.f403Response();
     }
 }
 
@@ -91,12 +93,12 @@ const directives = [
         return mapSchema(
             schema,
             {
-                [MapperKind.OBJECT_FIELD](fieldConfig){
+                [MapperKind.OBJECT_FIELD](fieldConfig, fieldName){
                     const authDirective = getDirective(schema, fieldConfig, "auth")?.[0];
 
                     if(authDirective){
-                        const { resolve = defaultFieldResolver, astNode: { name } } = fieldConfig;
-                        const authDirectiveResolver = new AuthDirectiveResolver({ fieldName: name.value, baseResolver: resolve });
+                        const { resolve = defaultFieldResolver } = fieldConfig;
+                        const authDirectiveResolver = new AuthDirectiveResolver({ fieldName, baseResolver: resolve });
 
                         return { 
                             ...fieldConfig, 

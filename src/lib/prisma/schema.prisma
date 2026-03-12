@@ -84,6 +84,4 @@ model User {
 
     admin    Admin? @relation(fields: [admin_id], references: [id])
     admin_id Int?   @unique
-
-    refresh_tokens RefreshToken[]
 }

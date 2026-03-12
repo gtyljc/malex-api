@@ -9,12 +9,15 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
 import { nanoid } from "nanoid";
+import Cloudflare from "cloudflare";
+import { createClient } from "redis";
+
 
 // db
 import { PrismaClient } from "@src/lib/prisma/generated/client";
 import { Prisma } from "@src/lib/prisma/generated";
 
-export class DatabaseConnection {
+class DatabaseConnection {
     isTryingToConnect = false;
     client: any;
 
@@ -24,7 +27,7 @@ export class DatabaseConnection {
         this.client = new PrismaClient({ adapter }).$extends(withAccelerate());
     }
 
-    // infinite loop, that will not stop until connection will be established
+    // infinite loop, that will not stop until DBConnection will be established
     async establishConnection(): Promise<void> {
 
         // block parallel two or more working methods
@@ -44,12 +47,12 @@ export class DatabaseConnection {
             }
             catch (error) {
                 if (error instanceof Prisma.PrismaClientInitializationError) {
-                    logger.warn("Can't reach the DB! Trying to reconnect...");
+                    logger.warn("No connection to DB, reconnecting...");
 
                     new errors.DatabaseConnectionError();
 
                     // delay
-                    await utils.sleep(parseInt(env("DATABASE_RECONNECTION_DELAY")));
+                    await utils.sleep(env("DATABASE_RECONNECT_DELAY"));
                 }
                 else {
                     throw error;
@@ -58,8 +61,6 @@ export class DatabaseConnection {
         }
     }
 }
-
-export const connection = new DatabaseConnection();
 
 class DBQuery<RequestResultType> {
     queryId: string;
@@ -84,7 +85,7 @@ class DBQuery<RequestResultType> {
             Prisma.PrismaClientInitializationError.name, 
             async (error: Error) => { 
                 error instanceof Prisma.PrismaClientInitializationError &&
-                error.errorCode == "P1001" && await connection.establishConnection() 
+                error.errorCode == "P1001" && await DBConnection.establishConnection() 
             }
         );
 
@@ -92,7 +93,7 @@ class DBQuery<RequestResultType> {
             Prisma.PrismaClientKnownRequestError.name,
             async (error: Error) => {
                 error instanceof Prisma.PrismaClientKnownRequestError &&
-                error.code == "P1001" && await connection.establishConnection()
+                error.code == "P1001" && await DBConnection.establishConnection()
             }
         )
         
@@ -119,7 +120,7 @@ class DBQuery<RequestResultType> {
         try {
             logger.debug(`Executing query with method "${ this.method }" on model "${ this.modelname }" with ID "${ this.queryId }"`)
 
-            const r = await connection.client[this.modelname][this.method](this.queryBody);
+            const r = await DBConnection.client[this.modelname][this.method](this.queryBody);
 
             // set result to instance
             this.qResult = r;
@@ -141,8 +142,6 @@ class DBQuery<RequestResultType> {
                     if (r instanceof Promise){
                         r = await r;
                     }
-                    
-                    return this;
                 }
             }
 
@@ -154,13 +153,13 @@ class DBQuery<RequestResultType> {
     }
 }
 
-export class DatabaseSource {
+class DatabaseSource {
     // each request to API makes new instance of object
     
     dbConnection: DatabaseConnection;
 
     constructor(){
-        this.dbConnection = connection;
+        this.dbConnection = DBConnection;
     }
 
     // returns request filter part on specified ids
@@ -304,4 +303,27 @@ export class DatabaseSource {
     async count(modelname: types.Resource) {
         return await new DBQuery<any>(modelname, "count").send()
     }
+}
+
+const DBConnection = new DatabaseConnection();
+const DBSource = new DatabaseSource();
+const CloudflareSource = new Cloudflare({ apiToken: env("CLOUDFLARE_API_TOKEN") });
+const RedisSource = await createClient(
+    { 
+        url: env("REDIS_URL"), 
+        socket: {
+            reconnectStrategy: (retries, cause) => {
+                logger.warn("No connection at redis client, reconnecting...");
+                
+                return env("REDIS_RECONNECT_DELAY");
+            },
+        }
+    }
+).on("error", (error: Error) => { logger.error(error.message) } ).connect();
+
+export {
+    DBSource,
+    CloudflareSource,
+    RedisSource,
+    DBConnection
 }

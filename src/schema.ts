@@ -1,10 +1,12 @@
 
+// schema packer, locking into schemas and resolver directories
+
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import directives from "./directives";
+import { GraphQLSchema } from "graphql";
 
 // path to file
 const __filename = fileURLToPath(import.meta.url);
@@ -12,16 +14,21 @@ const __dirname = dirname(__filename);
 
 const typesArray = loadFilesSync(`${__dirname}/schemas/**/*.graphql`);
 const resolversArray = loadFilesSync([ `${__dirname}/resolvers/**/*.ts`]);
-let endSchema = makeExecutableSchema(
+const execSchema = makeExecutableSchema(
     {
         typeDefs: mergeTypeDefs(typesArray),
         resolvers: mergeResolvers(resolversArray)
     }
 );
 
-// add directives to schema
-for (let directiveFunc of directives){
-    endSchema = directiveFunc(endSchema);
+export function addDirectives(schema: GraphQLSchema, schemaMappers: Function[]){
+    let temporarySchema = schema;
+    
+    for (let mapper of schemaMappers){
+        temporarySchema = mapper(schema) 
+    }
+
+    return temporarySchema;
 }
 
-export default endSchema;
+export default execSchema;

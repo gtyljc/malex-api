@@ -2,97 +2,100 @@
 // hierarchy of roles and their permissions
 
 import * as types from "./lib/types";
+import execSchema from "./schema";
+import { GraphQLSchema } from 'graphql'
+import { getDirective, mapSchema, MapperKind } from '@graphql-tools/utils'
 
-const GUEST_PERMISSIONS: types.Permissions = {
-    role: "GUEST",
-    permissions: [
-        // all top GraphQL fields that can "GUEST" access
+const fieldsByAuthDirective = (schema: GraphQLSchema, sourceRole: string): string[] => {
+    const out: string[] = [];
 
-        "createAT",
-        "busyTimesAtDay",
-        "busyDaysAtMonth",
-        "isDayBusy",
-        "contactData",
-        "adminLogin",
-        "getWorks",
-        "newWorks"
-    ]
+    mapSchema(
+        schema,
+        {
+            [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+                const directive = getDirective(schema, fieldConfig, "auth")?.[0];
+                
+                if (directive) {
+                    const { role } = directive;
+                    
+                    if(role == sourceRole){
+                        out.push(fieldConfig.astNode?.name.value!);
+                    }
+                }
+
+                return fieldConfig
+            },
+        }
+    )
+
+    return out
 }
 
-const USER_PERMISSIONS: types.Permissions = {
-    role: "USER",
-    permissions: [
-        // all top GraphQL fields that can "USER" access
+class Permissions {
+    role: types.Role;
+    fieldsOn: string[]; // in schema
+    basePermissions: string[]; // other permissions
+    spreadingOn: string[]; // fieldsOn + basePermissions
 
-        
-    ].concat(GUEST_PERMISSIONS.permissions)
-}
+    // basePermissions is permissions that role accepted from
+    // other ( for example USER has accepted permissions from GUEST )
 
-const ADMIN_PERMISSIONS: types.Permissions = {
-    role: "ADMIN",
-    permissions: [
-        // all top GraphQL fields that can only "ADMIN" access
-        
-        // appointment model
-        "appointment",
-        "appointments",
-        "updateAppointment",
-        "updateManyAppointments",
-        "createAppointment",
-
-        // siteConfig model
-        "siteConfig",
-        "updateSiteConfig",
-
-        // work model
-        "work",
-        "works",
-        "updateWork",
-        "updateManyWorks",
-        "deleteWork",
-        "deleteManyWorks",
-        "createWork",
-
-        // image upload
-        "startImageUpload",
-        "finalizeImageUpload",
-
-        // admin panel
-        "adminLogout"
-
-    ].concat(USER_PERMISSIONS.permissions)
-}
-
-const SUPERUSER_PERMISSIONS: types.Permissions = {
-    role: "SUPERUSER",
-    permissions: [
-        // all top GraphQL fields that can "SUPERUSER" access
-        
-        "createRT"
-
-    ].concat(ADMIN_PERMISSIONS.permissions)
-}
-
-const SUPERADMIN_PERMISSIONS: types.Permissions = {
-    role: "SUPERADMIN",
-    permissions: [
-        // all top GraphQL fields that can only "SUPERADMIN" access
-        
-    ].concat(ADMIN_PERMISSIONS.permissions)
-}
-
-export function hasPermission(role: types.Role, fieldName: string){
-    const rolePerms = [
-        GUEST_PERMISSIONS,
-        USER_PERMISSIONS,
-        SUPERUSER_PERMISSIONS,
-        ADMIN_PERMISSIONS,
-        SUPERADMIN_PERMISSIONS
-    ]
-
-    for (let perm of rolePerms.filter(e => e.role == role)){
-        if (perm.permissions.includes(fieldName)) return true;
+    constructor(role: types.Role, basePermissions: string[] = []){
+        this.role = role;
+        this.basePermissions = basePermissions;
+        this.fieldsOn = fieldsByAuthDirective(execSchema, role);
+        this.spreadingOn = this.fieldsOn.concat(basePermissions)
     }
 
-    return false;
+    hasAccess(fieldName: string): boolean {
+        return this.spreadingOn.filter(e => e == fieldName).length == 1;
+    }
+}
+
+class GuestPermissions extends Permissions {
+    constructor(){
+        super("GUEST");
+    }
+}
+
+class UserPermissions extends Permissions {
+    constructor(guestPermissions: string[]){
+        super("USER", guestPermissions);
+    }
+}
+
+class AdminPermissions extends Permissions {
+    constructor(userPermissions: string[]){
+        super("ADMIN", userPermissions);
+    }
+}
+
+class SuperAdminPermissions extends Permissions {
+    constructor(adminPermissions: string[]){
+        super("SUPERADMIN", adminPermissions);
+    }
+}
+
+class SuperUserPermissions extends Permissions {
+    constructor(superAdminPermissions: string[]){
+        super("SUPERUSER", superAdminPermissions)
+    }
+
+}
+
+const GUEST_PERMISSIONS = new GuestPermissions();
+const USER_PERMISSIONS = new UserPermissions(GUEST_PERMISSIONS.spreadingOn);
+const ADMIN_PERMISSIONS = new AdminPermissions(USER_PERMISSIONS.spreadingOn);
+const SUPERADMIN_PERMISSIONS = new SuperAdminPermissions(ADMIN_PERMISSIONS.spreadingOn);
+const SUPERUSER_PERMISSIONS = new SuperUserPermissions(SUPERADMIN_PERMISSIONS.spreadingOn);
+const CORRESPONDS: Record<types.Role, Permissions> = {
+    "GUEST": GUEST_PERMISSIONS,
+    "USER": USER_PERMISSIONS,
+    "ADMIN": ADMIN_PERMISSIONS,
+    "SUPERADMIN": SUPERADMIN_PERMISSIONS,
+    "SUPERUSER": SUPERUSER_PERMISSIONS
+}
+
+export function hasPermission(role: types.Role, fieldName: string): boolean {
+    return CORRESPONDS[role].hasAccess(fieldName);
 }

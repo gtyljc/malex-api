@@ -2,7 +2,7 @@
 import * as jose from "jose";
 import * as types from "@lib/types";
 import { dayjs } from "@lib/utils";
-import { env } from "@lib/utils";
+import { env, serializeCookie } from "@lib/utils";
 import logger from "@lib/logger";
 import * as errors from "@src/errors";
 import { nanoid } from "nanoid";
@@ -22,7 +22,11 @@ interface DefaultPayloadParams {
 }
 
 const DEFAULT_PAYLOAD = (
-    { userId = null, role = "GUEST", issuer = env("JWT_DEFAULT_ISSUER")}: 
+    { 
+        userId = null, 
+        role = "GUEST", 
+        issuer = env("JWT_DEFAULT_ISSUER")
+    }: 
     DefaultPayloadParams = {}
 ): types.DefaultPayload => (
     {
@@ -54,7 +58,7 @@ async function generateJWT(
 ): Promise<string>{
     return await new jose.SignJWT(payload)
         .setProtectedHeader(header)
-        .sign(await importSecret(env("API_SECRET")));
+        .sign(await importSecret(env("API_SIGN_SECRET")));
 }
 
 // validation with already specified options
@@ -70,7 +74,7 @@ export async function validateJWT(
     try {
         await jose.jwtVerify<types.DefaultPayload>(
             jwt, 
-            await importSecret(env("API_SECRET")), 
+            await importSecret(env("API_SIGN_SECRET")), 
             options
         );
         
@@ -105,7 +109,7 @@ export class RefreshToken {
         this.redisKey = RefreshToken.createRedisKey(this.jwt);
     }
 
-    static createRedisKey(jwt: string,){
+    static createRedisKey(jwt: string): string {
         return `rt:${ jose.decodeJwt(jwt).sub }`;
     }
 
@@ -141,8 +145,8 @@ export class RefreshToken {
 
     static async create(
         redis: types.AppContext["dataSources"]["redis"],
-        { userId, role }: { userId: string | null, role: types.Role }
-    ): Promise<RefreshToken | null> {
+        { userId, role }: CreateTokenPairOptions
+    ): Promise<RefreshToken | void> {
         
         // everybody must have an ID, because of this reason it will
         // generate absolutly random ID instead
@@ -162,10 +166,10 @@ export class RefreshToken {
 
         logger.info(`Creating RT with sign ${ sign }`);
 
-        // if (await redis.exists(redisKey) == 1) throw new errors.RTRegistrationError(sign);
+        if (await redis.exists(redisKey) == 1) throw new errors.RTRegistrationError(sign);
 
         // register
-        // await redis.set(redisKey, JSON.stringify(jwtData), { NX: true, EX: rtExpirationDelay });
+        await redis.set(redisKey, JSON.stringify(jwtData), { NX: true, EX: rtExpirationDelay });
 
         logger.info(`RT with sign ${ sign } was successfully created`);
 
@@ -175,19 +179,55 @@ export class RefreshToken {
 
 export class AccessToken {
     static async create(
-        { userId, role }:
-        { userId: string | null, role: types.Role }
+        { userId, role }: CreateTokenPairOptions
     ): Promise<string> {
         return await generateJWT(DEFAULT_PAYLOAD({ userId, role }))
     }
 }
 
-export async function createPair(
+interface CreateTokenPairOptions {
+    userId: string | null,
+    role: types.Role
+}
+
+interface CreateTokenPairReturn {
+    rt: string;
+    at: string;
+}
+
+export async function createTokenPair(
     redis: types.AppContext["dataSources"]["redis"], 
-    { userId, role }: { userId: string | null, role: types.Role }
-): Promise<{ rt: string, at: string }> {
+    { userId, role }: CreateTokenPairOptions
+): Promise<CreateTokenPairReturn> {
     return {
         at: await AccessToken.create({ userId, role }),
         rt: (await RefreshToken.create(redis, { userId, role }))?.jwt
     }
+}
+
+interface ResponseWithTokensParams extends CreateTokenPairOptions {
+    res: types.AppContext["res"],
+    redis: types.AppContext["dataSources"]["redis"]
+}
+
+export async function responseWithTokens(
+    {
+        res,
+        redis,
+        userId,
+        role
+    }: ResponseWithTokensParams
+): Promise<CreateTokenPairReturn> {
+    const newPair = await createTokenPair(redis, { userId, role });
+    
+    // set new cookies
+    res.setHeader(
+        "Set-Cookie",
+        [
+            serializeCookie("a_token", newPair.at),
+            serializeCookie("r_token", newPair.rt)
+        ]
+    );
+
+    return newPair;
 }

@@ -1,6 +1,6 @@
 
 import crypto from "node:crypto";
-import { env } from "@lib/utils";
+import { env, logErrorAndReturn } from "@lib/utils";
 import { createClient } from "redis";
 import { Response, Request } from "express";
 import * as responses from "@src/responses";
@@ -8,8 +8,6 @@ import z from "zod";
 import { ROLES } from "@src/auth";
 import { dayjs } from "@lib/utils";
 import * as errors from "@src/errors";
-import logger from "@lib/logger";
-import * as types from "@lib/types";
 import * as auth from "@src/auth";
 
 async function hashRaw(raw: string){
@@ -68,8 +66,6 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
 
             // check signature
             if (resultSign !== reqSign){
-                console.log(resultSign, reqSign)
-
                 throw new errors.RTCreationError(responses.f403Response());
             }
 
@@ -98,18 +94,12 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
 
             return res.json(
                 responses.f200Response(
-                    [ await auth.createPair(redis, { role, userId }) ]
+                    [ await auth.createTokenPair(redis, { role, userId }) ]
                 )
             );
         }
         catch(error: any) {
-            if (error.apiResponse){
-                return res.json(error.apiResponse);
-            }
-
-            logger.error(error);
-
-            return res.json(responses.f500Response());
+            return res.json(logErrorAndReturn(error));
         }
     }
 
