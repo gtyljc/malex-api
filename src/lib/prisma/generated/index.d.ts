@@ -330,8 +330,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.4.2
-   * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
+   * Prisma Client JS version: 7.5.0
+   * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
    */
   export type PrismaVersion = {
     client: string
@@ -2289,6 +2289,11 @@ export namespace Prisma {
      * Skip the first `n` Appointments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
     distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
   }
 
@@ -3318,6 +3323,11 @@ export namespace Prisma {
      * Skip the first `n` Works.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Works.
+     */
     distinct?: WorkScalarFieldEnum | WorkScalarFieldEnum[]
   }
 
@@ -4390,6 +4400,11 @@ export namespace Prisma {
      * Skip the first `n` SiteConfigs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteConfigs.
+     */
     distinct?: SiteConfigScalarFieldEnum | SiteConfigScalarFieldEnum[]
   }
 
@@ -5396,6 +5411,11 @@ export namespace Prisma {
      * Skip the first `n` SuperAdmins.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuperAdmins.
+     */
     distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
   }
 
@@ -5650,18 +5670,30 @@ export namespace Prisma {
   export type AdminMinAggregateOutputType = {
     id: number | null
     last_session: Date | null
+    fullname: string | null
+    username: string | null
+    password: string | null
+    email: string | null
     super_admin_id: number | null
   }
 
   export type AdminMaxAggregateOutputType = {
     id: number | null
     last_session: Date | null
+    fullname: string | null
+    username: string | null
+    password: string | null
+    email: string | null
     super_admin_id: number | null
   }
 
   export type AdminCountAggregateOutputType = {
     id: number
     last_session: number
+    fullname: number
+    username: number
+    password: number
+    email: number
     super_admin_id: number
     _all: number
   }
@@ -5680,18 +5712,30 @@ export namespace Prisma {
   export type AdminMinAggregateInputType = {
     id?: true
     last_session?: true
+    fullname?: true
+    username?: true
+    password?: true
+    email?: true
     super_admin_id?: true
   }
 
   export type AdminMaxAggregateInputType = {
     id?: true
     last_session?: true
+    fullname?: true
+    username?: true
+    password?: true
+    email?: true
     super_admin_id?: true
   }
 
   export type AdminCountAggregateInputType = {
     id?: true
     last_session?: true
+    fullname?: true
+    username?: true
+    password?: true
+    email?: true
     super_admin_id?: true
     _all?: true
   }
@@ -5785,6 +5829,10 @@ export namespace Prisma {
   export type AdminGroupByOutputType = {
     id: number
     last_session: Date
+    fullname: string
+    username: string
+    password: string
+    email: string
     super_admin_id: number | null
     _count: AdminCountAggregateOutputType | null
     _avg: AdminAvgAggregateOutputType | null
@@ -5810,6 +5858,10 @@ export namespace Prisma {
   export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     last_session?: boolean
+    fullname?: boolean
+    username?: boolean
+    password?: boolean
+    email?: boolean
     super_admin_id?: boolean
     user?: boolean | Admin$userArgs<ExtArgs>
     super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
@@ -5818,6 +5870,10 @@ export namespace Prisma {
   export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     last_session?: boolean
+    fullname?: boolean
+    username?: boolean
+    password?: boolean
+    email?: boolean
     super_admin_id?: boolean
     super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
   }, ExtArgs["result"]["admin"]>
@@ -5825,6 +5881,10 @@ export namespace Prisma {
   export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     last_session?: boolean
+    fullname?: boolean
+    username?: boolean
+    password?: boolean
+    email?: boolean
     super_admin_id?: boolean
     super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
   }, ExtArgs["result"]["admin"]>
@@ -5832,10 +5892,14 @@ export namespace Prisma {
   export type AdminSelectScalar = {
     id?: boolean
     last_session?: boolean
+    fullname?: boolean
+    username?: boolean
+    password?: boolean
+    email?: boolean
     super_admin_id?: boolean
   }
 
-  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "last_session" | "super_admin_id", ExtArgs["result"]["admin"]>
+  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "last_session" | "fullname" | "username" | "password" | "email" | "super_admin_id", ExtArgs["result"]["admin"]>
   export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Admin$userArgs<ExtArgs>
     super_admin?: boolean | Admin$super_adminArgs<ExtArgs>
@@ -5856,6 +5920,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       last_session: Date
+      fullname: string
+      username: string
+      password: string
+      email: string
       super_admin_id: number | null
     }, ExtArgs["result"]["admin"]>
     composites: {}
@@ -6284,6 +6352,10 @@ export namespace Prisma {
   interface AdminFieldRefs {
     readonly id: FieldRef<"Admin", 'Int'>
     readonly last_session: FieldRef<"Admin", 'DateTime'>
+    readonly fullname: FieldRef<"Admin", 'String'>
+    readonly username: FieldRef<"Admin", 'String'>
+    readonly password: FieldRef<"Admin", 'String'>
+    readonly email: FieldRef<"Admin", 'String'>
     readonly super_admin_id: FieldRef<"Admin", 'Int'>
   }
     
@@ -6481,6 +6553,11 @@ export namespace Prisma {
      * Skip the first `n` Admins.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
     distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
   }
 
@@ -6503,7 +6580,7 @@ export namespace Prisma {
     /**
      * The data needed to create a Admin.
      */
-    data?: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+    data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
   }
 
   /**
@@ -7628,6 +7705,11 @@ export namespace Prisma {
      * Skip the first `n` Users.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
@@ -7930,6 +8012,10 @@ export namespace Prisma {
   export const AdminScalarFieldEnum: {
     id: 'id',
     last_session: 'last_session',
+    fullname: 'fullname',
+    username: 'username',
+    password: 'password',
+    email: 'email',
     super_admin_id: 'super_admin_id'
   };
 
@@ -8316,6 +8402,10 @@ export namespace Prisma {
     NOT?: AdminWhereInput | AdminWhereInput[]
     id?: IntFilter<"Admin"> | number
     last_session?: DateTimeFilter<"Admin"> | Date | string
+    fullname?: StringFilter<"Admin"> | string
+    username?: StringFilter<"Admin"> | string
+    password?: StringFilter<"Admin"> | string
+    email?: StringFilter<"Admin"> | string
     super_admin_id?: IntNullableFilter<"Admin"> | number | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     super_admin?: XOR<SuperAdminNullableScalarRelationFilter, SuperAdminWhereInput> | null
@@ -8324,6 +8414,10 @@ export namespace Prisma {
   export type AdminOrderByWithRelationInput = {
     id?: SortOrder
     last_session?: SortOrder
+    fullname?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    email?: SortOrder
     super_admin_id?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     super_admin?: SuperAdminOrderByWithRelationInput
@@ -8336,6 +8430,10 @@ export namespace Prisma {
     OR?: AdminWhereInput[]
     NOT?: AdminWhereInput | AdminWhereInput[]
     last_session?: DateTimeFilter<"Admin"> | Date | string
+    fullname?: StringFilter<"Admin"> | string
+    username?: StringFilter<"Admin"> | string
+    password?: StringFilter<"Admin"> | string
+    email?: StringFilter<"Admin"> | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     super_admin?: XOR<SuperAdminNullableScalarRelationFilter, SuperAdminWhereInput> | null
   }, "id" | "super_admin_id">
@@ -8343,6 +8441,10 @@ export namespace Prisma {
   export type AdminOrderByWithAggregationInput = {
     id?: SortOrder
     last_session?: SortOrder
+    fullname?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    email?: SortOrder
     super_admin_id?: SortOrderInput | SortOrder
     _count?: AdminCountOrderByAggregateInput
     _avg?: AdminAvgOrderByAggregateInput
@@ -8357,6 +8459,10 @@ export namespace Prisma {
     NOT?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Admin"> | number
     last_session?: DateTimeWithAggregatesFilter<"Admin"> | Date | string
+    fullname?: StringWithAggregatesFilter<"Admin"> | string
+    username?: StringWithAggregatesFilter<"Admin"> | string
+    password?: StringWithAggregatesFilter<"Admin"> | string
+    email?: StringWithAggregatesFilter<"Admin"> | string
     super_admin_id?: IntNullableWithAggregatesFilter<"Admin"> | number | null
   }
 
@@ -8669,6 +8775,10 @@ export namespace Prisma {
 
   export type AdminCreateInput = {
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     user?: UserCreateNestedOneWithoutAdminInput
     super_admin?: SuperAdminCreateNestedOneWithoutAdminInput
   }
@@ -8676,12 +8786,20 @@ export namespace Prisma {
   export type AdminUncheckedCreateInput = {
     id?: number
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     super_admin_id?: number | null
     user?: UserUncheckedCreateNestedOneWithoutAdminInput
   }
 
   export type AdminUpdateInput = {
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneWithoutAdminNestedInput
     super_admin?: SuperAdminUpdateOneWithoutAdminNestedInput
   }
@@ -8689,6 +8807,10 @@ export namespace Prisma {
   export type AdminUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     super_admin_id?: NullableIntFieldUpdateOperationsInput | number | null
     user?: UserUncheckedUpdateOneWithoutAdminNestedInput
   }
@@ -8696,16 +8818,28 @@ export namespace Prisma {
   export type AdminCreateManyInput = {
     id?: number
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     super_admin_id?: number | null
   }
 
   export type AdminUpdateManyMutationInput = {
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
   }
 
   export type AdminUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     super_admin_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
@@ -9138,6 +9272,10 @@ export namespace Prisma {
   export type AdminCountOrderByAggregateInput = {
     id?: SortOrder
     last_session?: SortOrder
+    fullname?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    email?: SortOrder
     super_admin_id?: SortOrder
   }
 
@@ -9149,12 +9287,20 @@ export namespace Prisma {
   export type AdminMaxOrderByAggregateInput = {
     id?: SortOrder
     last_session?: SortOrder
+    fullname?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    email?: SortOrder
     super_admin_id?: SortOrder
   }
 
   export type AdminMinOrderByAggregateInput = {
     id?: SortOrder
     last_session?: SortOrder
+    fullname?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    email?: SortOrder
     super_admin_id?: SortOrder
   }
 
@@ -9588,12 +9734,20 @@ export namespace Prisma {
 
   export type AdminCreateWithoutSuper_adminInput = {
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     user?: UserCreateNestedOneWithoutAdminInput
   }
 
   export type AdminUncheckedCreateWithoutSuper_adminInput = {
     id?: number
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     user?: UserUncheckedCreateNestedOneWithoutAdminInput
   }
 
@@ -9615,12 +9769,20 @@ export namespace Prisma {
 
   export type AdminUpdateWithoutSuper_adminInput = {
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneWithoutAdminNestedInput
   }
 
   export type AdminUncheckedUpdateWithoutSuper_adminInput = {
     id?: IntFieldUpdateOperationsInput | number
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     user?: UserUncheckedUpdateOneWithoutAdminNestedInput
   }
 
@@ -9704,12 +9866,20 @@ export namespace Prisma {
 
   export type AdminCreateWithoutUserInput = {
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     super_admin?: SuperAdminCreateNestedOneWithoutAdminInput
   }
 
   export type AdminUncheckedCreateWithoutUserInput = {
     id?: number
     last_session?: Date | string
+    fullname: string
+    username: string
+    password: string
+    email: string
     super_admin_id?: number | null
   }
 
@@ -9731,12 +9901,20 @@ export namespace Prisma {
 
   export type AdminUpdateWithoutUserInput = {
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     super_admin?: SuperAdminUpdateOneWithoutAdminNestedInput
   }
 
   export type AdminUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     last_session?: DateTimeFieldUpdateOperationsInput | Date | string
+    fullname?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     super_admin_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 

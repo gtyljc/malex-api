@@ -1,9 +1,10 @@
 
 import logger from "@lib/logger";
 import * as responses from "@src/responses";
+import { LoggedError } from "@src/errors";
 
 // parse API Response from local error or returns 500 formated Response
-export function logErrorAndReturn(error: Error){
+export function logErrorAndReturn(error: LoggedError){
     if (error.apiResponse){
         return error.apiResponse;
     }
@@ -21,7 +22,7 @@ export function ResolverSaveCatch(
 ){
     const original = descriptor.value;
 
-    descriptor.value = async function (...args: any[]){        
+    descriptor.value = async function (...args: any[]){
         try {
 
             // except directives

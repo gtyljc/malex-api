@@ -51,9 +51,7 @@ class AuthDirectiveResolver extends DirectiveResolver {
         if (req.headers.authorization){
             const jwt = JWT.getJWTFromHeader(req.headers.authorization);
 
-            if (await validateJWT(jwt)){
-                return responses.f400Response();
-            }
+            await validateJWT(jwt);
 
             const jwtClaims = decodeJwt<types.DefaultPayload>(jwt);
 

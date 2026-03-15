@@ -20,7 +20,7 @@ const resolvers: types.Resolvers = {
                 return responses.f500Response();
             }
             
-            return responses.f200Response([{ id: response.id, url: response.uploadURL}]);
+            return responses.f200Response([{ id: response.id, url: response.uploadURL }]);
         },
 
         async finalizeImageUpload (
@@ -36,7 +36,7 @@ const resolvers: types.Resolvers = {
                 return responses.f500Response();
             }
             
-            return responses.f200Response([{ id: response.id, url: response.variants?[0]: null }]);
+            return responses.f200Response([{ id: response.id, url: response.variants[0] }]);
         }
     }
 }

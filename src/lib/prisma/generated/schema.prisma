@@ -70,6 +70,10 @@ model Admin {
   id           Int      @id @default(autoincrement()) @db.SmallInt
   last_session DateTime @default(now()) @db.Timestamp(0)
   user         User?
+  fullname     String   @db.VarChar(50)
+  username     String   @db.VarChar(50)
+  password     String   @db.VarChar(50)
+  email        String   @db.VarChar(50)
 
   super_admin    SuperAdmin? @relation(fields: [super_admin_id], references: [id])
   super_admin_id Int?        @unique @db.SmallInt

@@ -6,7 +6,7 @@ import { DatabaseSource } from "../../sources";
 import { createClient } from "redis";
 import Cloudflare from "cloudflare";
 import { JWTPayload, JWTHeaderParameters } from "jose";
-import { IncomingMessage, OutgoingMessage } from "http";
+import { IncomingMessage, ServerResponse } from "http";
 
 interface Cookies {
     a_token: string,
@@ -20,7 +20,7 @@ interface AppRequest extends IncomingMessage {
 
 export type AppContext = {
     req: AppRequest,
-    res: OutgoingMessage,
+    res: ServerResponse,
     dataSources: { 
         db: DatabaseSource
         cloudflare: Cloudflare
@@ -33,7 +33,8 @@ export interface DefaultPayload extends JWTPayload {
     sub: string | null,
     aud: Role,
     iat: number,
-    exp: number
+    exp: number,
+    ver: string
 }
 export interface DefaultHeader extends JWTHeaderParameters  {
     alg: string

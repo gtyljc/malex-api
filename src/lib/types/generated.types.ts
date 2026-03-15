@@ -90,6 +90,14 @@ export type AppointmentUpdateInput = {
   surname?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type AuthResponseType = ApiResponseInterface & {
+  __typename?: 'AuthResponseType';
+  code: Scalars['Int']['output'];
+  data?: Maybe<Array<Maybe<Scalars['Boolean']['output']>>>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export enum BestWayToTouchEnum {
   Phone = 'PHONE',
   Text = 'TEXT',
@@ -124,27 +132,12 @@ export type FinalizeUploadImageType = {
   url: Scalars['URL']['output'];
 };
 
-export type JwtResponseType = ApiResponseInterface & {
-  __typename?: 'JWTResponseType';
-  code: Scalars['Int']['output'];
-  data: Array<Maybe<JwtType>>;
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
-export type JwtType = {
-  __typename?: 'JWTType';
-  at: Scalars['JWT']['output'];
-  rt: Scalars['JWT']['output'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  adminLogin: JwtResponseType;
-  adminLogout: JwtResponseType;
-  createAT: JwtResponseType;
+  adminLogin?: Maybe<AuthResponseType>;
+  adminLogout: AuthResponseType;
+  createAT: AuthResponseType;
   createAppointment: AppointmentResponseType;
-  createRT: JwtResponseType;
   createWork: WorkResponseType;
   deleteManyWorks: WorkResponseType;
   deleteWork: WorkResponseType;
@@ -166,12 +159,6 @@ export type MutationAdminLoginArgs = {
 
 export type MutationCreateAppointmentArgs = {
   data: AppointmentCreateInput;
-};
-
-
-export type MutationCreateRtArgs = {
-  role: RoleEnum;
-  user_id: Scalars['ID']['input'];
 };
 
 
@@ -201,13 +188,13 @@ export type MutationStartImageUploadArgs = {
 
 
 export type MutationUpdateAppointmentArgs = {
-  data?: InputMaybe<AppointmentUpdateInput>;
+  data: AppointmentUpdateInput;
   id: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdateManyAppointmentsArgs = {
-  data?: InputMaybe<AppointmentUpdateInput>;
+  data: AppointmentUpdateInput;
   ids: Array<InputMaybe<Scalars['ID']['input']>>;
 };
 
@@ -292,6 +279,7 @@ export type Query = {
   appointment: AppointmentResponseType;
   appointments: AppointmentResponseType;
   busyInRange: BusyResponseType;
+  checkAdmin: AuthResponseType;
   getWorks: PublicWorkResponseType;
   newWorks: PublicWorkResponseType;
   publicConfig: PublicConfigResponseType;
@@ -525,9 +513,9 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
   APIResponseInterface:
     | ( AdminPanelKeyResponse )
     | ( AppointmentResponseType )
+    | ( AuthResponseType )
     | ( BusyResponseType )
     | ( FinalizeUploadImageResponseType )
-    | ( JwtResponseType )
     | ( PublicConfigResponseType )
     | ( PublicWorkResponseType )
     | ( SiteConfigResponseType )
@@ -544,6 +532,7 @@ export type ResolversTypes = {
   AppointmentResponseType: ResolverTypeWrapper<AppointmentResponseType>;
   AppointmentType: ResolverTypeWrapper<AppointmentType>;
   AppointmentUpdateInput: AppointmentUpdateInput;
+  AuthResponseType: ResolverTypeWrapper<AuthResponseType>;
   BestWayToTouchEnum: BestWayToTouchEnum;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   BusyResponseType: ResolverTypeWrapper<BusyResponseType>;
@@ -557,8 +546,6 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   JSONObject: ResolverTypeWrapper<Scalars['JSONObject']['output']>;
   JWT: ResolverTypeWrapper<Scalars['JWT']['output']>;
-  JWTResponseType: ResolverTypeWrapper<JwtResponseType>;
-  JWTType: ResolverTypeWrapper<JwtType>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   OrderEnum: OrderEnum;
   PageInfoType: ResolverTypeWrapper<PageInfoType>;
@@ -598,6 +585,7 @@ export type ResolversParentTypes = {
   AppointmentResponseType: AppointmentResponseType;
   AppointmentType: AppointmentType;
   AppointmentUpdateInput: AppointmentUpdateInput;
+  AuthResponseType: AuthResponseType;
   Boolean: Scalars['Boolean']['output'];
   BusyResponseType: BusyResponseType;
   BusyType: BusyType;
@@ -610,8 +598,6 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   JSONObject: Scalars['JSONObject']['output'];
   JWT: Scalars['JWT']['output'];
-  JWTResponseType: JwtResponseType;
-  JWTType: JwtType;
   Mutation: Record<PropertyKey, never>;
   PageInfoType: PageInfoType;
   PaginationInput: PaginationInput;
@@ -646,7 +632,7 @@ export type AuthDirectiveArgs = {
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type ApiResponseInterfaceResolvers<ContextType = any, ParentType extends ResolversParentTypes['APIResponseInterface'] = ResolversParentTypes['APIResponseInterface']> = {
-  __resolveType: TypeResolveFn<'AdminPanelKeyResponse' | 'AppointmentResponseType' | 'BusyResponseType' | 'FinalizeUploadImageResponseType' | 'JWTResponseType' | 'PublicConfigResponseType' | 'PublicWorkResponseType' | 'SiteConfigResponseType' | 'StartUploadImageResponseType' | 'WorkResponseType', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AdminPanelKeyResponse' | 'AppointmentResponseType' | 'AuthResponseType' | 'BusyResponseType' | 'FinalizeUploadImageResponseType' | 'PublicConfigResponseType' | 'PublicWorkResponseType' | 'SiteConfigResponseType' | 'StartUploadImageResponseType' | 'WorkResponseType', ParentType, ContextType>;
 };
 
 export type AdminPanelKeyResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdminPanelKeyResponse'] = ResolversParentTypes['AdminPanelKeyResponse']> = {
@@ -677,6 +663,14 @@ export type AppointmentTypeResolvers<ContextType = any, ParentType extends Resol
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   phone_number?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
+export type AuthResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthResponseType'] = ResolversParentTypes['AuthResponseType']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  data?: Resolver<Maybe<Array<Maybe<ResolversTypes['Boolean']>>>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type BusyResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['BusyResponseType'] = ResolversParentTypes['BusyResponseType']> = {
@@ -725,32 +719,18 @@ export interface JwtScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
   name: 'JWT';
 }
 
-export type JwtResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['JWTResponseType'] = ResolversParentTypes['JWTResponseType']> = {
-  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  data?: Resolver<Array<Maybe<ResolversTypes['JWTType']>>, ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type JwtTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['JWTType'] = ResolversParentTypes['JWTType']> = {
-  at?: Resolver<ResolversTypes['JWT'], ParentType, ContextType>;
-  rt?: Resolver<ResolversTypes['JWT'], ParentType, ContextType>;
-};
-
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  adminLogin?: Resolver<ResolversTypes['JWTResponseType'], ParentType, ContextType, RequireFields<MutationAdminLoginArgs, 'password' | 'username'>>;
-  adminLogout?: Resolver<ResolversTypes['JWTResponseType'], ParentType, ContextType>;
-  createAT?: Resolver<ResolversTypes['JWTResponseType'], ParentType, ContextType>;
+  adminLogin?: Resolver<Maybe<ResolversTypes['AuthResponseType']>, ParentType, ContextType, RequireFields<MutationAdminLoginArgs, 'password' | 'username'>>;
+  adminLogout?: Resolver<ResolversTypes['AuthResponseType'], ParentType, ContextType>;
+  createAT?: Resolver<ResolversTypes['AuthResponseType'], ParentType, ContextType>;
   createAppointment?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<MutationCreateAppointmentArgs, 'data'>>;
-  createRT?: Resolver<ResolversTypes['JWTResponseType'], ParentType, ContextType, RequireFields<MutationCreateRtArgs, 'role' | 'user_id'>>;
   createWork?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, Partial<MutationCreateWorkArgs>>;
   deleteManyWorks?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<MutationDeleteManyWorksArgs, 'ids'>>;
   deleteWork?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<MutationDeleteWorkArgs, 'id'>>;
   finalizeImageUpload?: Resolver<ResolversTypes['FinalizeUploadImageResponseType'], ParentType, ContextType, RequireFields<MutationFinalizeImageUploadArgs, 'id'>>;
   startImageUpload?: Resolver<ResolversTypes['StartUploadImageResponseType'], ParentType, ContextType, RequireFields<MutationStartImageUploadArgs, 'id'>>;
-  updateAppointment?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<MutationUpdateAppointmentArgs, 'id'>>;
-  updateManyAppointments?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<MutationUpdateManyAppointmentsArgs, 'ids'>>;
+  updateAppointment?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<MutationUpdateAppointmentArgs, 'data' | 'id'>>;
+  updateManyAppointments?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<MutationUpdateManyAppointmentsArgs, 'data' | 'ids'>>;
   updateManyWorks?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<MutationUpdateManyWorksArgs, 'ids'>>;
   updateSiteConfig?: Resolver<ResolversTypes['SiteConfigResponseType'], ParentType, ContextType, RequireFields<MutationUpdateSiteConfigArgs, 'id'>>;
   updateWork?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<MutationUpdateWorkArgs, 'id'>>;
@@ -816,6 +796,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   appointment?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, RequireFields<QueryAppointmentArgs, 'id'>>;
   appointments?: Resolver<ResolversTypes['AppointmentResponseType'], ParentType, ContextType, Partial<QueryAppointmentsArgs>>;
   busyInRange?: Resolver<ResolversTypes['BusyResponseType'], ParentType, ContextType, RequireFields<QueryBusyInRangeArgs, 'date' | 'unit'>>;
+  checkAdmin?: Resolver<ResolversTypes['AuthResponseType'], ParentType, ContextType>;
   getWorks?: Resolver<ResolversTypes['PublicWorkResponseType'], ParentType, ContextType, RequireFields<QueryGetWorksArgs, 'filter' | 'pagination'>>;
   newWorks?: Resolver<ResolversTypes['PublicWorkResponseType'], ParentType, ContextType, Partial<QueryNewWorksArgs>>;
   publicConfig?: Resolver<ResolversTypes['PublicConfigResponseType'], ParentType, ContextType>;
@@ -886,6 +867,7 @@ export type Resolvers<ContextType = any> = {
   AdminPanelKeyResponse?: AdminPanelKeyResponseResolvers<ContextType>;
   AppointmentResponseType?: AppointmentResponseTypeResolvers<ContextType>;
   AppointmentType?: AppointmentTypeResolvers<ContextType>;
+  AuthResponseType?: AuthResponseTypeResolvers<ContextType>;
   BusyResponseType?: BusyResponseTypeResolvers<ContextType>;
   BusyType?: BusyTypeResolvers<ContextType>;
   CountryCode?: GraphQLScalarType;
@@ -895,8 +877,6 @@ export type Resolvers<ContextType = any> = {
   FinalizeUploadImageType?: FinalizeUploadImageTypeResolvers<ContextType>;
   JSONObject?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
-  JWTResponseType?: JwtResponseTypeResolvers<ContextType>;
-  JWTType?: JwtTypeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PageInfoType?: PageInfoTypeResolvers<ContextType>;
   PaginationType?: PaginationTypeResolvers<ContextType>;

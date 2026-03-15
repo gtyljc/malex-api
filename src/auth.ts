@@ -35,6 +35,7 @@ const DEFAULT_PAYLOAD = (
         aud: role,
         iat: dayjs().unix(),
         exp: dayjs().add(env("REFRESH_TOKEN_EXPIRATION_DELAY"), "seconds").unix(),
+        ver: env("JWT_DEFAULT_VERSION")
     }
 );
 const DEFAULT_HEADER: types.DefaultHeader = { alg: "HS256" };
@@ -68,7 +69,8 @@ export async function validateJWT(
         algorithms: [ DEFAULT_HEADER.alg ],
         audience: ROLES,
         issuer: DEFAULT_PAYLOAD().iss,
-        requiredClaims: Object.keys(DEFAULT_PAYLOAD())
+        requiredClaims: Object.keys(DEFAULT_PAYLOAD()),
+        ver: DEFAULT_PAYLOAD().ver
     }
 ): Promise<boolean> {
     try {
@@ -81,7 +83,7 @@ export async function validateJWT(
         return true;
     }
     catch(error) { 
-        throw new errors.JWTValidationError(jwt);
+        throw new errors.JWTValidationError(jwt, error);
     }
 }
 
@@ -124,7 +126,7 @@ export class RefreshToken {
     // means flaged as revoked in DB
     async revoke(): Promise<this> {
         logger.info(`Revoking RT with sign ${ JWT.separateJWT(this.jwt).sign }`);
-
+        
         await this.redis.del(this.redisKey);
 
         logger.info(`RT with sign ${ JWT.separateJWT(this.jwt).sign } is revoked!`);

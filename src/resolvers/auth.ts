@@ -4,9 +4,52 @@ import * as types from "@lib/types";
 import * as auth from "@src/auth";
 import { decodeJwt } from "jose";
 import { ResolverSaveCatch } from "@lib/utils";
+import logger from "@lib/logger";
+import * as utils from "@lib/utils";
+import { env } from "@lib/utils";
+
+class AdminPanelKey {
+    private currentValue: string;
+
+    constructor(){
+        this.currentValue = this.init();
+    }
+
+    get key(){
+        return this.currentValue;
+    }
+
+    updateCurrentValue(){
+        this.currentValue = crypto.randomUUID();
+    }
+
+    logCurrentValue(){
+        logger.info(`Admin Panel available at ${ env("BASE_URL") }/admin?key=${ this.currentValue }`)
+    }
+
+    private init(){
+        if (utils.env("NODE_ENV") != "development"){
+            
+            // update key with specified delay in .env
+            setInterval(
+                () => { this.updateCurrentValue(); this.logCurrentValue() }, 
+                utils.env("ADMIN_PANEL_KEY_REFRESH_DELAY")
+            );
+        }
+
+        return crypto.randomUUID();
+    }
+}
+
+const APKey = new AdminPanelKey();
 
 class Query {
-    
+
+    @ResolverSaveCatch
+    adminPanelKey() {
+        return responses.f200Response([ APKey.key ]);
+    }
+
     @ResolverSaveCatch
     async checkAdmin(...args: any[]) {
         return responses.f200Response();
@@ -20,8 +63,8 @@ class Mutation {
         _,
         __,
         { req, res, dataSources: { redis } }: types.AppContext
-    ): Promise<types.APIResponse<types.JwtType>> {
-        const rt = new auth.RefreshToken(req.cookies!.a_token, redis);
+    ): Promise<types.APIResponse<types.AuthResponseType>> {
+        const rt = new auth.RefreshToken(req.cookies!.r_token, redis);
 
         await rt.isRegistered();
 
@@ -38,23 +81,29 @@ class Mutation {
     async adminLogin(
         _,
         { username, password }: types.MutationAdminLoginArgs,
-        { dataSources: { db } }: types.AppContext
-    ){
+        { dataSources: { db, redis }, res }: types.AppContext
+    ): Promise<types.APIResponse<types.AuthResponseType>> {
         const q = await db.getOneByFilter("admin", { username, password });
 
         // if admin not exist
         if(!q.qResult) return responses.f403Response();
+
+        // revoke current RT and give new one
+        await auth.responseWithTokens({ res, redis, userId: null, role: "ADMIN" });
 
         return responses.f200Response();
     }
 
     // revokes admin RT
     @ResolverSaveCatch
-    async adminLogout(_, __, { req, res, dataSources: { db, redis } }: types.AppContext) {
-        const at = auth.JWT.getJWTFromHeader(req.headers.authorization as string);
-        const rt = await auth.RefreshToken.searchByAT(at, db);
-        
-        if(!rt) return responses.f403Response();
+    async adminLogout(
+        _, 
+        __, 
+        { req, res, dataSources: { redis } }: types.AppContext
+    ): Promise<types.APIResponse<types.AuthResponseType>> {
+        const rt = new auth.RefreshToken(req.cookies!.r_token, redis);
+
+        await rt.isRegistered();
 
         await rt.revoke();
 

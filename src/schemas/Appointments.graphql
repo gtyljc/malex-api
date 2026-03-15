@@ -30,11 +30,11 @@ extend type Mutation {
 
     # <ADMIN> role is required
     # updates one appointment with specified ID
-    updateAppointment(id: ID!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
+    updateAppointment(id: ID!, data: AppointmentUpdateInput!): AppointmentResponseType! @auth(role: ADMIN)
     
     # <ADMIN> role is required
     # updates appointments with specified ids
-    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput): AppointmentResponseType! @auth(role: ADMIN)
+    updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput!): AppointmentResponseType! @auth(role: ADMIN)
     
     # <ADMIN> role is required
     # creates appointment with specified data

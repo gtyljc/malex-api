@@ -93,7 +93,7 @@ export class BaseQueryResolvers extends ResolversManager {
             throw new errors.IdsOrFilterWasNotSpecifiedError();
         }
 
-        if (filter && (pagination?.perPage < parseInt(env("PER_PAGE_LIMIT")))){
+        if (filter && (pagination?.perPage > env("PER_PAGE_LIMIT"))){
             throw new errors.PaginationLimitError();
         }
 

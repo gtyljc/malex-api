@@ -33,16 +33,12 @@ const envSchema = z.object(
         SITE_CONFIG_PHONE_NUMBER: z.string(),
         SITE_CONFIG_TIMEZONE: z.string(),
         SITE_CONFIG_COUNTRY: z.string(),
-
         DATABASE_URL: z.url(),
         DATABASE_RECONNECT_DELAY: z.coerce.number(),
-
         CLOUDFLARE_API_TOKEN: z.string(),
         CLOUDFLARE_ACCOUNT_ID: z.string(),
-
         REDIS_URL: z.url(),
         REDIS_RECONNECT_DELAY: z.coerce.number(),
-
         BACKEND_ORIGIN: z.url(),
         PER_WINDOW_LIMIT: z.coerce.number(), 
         WINDOW_DURATION: z.coerce.number(),
@@ -52,7 +48,6 @@ const envSchema = z.object(
         NODE_ENV: z.enum([ "development", "production" ]),
         PER_PAGE_LIMIT: z.coerce.number(),
         RATE_LIMITER: z.transform(parseBoolean),
-
         RT_GUEST_ID_LENGTH: z.coerce.number(),
         RT_CREATE_REQUEST_EXPIRATION_DELAY: z.coerce.number(),
         RT_CREATE_REQUEST_HASH_FUNC: z.coerce.string(),
@@ -63,11 +58,9 @@ const envSchema = z.object(
         REFRESH_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
         ACCESS_TOKEN_EXPIRATION_DELAY: z.coerce.number(),
         JWT_DEFAULT_ISSUER: z.string(),
-
+        JWT_DEFAULT_VERSION: z.string(),
         AUTHENTICATION: z.transform(parseBoolean),
-
         USER_ID_LENGTH: z.coerce.number(),
-
         ADMIN_PANEL_KEY_REFRESH_DELAY: z.coerce.number()        
     }
 );

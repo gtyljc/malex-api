@@ -118,7 +118,7 @@ class DBQuery<RequestResultType> {
 
     async send(): Promise<this> {
         try {
-            logger.debug(`Executing query with method "${ this.method }" on model "${ this.modelname }" with ID "${ this.queryId }"`)
+            logger.debug(`Executing query with method ${ this.method } on model ${ this.modelname } with ID ${ this.queryId }`)
 
             const r = await DBConnection.client[this.modelname][this.method](this.queryBody);
 
@@ -127,7 +127,7 @@ class DBQuery<RequestResultType> {
             this.success = true;
             this.apiResponse = this.wrapQResult();
 
-            logger.debug(`Query with method "${ this.method }" on model "${ this.modelname }" with ID "${ this.queryId }" is successfully finished`)
+            logger.debug(`Query with method ${ this.method } on model ${ this.modelname } with ID ${ this.queryId } is successfully finished`)
         }
         catch (error: any) {
             this.success = false;
@@ -153,7 +153,7 @@ class DBQuery<RequestResultType> {
     }
 }
 
-class DatabaseSource {
+export class DatabaseSource {
     // each request to API makes new instance of object
     
     dbConnection: DatabaseConnection;
@@ -232,7 +232,7 @@ class DatabaseSource {
         return await new DBQuery<any>(
             modelname, 
             "update", 
-            { where: { id }, data }
+            { where: { id: parseInt(id) }, data }
         ).send();
     }
 
@@ -264,7 +264,7 @@ class DatabaseSource {
         return await new DBQuery<any>(
             modelname,
             "delete",
-            { where: { id } }
+            { where: { id: parseInt(id) } }
         ).send();
     }
 

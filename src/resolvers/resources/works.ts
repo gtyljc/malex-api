@@ -47,7 +47,7 @@ class Query extends BaseQueryResolvers {
         args: types.GetManyArgs, 
         ctx: types.AppContext
     ): Promise<types.APIResponse<types.PublicWorkType>> {
-        const r = await super.getMany(_, { ...args, ids: [] }, ctx);
+        const r = await super.getMany(_, { ...args }, ctx);
 
         r.data = r.data.map(
             e => (
@@ -63,9 +63,28 @@ class Query extends BaseQueryResolvers {
     }
 }
 
+class Mutation extends BaseMutationResolvers {
+    constructor(){
+        super(__modelname);
+    }
+
+    @ResolverSaveCatch
+    async create(
+        _: any, 
+        args: types.CreateArgs, 
+        ctx: types.AppContext,
+    ): Promise<types.APIResponse<any>> {
+        const { data } = args;
+
+        data.img_url = data.img_url.href;
+
+        return await super.create(_, args, ctx);
+    }
+}
+
 const resolvers: types.Resolvers = {
     Query: new Query().register().resolvers ,
-    Mutation: new BaseMutationResolvers(__modelname).register().resolvers
+    Mutation: new Mutation().register().resolvers
 };
 
 export default resolvers;

@@ -7,6 +7,10 @@ extend type Query {
     # <ADMIN> role is required
     # checks if response has "ADMIN" jwts
     checkAdmin: AuthResponseType! @auth(role: ADMIN)
+
+    # <GUEST> role is required
+    # returns current key to access admin panel
+    adminPanelKey: AdminPanelKeyResponse @auth(role: GUEST)
 }
 
 
@@ -37,6 +41,13 @@ type AuthResponseType implements APIResponseInterface {
     message: String!
     success: Boolean!
     data: [ Boolean ]
+}
+
+type AdminPanelKeyResponse implements APIResponseInterface {
+    code: Int!
+    message: String!
+    success: Boolean!
+    data: [ String ]!
 }
 
 # -------- enums
