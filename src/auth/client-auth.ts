@@ -4,7 +4,7 @@ import * as types from "@lib/types";
 import { dayjs } from "@lib/utils";
 import { env, serializeCookie } from "@lib/utils";
 import logger from "@lib/logger";
-import * as errors from "@src/errors";
+import * as errors from "@lib/errors";
 import { nanoid } from "nanoid";
 
 export const ROLES: Array<types.Role> = [ 
@@ -16,14 +16,14 @@ export const ROLES: Array<types.Role> = [
 ]
 
 interface DefaultPayloadParams {
-    userId?: string | null,
+    userId?: string,
     role?: types.Role,
     issuer?: string
 }
 
 const DEFAULT_PAYLOAD = (
     { 
-        userId = null, 
+        userId = undefined, 
         role = "GUEST", 
         issuer = env("JWT_DEFAULT_ISSUER")
     }: 
@@ -82,7 +82,7 @@ export async function validateJWT(
         
         return true;
     }
-    catch(error) { 
+    catch(error: any) { 
         throw new errors.JWTValidationError(jwt, error);
     }
 }
@@ -118,7 +118,7 @@ export class RefreshToken {
     async isRegistered(): Promise<boolean> {
         const r = await this.redis.exists(this.redisKey);
 
-        if (r != 1) throw new errors.RTIsNotRegistered(this.jwt);
+        if (r != 1) throw new errors.RTIsNotRegisteredError(this.jwt);
 
         return true;
     }
@@ -188,7 +188,7 @@ export class AccessToken {
 }
 
 interface CreateTokenPairOptions {
-    userId: string | null,
+    userId?: string,
     role: types.Role
 }
 
@@ -203,7 +203,7 @@ export async function createTokenPair(
 ): Promise<CreateTokenPairReturn> {
     return {
         at: await AccessToken.create({ userId, role }),
-        rt: (await RefreshToken.create(redis, { userId, role }))?.jwt
+        rt: (await RefreshToken.create(redis, { userId, role }))!.jwt
     }
 }
 

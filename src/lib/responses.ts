@@ -1,5 +1,5 @@
 
-import * as types from "./lib/types";
+import * as types from "@lib/types";
 
 export function f200Response(data: any[] = []): types.APIResponse<any> {     
     return {
@@ -10,9 +10,7 @@ export function f200Response(data: any[] = []): types.APIResponse<any> {
     };
 }
 
-export function f500Response(
-    message: string = "Query failed! See more at logs."
-): types.APIResponse<any> {    
+export function f500Response(message: string): types.APIResponse<any> {    
     return {
         code: 500,
         message,
@@ -21,9 +19,7 @@ export function f500Response(
     };
 }
 
-export function f403Response(
-    message: string = "Unauthorizated request!"
-): types.APIResponse<any> {
+export function f403Response(message: string): types.APIResponse<any> {
     return {
         code: 403,
         message,
@@ -32,9 +28,7 @@ export function f403Response(
     };
 }
 
-export function f400Response(
-    message: string = "Bad request! Try one more time!"
-): types.APIResponse<any> {
+export function f400Response(message: string): types.APIResponse<any> {
     return {
         code: 400,
         message,

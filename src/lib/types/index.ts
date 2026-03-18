@@ -1,7 +1,7 @@
 
 // all available types in one file
 
-import * as generated from "./generated.types";
+import * as generated from "./generated/generated.types";
 import { DatabaseSource } from "../../sources";
 import { createClient } from "redis";
 import Cloudflare from "cloudflare";
@@ -29,12 +29,7 @@ export type AppContext = {
 }
 export type Role = "ADMIN" | "USER" | "GUEST" | "SUPERUSER" | "SUPERADMIN";
 export interface DefaultPayload extends JWTPayload {
-    iss: string,
-    sub: string | null,
-    aud: Role,
-    iat: number,
-    exp: number,
-    ver: string
+    aud: Role
 }
 export interface DefaultHeader extends JWTHeaderParameters  {
     alg: string
@@ -89,4 +84,4 @@ export type APIResponse<ResponseType> = {
 } & generated.ApiResponseInterface
 
 // connect "schema" types
-export * from "./generated.types";
+export * from "./generated/generated.types";

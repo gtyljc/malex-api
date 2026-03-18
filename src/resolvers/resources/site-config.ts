@@ -1,15 +1,15 @@
 
 // resolvers for model "SiteConfig"
 
-import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource-base";
+import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource";
 import * as types from "@lib/types";
-import * as responses from "@src/responses";
+import * as responses from "@lib/responses";
 import * as utils from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "siteConfig";
 
-class Query extends BaseQueryResolvers {
+class Query extends BaseQueryResolvers<types.SiteConfigType> {
     constructor(){
         super(__modelname, { isIterrable: false });
     }

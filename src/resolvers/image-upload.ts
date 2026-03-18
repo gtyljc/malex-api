@@ -1,8 +1,9 @@
 
-import * as responses from "../responses";
-import * as types from "../lib/types/index";
+import * as responses from "@lib/responses";
+import * as types from "@lib/types/index";
 import Cloudflare from "cloudflare";
 import { env } from "@lib/utils";
+import * as errors from "@lib/errors";
 
 // resolvers for image upload
 const resolvers: types.Resolvers = {
@@ -17,7 +18,7 @@ const resolvers: types.Resolvers = {
             );
 
             if (response instanceof Cloudflare.APIError){
-                return responses.f500Response();
+                throw new errors.UploadImageError();
             }
             
             return responses.f200Response([{ id: response.id, url: response.uploadURL }]);
@@ -33,10 +34,10 @@ const resolvers: types.Resolvers = {
             );
 
             if (response instanceof Cloudflare.APIError){
-                return responses.f500Response();
+                throw new errors.UploadImageError();
             }
             
-            return responses.f200Response([{ id: response.id, url: response.variants[0] }]);
+            return responses.f200Response([{ id: response.id, url: response.variants![0] }]);
         }
     }
 }

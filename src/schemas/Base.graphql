@@ -67,6 +67,11 @@ enum OrderEnum {
     DESC
 }
 
+enum ResourceEnum {
+    appointment
+    siteConfig,
+    work
+}
 
 # -------- inputs
 

@@ -2,10 +2,11 @@
 // others
 import { hasPermission } from "./permissions";
 import { decodeJwt } from "jose";
-import { validateJWT, JWT } from "@src/auth";
-import * as responses from "@src/responses";
+import { validateJWT, JWT } from "@src/auth/client-auth";
 import * as types from "@lib/types";
 import * as z from "zod";
+import * as errors from "@lib/errors";
+import { env } from "@lib/utils";
 
 // schema
 import { defaultFieldResolver } from "graphql";
@@ -43,9 +44,11 @@ class AuthDirectiveResolver extends DirectiveResolver {
 
     // must be "binded"
     @ResolverSaveCatch
-    async resolve(...args: any[]): Promise<types.APIResponse<any>> {
+    async resolve(...args: any[]): Promise<types.APIResponse<any> | void> {
         const ctx: types.AppContext = args[2];
         const req = ctx.req;
+
+        if (!env("AUTHENTICATION")) { return await this.runBaseResolver(...args) }
 
         // auth for backend ( SUPERUSER )
         if (req.headers.authorization){
@@ -56,7 +59,7 @@ class AuthDirectiveResolver extends DirectiveResolver {
             const jwtClaims = decodeJwt<types.DefaultPayload>(jwt);
 
             if(jwtClaims.aud != "SUPERUSER"){
-                return responses.f403Response();
+                throw new errors.ClientIsNotSuperUserError();
             }
 
             return await this.runBaseResolver(...args);
@@ -72,7 +75,7 @@ class AuthDirectiveResolver extends DirectiveResolver {
         const parsedCookies = cookiesSchema.safeParse(req.cookies);
 
         if (!parsedCookies.success){
-            return responses.f400Response();
+            throw new errors.RequestCredentialsAbsenceError();
         }
 
         const jwt = parsedCookies.data.a_token;
@@ -81,8 +84,6 @@ class AuthDirectiveResolver extends DirectiveResolver {
         if (await validateJWT(jwt) && hasPermission(jwtClaims.aud, this.fieldName)){
             return await this.runBaseResolver(...args);
         }
-
-        return responses.f403Response();
     }
 }
 

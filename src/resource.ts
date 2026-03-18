@@ -1,10 +1,9 @@
 
-import * as responses from "./responses";
 import * as types from "./lib/types/index";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";
-import * as errors from "@src/errors";
+import * as errors from "@lib/errors";
 
 class ResolversManager {
     // !!! if you want to use resolvers in high-defined object use "resolvers" property !!!
@@ -70,7 +69,7 @@ class ResolversManager {
     }
 }
 
-export class BaseQueryResolvers extends ResolversManager {
+export class BaseQueryResolvers<DataType> extends ResolversManager {
     protected getManyName!: string;
     protected getOneName!: string;
     protected isIterrable: boolean;
@@ -81,12 +80,13 @@ export class BaseQueryResolvers extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
-    @ResolverSaveCatch
     async getMany(
         _: any,
         { ids, filter, pagination, sort }: types.GetManyArgs,
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType> | void> {
+
+        throw new Error();
 
         // must be specified filter + pagination or ids
         if (!ids && !filter){
@@ -106,8 +106,6 @@ export class BaseQueryResolvers extends ResolversManager {
         if(filter){
             return (await db.getManyByFilter(this.modelname, filter, pagination, sort)).apiResponse;
         }
-
-        return responses.f400Response();
     }
 
     @ResolverSaveCatch
@@ -115,7 +113,7 @@ export class BaseQueryResolvers extends ResolversManager {
         _: any, 
         { id }: types.GetOneArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType>> {
         return (await db.getOneById(this.modelname, id)).apiResponse;   
     }
 
@@ -137,7 +135,7 @@ export class BaseQueryResolvers extends ResolversManager {
     }
 }
 
-export class BaseMutationResolvers extends ResolversManager {
+export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     // names of base mutation resolvers
     protected updateOneName!: string;
@@ -173,7 +171,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { id, data }: types.UpdateOneArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType>> {
         return (await db.updateById(this.modelname, id, data)).apiResponse;
     }
 
@@ -182,7 +180,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { ids, data }: types.UpdateManyArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType>> {
         return (await db.updateManyByIds(this.modelname, ids, data)).apiResponse
 
     }
@@ -192,7 +190,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { id }: { id: string }, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType>> {
         return (await db.deleteById(this.modelname, id)).apiResponse;
     }
 
@@ -201,7 +199,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { ids }: { ids: string[] }, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType>> {
         return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
     }
 
@@ -210,7 +208,7 @@ export class BaseMutationResolvers extends ResolversManager {
         _: any, 
         { data }: types.CreateArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<DataType>> {
         return (await db.create(this.modelname, data)).apiResponse;
     }
 

@@ -39,12 +39,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.5.0
- * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+ * Prisma Client JS version: 7.4.2
+ * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
  */
 Prisma.prismaVersion = {
-  client: "7.5.0",
-  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
+  client: "7.4.2",
+  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -103,6 +103,11 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   duration: 'duration',
   date: 'date',
   completed: 'completed'
+};
+
+exports.Prisma.RelationLoadStrategy = {
+  query: 'query',
+  join: 'join'
 };
 
 exports.Prisma.WorkScalarFieldEnum = {
@@ -194,12 +199,13 @@ exports.Prisma.ModelName = {
  */
 const config = {
   "previewFeatures": [
+    "relationJoins",
     "typedSql"
   ],
-  "clientVersion": "7.5.0",
-  "engineVersion": "280c870be64f457428992c43c1f6d557fab6e29e",
+  "clientVersion": "7.4.2",
+  "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated\"\n  engineType      = \"client\"\n  previewFeatures = [\"typedSql\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nenum Role {\n  GUEST\n  USER\n  ADMIN\n  SUPERUSER // backend\n  SUPERADMIN\n}\n\nmodel Appointment {\n  id           Int       @id @unique @default(autoincrement())\n  name         String    @db.VarChar(50)\n  surname      String    @db.VarChar(50)\n  address      String    @db.VarChar(255)\n  job_desc     String    @db.VarChar(500)\n  bwt          BwtChoice\n  phone_number String?   @db.VarChar(20)\n  duration     Float\n  date         DateTime  @unique @db.Timestamp(0)\n  completed    Boolean   @default(false)\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        Int            @id @unique @default(autoincrement())\n  img_url   String         @unique @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now()) @db.Timestamp(0)\n}\n\nmodel SiteConfig {\n  id            Int      @id @unique @default(autoincrement()) @db.SmallInt\n  opening_at    DateTime @db.Time(0)\n  closing_at    DateTime @db.Time(0)\n  min_duration  Float\n  support_email String   @db.VarChar(50)\n  phone_number  String   @db.VarChar(25)\n  timezone      String   @db.VarChar(50)\n  c_country     String   @db.VarChar(2)\n}\n\nmodel SuperAdmin {\n  id    Int    @id @default(autoincrement()) @db.SmallInt\n  admin Admin?\n}\n\nmodel Admin {\n  id           Int      @id @default(autoincrement()) @db.SmallInt\n  last_session DateTime @default(now()) @db.Timestamp(0)\n  user         User?\n  fullname     String   @db.VarChar(50)\n  username     String   @db.VarChar(50)\n  password     String   @db.VarChar(50)\n  email        String   @db.VarChar(50)\n\n  super_admin    SuperAdmin? @relation(fields: [super_admin_id], references: [id])\n  super_admin_id Int?        @unique @db.SmallInt\n}\n\nmodel User {\n  id       Int    @id @default(autoincrement())\n  username String @db.VarChar(50)\n  password String @db.VarChar(50)\n  email    String @db.VarChar(50)\n  fullname String @db.VarChar(50)\n\n  admin    Admin? @relation(fields: [admin_id], references: [id])\n  admin_id Int?   @unique\n}\n"
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated\"\n  engineType      = \"client\"\n  previewFeatures = [\"typedSql\", \"relationJoins\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum BwtChoice {\n  WHATSAPP\n  PHONE\n  TEXT\n}\n\nenum Role {\n  GUEST\n  USER\n  ADMIN\n  SUPERUSER // backend\n  SUPERADMIN\n}\n\nmodel Appointment {\n  id           Int       @id @unique @default(autoincrement())\n  name         String    @db.VarChar(50)\n  surname      String    @db.VarChar(50)\n  address      String    @db.VarChar(255)\n  job_desc     String    @db.VarChar(500)\n  bwt          BwtChoice\n  phone_number String?   @db.VarChar(20)\n  duration     Float\n  date         DateTime  @unique @db.Timestamp(0)\n  completed    Boolean   @default(false)\n}\n\nenum CategoryChoice {\n  PLUMBING\n  ASSEMBLING\n  MOUNTING\n}\n\nmodel Work {\n  id        Int            @id @unique @default(autoincrement())\n  img_url   String         @unique @db.VarChar(2800)\n  img_id    String         @unique @db.VarChar(50)\n  category  CategoryChoice\n  timestamp DateTime       @default(now()) @db.Timestamp(0)\n}\n\nmodel SiteConfig {\n  id            Int      @id @unique @default(autoincrement()) @db.SmallInt\n  opening_at    DateTime @db.Time(0)\n  closing_at    DateTime @db.Time(0)\n  min_duration  Float\n  support_email String   @db.VarChar(50)\n  phone_number  String   @db.VarChar(25)\n  timezone      String   @db.VarChar(50)\n  c_country     String   @db.VarChar(2)\n}\n\nmodel SuperAdmin {\n  id    Int    @id @default(autoincrement()) @db.SmallInt\n  admin Admin?\n}\n\nmodel Admin {\n  id           Int      @id @default(autoincrement()) @db.SmallInt\n  last_session DateTime @default(now()) @db.Timestamp(0)\n  user         User?\n  fullname     String   @db.VarChar(50)\n  username     String   @db.VarChar(50)\n  password     String   @db.VarChar(50)\n  email        String   @db.VarChar(50)\n\n  super_admin    SuperAdmin? @relation(fields: [super_admin_id], references: [id])\n  super_admin_id Int?        @unique @db.SmallInt\n}\n\nmodel User {\n  id       Int    @id @default(autoincrement())\n  username String @db.VarChar(50)\n  password String @db.VarChar(50)\n  email    String @db.VarChar(50)\n  fullname String @db.VarChar(50)\n\n  admin    Admin? @relation(fields: [admin_id], references: [id])\n  admin_id Int?   @unique\n}\n"
 }
 
 config.runtimeDataModel = JSON.parse("{\"models\":{\"Appointment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"surname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"job_desc\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bwt\",\"kind\":\"enum\",\"type\":\"BwtChoice\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"completed\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":null},\"Work\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"img_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"img_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"CategoryChoice\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SiteConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"opening_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"closing_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"min_duration\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"support_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"timezone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"c_country\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"SuperAdmin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"admin\",\"kind\":\"object\",\"type\":\"Admin\",\"relationName\":\"AdminToSuperAdmin\"}],\"dbName\":null},\"Admin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"last_session\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AdminToUser\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"super_admin\",\"kind\":\"object\",\"type\":\"SuperAdmin\",\"relationName\":\"AdminToSuperAdmin\"},{\"name\":\"super_admin_id\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"admin\",\"kind\":\"object\",\"type\":\"Admin\",\"relationName\":\"AdminToUser\"},{\"name\":\"admin_id\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")

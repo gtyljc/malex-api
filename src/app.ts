@@ -11,6 +11,7 @@ import { DBSource, CloudflareSource, RedisSource } from "./sources";
 import { IncomingMessage, OutgoingMessage } from "http";
 import * as types from "./lib/types/index";
 import { GraphQLSchema } from "graphql";
+import { ApolloServerPlugin, BaseContext, GraphQLRequestContext, GraphQLRequestListener } from "@apollo/server";
 
 // apollo server
 import { ApolloServer } from '@apollo/server';
@@ -18,7 +19,7 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { expressMiddleware } from '@as-integrations/express5';
 import http from "http";
 import { rateLimit } from 'express-rate-limit'
-import { validateRTCreateRequest } from "./refresh-token";
+import { validateATCreateRequest, validateRTCreateRequest } from "./auth/server-auth";
 
 // GraphQL schema
 import schema, { addDirectives } from './schema';
@@ -52,11 +53,23 @@ const EXPRESS_MIDDLEWARE_OPTIONS = {
     }
 };
 
-function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloServer<any>): void {
-    function emptyMiddleware(_, __, next: Function){
-        next();
+class ChangeResponseStatusPlugin implements ApolloServerPlugin {
+    async requestDidStart(): Promise<GraphQLRequestListener<BaseContext>> {    
+        return {
+            // async didEncounterErrors(requestContext) {
+            //     console.log("pwkpdwpkwd");
+                
+            //     requestContext.response.http.status = requestContext.errors[0].code;
+            // },
+        }
     }
+}
 
+function emptyMiddleware(_, __, next: Function){
+    next();
+}
+
+function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloServer<any>): void {
     const limiter = env("RATE_LIMITER") ? rateLimit(LIMITER_OPTIONS): emptyMiddleware;
 
     // to apollo server
@@ -69,13 +82,17 @@ function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloS
         expressMiddleware(apolloServer, EXPRESS_MIDDLEWARE_OPTIONS)
     )
 
-    const createRTPath = "/rt/create";
-
     // to create RT
     app.post(
-        createRTPath,
+        "/rt/create",
         express.json(),
         validateRTCreateRequest(RedisSource)
+    )
+
+    app.post(
+        "/at/create",
+        express.json(),
+        validateATCreateRequest(RedisSource)
     )
 }
 
@@ -96,7 +113,10 @@ async function setUpApp(): Promise<void> {
         { 
             schema: setUpSchema(schema),
             logger,
-            plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+            plugins: [
+                ApolloServerPluginDrainHttpServer({ httpServer }),
+                // new ChangeResponseStatusPlugin()
+            ],
         }
     );
 
@@ -104,11 +124,9 @@ async function setUpApp(): Promise<void> {
 
     setUpMiddlewares(app, apolloServer);
 
-    const url = new URL(env("BASE_URL"));
+    httpServer.listen({ port: env("PORT") })
 
-    httpServer.listen({ port: url.port })
-
-    logger.info("API successfully started at: " + env("BASE_URL") + "graphql");
+    logger.info("API successfully started at: " + `${env("PROTOCOL")}://${env("HOSTNAME")}:${env("PORT")}/graphql`);
 }
 
 await setUpApp();

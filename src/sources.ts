@@ -2,8 +2,8 @@
 // others
 import * as utils from "@lib/utils";
 import * as types from "./lib/types/index";
-import * as responses from "./responses";
-import * as errors from "@src/errors";
+import * as responses from "@lib/responses";
+import * as errors from "@lib/errors";
 import { PrismaPg } from '@prisma/adapter-pg';
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { env } from "@lib/utils";
@@ -11,7 +11,6 @@ import logger from "@lib/logger";
 import { nanoid } from "nanoid";
 import Cloudflare from "cloudflare";
 import { createClient } from "redis";
-
 
 // db
 import { PrismaClient } from "@src/lib/prisma/generated/client";
@@ -112,7 +111,7 @@ class DBQuery<RequestResultType> {
             );
         }
         else {
-            return responses.f500Response();
+            return responses.f500Response(errors.DMESSAGE_500);
         }
     }
 

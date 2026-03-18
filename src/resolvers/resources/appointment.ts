@@ -1,16 +1,17 @@
 
 // resolvers for model "Appointment"
 
-import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
+import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource";
 import * as types from "@lib/types";
 import { dayjs } from "@lib/utils/dayjs";
-import * as responses from "@src/responses";
+import * as responses from "@lib/responses";
 import * as utils from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";
+import * as errors from "@lib/errors";
 
 const __modelname = "appointment";
 
-class Query extends BaseQueryResolvers {
+class Query extends BaseQueryResolvers<types.AppointmentType> {
     constructor(){
         super(__modelname)
     }
@@ -20,7 +21,7 @@ class Query extends BaseQueryResolvers {
         _: any,
         { date, unit }: types.QueryBusyInRangeArgs, 
         { dataSources: { db } }: types.AppContext
-    ): Promise<types.APIResponse<types.BusyResponseType>>{
+    ): Promise<types.APIResponse<types.BusyResponseType> | void>{
         function startOfDay(dayjs: dayjs.Dayjs): dayjs.Dayjs {
             return dayjs.hour(0).minute(0).second(0).millisecond(0)
         }
@@ -88,18 +89,16 @@ class Query extends BaseQueryResolvers {
 
             return responses.f200Response(apps.map( e => ({ date: e.date, busy: true })));
         }
-
-        return responses.f400Response();
     }
 }
 
-class Mutation extends BaseMutationResolvers {
+class Mutation extends BaseMutationResolvers<types.AppointmentType> {
     constructor(){
-        super(__modelname, { isDeletable: false })
+        super(__modelname, { isDeletable: false, isCreatable: false })
     }
     
     @ResolverSaveCatch
-    async create(
+    async registerAppointment(
        _: any, 
        args: types.CreateArgs, 
        ctx: types.AppContext 
@@ -107,12 +106,14 @@ class Mutation extends BaseMutationResolvers {
         const { data } = args;
 
         // proof time range of appointment
-        if (dayjs(data.date).unix() < dayjs().unix()) return responses.f400Response();
+        if (dayjs(data.date).unix() < dayjs().unix()) throw new errors.AppointmentCreationError();
 
         // add default duration
         data["duration"] = (await utils.getSiteConfig(ctx.dataSources.db)).min_duration;
 
-        return await super.create(_, args, ctx);
+        await ctx.dataSources.db.create(this.modelname, data);
+
+        return responses.f200Response();
     }
 }
 

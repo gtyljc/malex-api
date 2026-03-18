@@ -10,7 +10,7 @@ extend type Query {
 
     # <GUEST> role is required
     # returns current key to access admin panel
-    adminPanelKey: AdminPanelKeyResponse @auth(role: GUEST)
+    adminPanelKey: AdminPanelKeyResponse! @auth(role: GUEST)
 }
 
 
@@ -26,7 +26,7 @@ extend type Mutation {
     # <GUEST> role is required
     # gets username and password and then returns new auth tokens
     # with role "ADMIN"
-    adminLogin(username: String!, password: String!): AuthResponseType @auth(role: GUEST)
+    adminLogin(username: String!, password: String!): AuthResponseType! @auth(role: GUEST)
     
     # <ADMIN> role is required
     # revokes admin's refresh token and gives new pair with role "GUEST"
@@ -36,11 +36,23 @@ extend type Mutation {
 
 # -------- types
 
+type CreateRTResponseType implements APIResponseInterface {
+    code: Int!
+    message: String!
+    success: Boolean!
+    data: [ CreateRTType ]!
+}
+
+type CreateRTType {
+    rt: JWT,
+    at: JWT
+}
+
 type AuthResponseType implements APIResponseInterface {
     code: Int!
     message: String!
     success: Boolean!
-    data: [ Boolean ]
+    data: [ Boolean ]!
 }
 
 type AdminPanelKeyResponse implements APIResponseInterface {

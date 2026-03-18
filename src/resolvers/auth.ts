@@ -1,7 +1,8 @@
 
-import * as responses from "@src/responses";
+import * as responses from "@lib/responses";
 import * as types from "@lib/types";
-import * as auth from "@src/auth";
+import * as auth from "@src/auth/client-auth";
+import * as errors from "@lib/errors";
 import { decodeJwt } from "jose";
 import { ResolverSaveCatch } from "@lib/utils";
 import logger from "@lib/logger";
@@ -60,10 +61,10 @@ class Mutation {
 
     @ResolverSaveCatch
     async createAT(
-        _,
-        __,
+        _: any,
+        __: any,
         { req, res, dataSources: { redis } }: types.AppContext
-    ): Promise<types.APIResponse<types.AuthResponseType>> {
+    ): Promise<types.AuthResponseType> {
         const rt = new auth.RefreshToken(req.cookies!.r_token, redis);
 
         await rt.isRegistered();
@@ -79,17 +80,17 @@ class Mutation {
 
     @ResolverSaveCatch
     async adminLogin(
-        _,
+        _: any,
         { username, password }: types.MutationAdminLoginArgs,
         { dataSources: { db, redis }, res }: types.AppContext
-    ): Promise<types.APIResponse<types.AuthResponseType>> {
+    ): Promise<types.AuthResponseType> {
         const q = await db.getOneByFilter("admin", { username, password });
 
         // if admin not exist
-        if(!q.qResult) return responses.f403Response();
+        if(!q.qResult) throw new errors.AdminWasNotFoundError();
 
         // revoke current RT and give new one
-        await auth.responseWithTokens({ res, redis, userId: null, role: "ADMIN" });
+        await auth.responseWithTokens({ res, redis, role: "ADMIN" });
 
         return responses.f200Response();
     }
@@ -97,10 +98,10 @@ class Mutation {
     // revokes admin RT
     @ResolverSaveCatch
     async adminLogout(
-        _, 
-        __, 
+        _: any, 
+        __: any, 
         { req, res, dataSources: { redis } }: types.AppContext
-    ): Promise<types.APIResponse<types.AuthResponseType>> {
+    ): Promise<types.AuthResponseType> {
         const rt = new auth.RefreshToken(req.cookies!.r_token, redis);
 
         await rt.isRegistered();
@@ -108,7 +109,7 @@ class Mutation {
         await rt.revoke();
 
         // revoke current RT and give new one
-        await auth.responseWithTokens({ res, redis, userId: null, role: "GUEST" });
+        await auth.responseWithTokens({ res, redis, role: "GUEST" });
 
         return responses.f200Response();
     }

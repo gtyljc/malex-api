@@ -1,15 +1,16 @@
 
 // resolvers for model "Work"
 
-import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource-base";
+import { BaseMutationResolvers, BaseQueryResolvers } from "@src/resource";
 import * as types from "@lib/types";
-import * as errors from "@src/errors";
+import * as errors from "@lib/errors";
+import * as responses from "@lib/responses";
 import { env } from "@lib/utils";
 import { ResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "work";
 
-class Query extends BaseQueryResolvers {
+class Query extends BaseQueryResolvers<types.WorkType> {
     constructor(){
         super(__modelname);
     }
@@ -22,7 +23,7 @@ class Query extends BaseQueryResolvers {
     ): Promise<types.APIResponse<types.PublicWorkType>> {
 
         // pagination limitation
-        if (num > parseInt(env("PER_PAGE_LIMIT"))){
+        if (num > env("PER_PAGE_LIMIT")){
             throw new errors.PaginationLimitError()
         }
         
@@ -44,26 +45,26 @@ class Query extends BaseQueryResolvers {
     @ResolverSaveCatch
     async getWorks(
         _: any,
-        args: types.GetManyArgs, 
+        args: types.QueryGetWorksArgs, 
         ctx: types.AppContext
     ): Promise<types.APIResponse<types.PublicWorkType>> {
-        const r = await super.getMany(_, { ...args }, ctx);
+        const q = await ctx.dataSources.db.getManyByFilter(__modelname, args.filter);
 
-        r.data = r.data.map(
-            e => (
-                {
-                    img_url: e.img_url,
-                    category: e.category,
-                    timestamp: e.timestamp
-                }
+        return responses.f200Response(
+            q.qResult.map(
+                e => (
+                    {
+                        img_url: e.img_url,
+                        category: e.category,
+                        timestamp: e.timestamp
+                    }
+                )
             )
-        )
-
-        return r;
+        );
     }
 }
 
-class Mutation extends BaseMutationResolvers {
+class Mutation extends BaseMutationResolvers<types.WorkType> {
     constructor(){
         super(__modelname);
     }
@@ -73,7 +74,7 @@ class Mutation extends BaseMutationResolvers {
         _: any, 
         args: types.CreateArgs, 
         ctx: types.AppContext,
-    ): Promise<types.APIResponse<any>> {
+    ): Promise<types.APIResponse<types.WorkType>> {
         const { data } = args;
 
         data.img_url = data.img_url.href;

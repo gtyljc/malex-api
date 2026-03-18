@@ -1,18 +1,7 @@
 
 import logger from "@lib/logger";
-import * as responses from "@src/responses";
-import { LoggedError } from "@src/errors";
-
-// parse API Response from local error or returns 500 formated Response
-export function logErrorAndReturn(error: LoggedError){
-    if (error.apiResponse){
-        return error.apiResponse;
-    }
-
-    logger.error(error.message);
-
-    return responses.f500Response();
-}
+import * as responses from "@lib/responses";
+import { DMESSAGE_500 } from "@lib/errors";
 
 // these two catchers must be applied only on resolver methods
 export function ResolverSaveCatch(
@@ -31,7 +20,11 @@ export function ResolverSaveCatch(
             return await original.apply(this, args);
         }
         catch (error: any) {
-            return logErrorAndReturn(error);
+            if (error.apiResponse){
+                return error.apiResponse;
+            };
+
+            return responses.f500Response(DMESSAGE_500);
         }
     }
 }

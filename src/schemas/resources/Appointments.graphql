@@ -28,6 +28,10 @@ extend type Query {
 
 extend type Mutation {
 
+    # <GUEST> role is required
+    # analog for createAppointment, but this one cal user call
+    registerAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: GUEST)
+
     # <ADMIN> role is required
     # updates one appointment with specified ID
     updateAppointment(id: ID!, data: AppointmentUpdateInput!): AppointmentResponseType! @auth(role: ADMIN)
@@ -35,10 +39,6 @@ extend type Mutation {
     # <ADMIN> role is required
     # updates appointments with specified ids
     updateManyAppointments(ids: [ID]!, data: AppointmentUpdateInput!): AppointmentResponseType! @auth(role: ADMIN)
-    
-    # <ADMIN> role is required
-    # creates appointment with specified data
-    createAppointment(data: AppointmentCreateInput!): AppointmentResponseType! @auth(role: GUEST)
 }
 
 
