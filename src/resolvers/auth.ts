@@ -4,7 +4,6 @@ import * as types from "@lib/types";
 import * as auth from "@src/auth/client-auth";
 import * as errors from "@lib/errors";
 import { decodeJwt } from "jose";
-import { ResolverSaveCatch } from "@lib/utils";
 import logger from "@lib/logger";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
@@ -46,12 +45,10 @@ const APKey = new AdminPanelKey();
 
 class Query {
 
-    @ResolverSaveCatch
     adminPanelKey() {
         return responses.f200Response([ APKey.key ]);
     }
 
-    @ResolverSaveCatch
     async checkAdmin(...args: any[]) {
         return responses.f200Response();
     }
@@ -59,7 +56,6 @@ class Query {
 
 class Mutation {
 
-    @ResolverSaveCatch
     async createAT(
         _: any,
         __: any,
@@ -78,7 +74,6 @@ class Mutation {
         return responses.f200Response();
     }
 
-    @ResolverSaveCatch
     async adminLogin(
         _: any,
         { username, password }: types.MutationAdminLoginArgs,
@@ -96,7 +91,6 @@ class Mutation {
     }
 
     // revokes admin RT
-    @ResolverSaveCatch
     async adminLogout(
         _: any, 
         __: any, 

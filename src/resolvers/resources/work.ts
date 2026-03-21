@@ -6,7 +6,6 @@ import * as types from "@lib/types";
 import * as errors from "@lib/errors";
 import * as responses from "@lib/responses";
 import { env } from "@lib/utils";
-import { ResolverSaveCatch } from "@lib/utils";
 
 const __modelname = "work";
 
@@ -15,7 +14,6 @@ class Query extends BaseQueryResolvers<types.WorkType> {
         super(__modelname);
     }
 
-    @ResolverSaveCatch
     async newWorks(
         _: any, 
         { num }: types.QueryNewWorksArgs, 
@@ -42,7 +40,6 @@ class Query extends BaseQueryResolvers<types.WorkType> {
         return q.apiResponse;
     }
 
-    @ResolverSaveCatch
     async getWorks(
         _: any,
         args: types.QueryGetWorksArgs, 
@@ -69,7 +66,6 @@ class Mutation extends BaseMutationResolvers<types.WorkType> {
         super(__modelname);
     }
 
-    @ResolverSaveCatch
     async create(
         _: any, 
         args: types.CreateArgs, 

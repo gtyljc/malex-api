@@ -1,10 +1,5 @@
 
-export { 
-    DMESSAGE_400, 
-    DMESSAGE_500, 
-    DMESSAGE_403,
-    type ResponseError
-} from "./base";
+export { type ResponseError } from "./base";
 export * from "./auth";
 export * from "./resources";
 export * from "./sources";

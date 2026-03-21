@@ -3,9 +3,9 @@ import { Response500Error } from "./base";
 
 export class DatabaseConnectionError extends Error {
     constructor(){
-        super();
+        super("Database connection is lost!");
 
-        this.message = "Database connection is lost!";
+        this.name = "DatabaseConnectionError";
 
         return new Response500Error(this);
     }
@@ -13,9 +13,9 @@ export class DatabaseConnectionError extends Error {
 
 export class DatabaseDriverError extends Error {
     constructor(prismaError: Error){
-        super();
+        super(prismaError.stack!);
 
-        this.message = prismaError.stack!;
+        this.name = "DatabaseDriverError";
 
         return new Response500Error(this);
     }

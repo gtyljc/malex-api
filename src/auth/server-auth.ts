@@ -25,10 +25,10 @@ async function hashRaw(raw: string){
 interface ValidateRequestParams {
     req: Request
     redis: types.AppContext["dataSources"]["redis"]
-    rkPrexis: "rt" | "at"
+    rkPrefix: "rt" | "at"
 }
 
-async function validateCreationRequest({ req, redis, rkPrexis }: ValidateRequestParams) {
+async function validateCreationRequest({ req, redis, rkPrefix }: ValidateRequestParams) {
     const headersSchema = z.object(
         {
             "x-timestamp": z.coerce.number(),
@@ -43,7 +43,7 @@ async function validateCreationRequest({ req, redis, rkPrexis }: ValidateRequest
 
     const bodySchema = z.object(
         {
-            "userId": z.string().optional(),
+            "userId": z.string().nullable(),
             "role": z.enum(ROLES)
         }
     )
@@ -66,7 +66,7 @@ async function validateCreationRequest({ req, redis, rkPrexis }: ValidateRequest
     )
         .update(resultStringToSign)
         .digest(env("RT_CREATE_REQUEST_ENCODING"));
-    const redisKey = `${ rkPrexis }_req:${ reqNonce }`;
+    const redisKey = `${ rkPrefix }_req:${ reqNonce }`;
     const rtCRExpirationDelay = env("RT_CREATE_REQUEST_EXPIRATION_DELAY");
 
     // check signature
@@ -91,7 +91,7 @@ async function validateCreationRequest({ req, redis, rkPrexis }: ValidateRequest
         throw new errors.RTCreationError();
     }
 
-        // register this request
+    // register this request
     await redis.set(redisKey, "", { EX: rtCRExpirationDelay, NX: true });
 
     return parsedBody.data;
@@ -99,7 +99,7 @@ async function validateCreationRequest({ req, redis, rkPrexis }: ValidateRequest
 
 export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
     async function middleware(req: Request, res: Response){ 
-        const { role, userId } = await validateCreationRequest({ req, redis, rkPrexis: "rt" });
+        const { role, userId } = await validateCreationRequest({ req, redis, rkPrefix: "rt" });
 
         return res.json(
             responses.f200Response(
@@ -114,7 +114,7 @@ export function validateRTCreateRequest(redis: ReturnType<typeof createClient>){
 
 export function validateATCreateRequest(redis: ReturnType<typeof createClient>){
     async function middleware(req: Request, res: Response){ 
-        const { role, userId } = await validateCreationRequest({ req, redis, rkPrexis: "at" });
+        const { role, userId } = await validateCreationRequest({ req, redis, rkPrefix: "at" });
 
         return res.json(
             responses.f200Response(

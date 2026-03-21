@@ -6,7 +6,6 @@ import * as types from "@lib/types";
 import { dayjs } from "@lib/utils/dayjs";
 import * as responses from "@lib/responses";
 import * as utils from "@lib/utils";
-import { ResolverSaveCatch } from "@lib/utils";
 import * as errors from "@lib/errors";
 
 const __modelname = "appointment";
@@ -16,7 +15,6 @@ class Query extends BaseQueryResolvers<types.AppointmentType> {
         super(__modelname)
     }
 
-    @ResolverSaveCatch
     async busyInRange(
         _: any,
         { date, unit }: types.QueryBusyInRangeArgs, 
@@ -97,7 +95,6 @@ class Mutation extends BaseMutationResolvers<types.AppointmentType> {
         super(__modelname, { isDeletable: false, isCreatable: false })
     }
     
-    @ResolverSaveCatch
     async registerAppointment(
        _: any, 
        args: types.CreateArgs, 

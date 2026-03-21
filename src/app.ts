@@ -6,12 +6,20 @@ import * as utils from "@lib/utils"; // don't move, its important
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
 import { DBSource, CloudflareSource, RedisSource } from "./sources";
+import * as responses from "@lib/responses";
 
 // types
+import { type ResponseError } from "@lib/errors";
 import { IncomingMessage, OutgoingMessage } from "http";
 import * as types from "./lib/types/index";
 import { GraphQLSchema } from "graphql";
-import { ApolloServerPlugin, BaseContext, GraphQLRequestContext, GraphQLRequestListener } from "@apollo/server";
+import { 
+    ApolloServerPlugin, 
+    BaseContext, 
+    GraphQLRequestContextDidEncounterErrors, 
+    GraphQLRequestContextWillSendResponse, 
+    GraphQLRequestListener 
+} from "@apollo/server";
 
 // apollo server
 import { ApolloServer } from '@apollo/server';
@@ -53,15 +61,37 @@ const EXPRESS_MIDDLEWARE_OPTIONS = {
     }
 };
 
+class ChangeResponseStatusListener implements GraphQLRequestListener<BaseContext> {
+    originalError: ResponseError | undefined;
+
+    async didEncounterErrors(requestContext: GraphQLRequestContextDidEncounterErrors<BaseContext>): Promise<void> {
+        this.originalError = requestContext.errors[0].originalError as ResponseError;
+        let code;
+
+        if (!this.originalError.code) code = 500;
+
+        requestContext.response.http.status = this.originalError.code;
+    }
+
+    async willSendResponse(requestContext: GraphQLRequestContextWillSendResponse<BaseContext>): Promise<void> {
+        if(this.originalError){
+            let apiResponse: types.APIResponse;
+
+            if (!this.originalError.apiResponse) apiResponse = responses.f500Response();
+
+            requestContext.response.body = {
+                kind: "single",
+                singleResult: {
+                    data: this.originalError.apiResponse
+                }
+            }
+        }
+    }
+}
+
 class ChangeResponseStatusPlugin implements ApolloServerPlugin {
     async requestDidStart(): Promise<GraphQLRequestListener<BaseContext>> {    
-        return {
-            // async didEncounterErrors(requestContext) {
-            //     console.log("pwkpdwpkwd");
-                
-            //     requestContext.response.http.status = requestContext.errors[0].code;
-            // },
-        }
+        return new ChangeResponseStatusListener();
     }
 }
 
@@ -115,7 +145,7 @@ async function setUpApp(): Promise<void> {
             logger,
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer }),
-                // new ChangeResponseStatusPlugin()
+                new ChangeResponseStatusPlugin()
             ],
         }
     );
@@ -124,7 +154,7 @@ async function setUpApp(): Promise<void> {
 
     setUpMiddlewares(app, apolloServer);
 
-    httpServer.listen({ port: env("PORT") })
+    httpServer.listen({ port: env("PORT"), host: env("HOSTNAME") })
 
     logger.info("API successfully started at: " + `${env("PROTOCOL")}://${env("HOSTNAME")}:${env("PORT")}/graphql`);
 }

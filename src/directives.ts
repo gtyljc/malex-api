@@ -12,7 +12,6 @@ import { env } from "@lib/utils";
 import { defaultFieldResolver } from "graphql";
 import { GraphQLSchema } from "graphql"
 import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
-import { ResolverSaveCatch } from "@lib/utils";
 
 interface DirectiveResolverParams {
     fieldName: string,
@@ -43,7 +42,6 @@ class DirectiveResolver {
 class AuthDirectiveResolver extends DirectiveResolver {
 
     // must be "binded"
-    @ResolverSaveCatch
     async resolve(...args: any[]): Promise<types.APIResponse<any> | void> {
         const ctx: types.AppContext = args[2];
         const req = ctx.req;
@@ -75,7 +73,7 @@ class AuthDirectiveResolver extends DirectiveResolver {
         const parsedCookies = cookiesSchema.safeParse(req.cookies);
 
         if (!parsedCookies.success){
-            throw new errors.RequestCredentialsAbsenceError();
+            throw new errors.NoCredentialsAtRequestError();
         }
 
         const jwt = parsedCookies.data.a_token;

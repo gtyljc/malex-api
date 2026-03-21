@@ -2,7 +2,6 @@
 import * as types from "./lib/types/index";
 import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
-import { ResolverSaveCatch } from "@lib/utils";
 import * as errors from "@lib/errors";
 
 class ResolversManager {
@@ -86,8 +85,6 @@ export class BaseQueryResolvers<DataType> extends ResolversManager {
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType> | void> {
 
-        throw new Error();
-
         // must be specified filter + pagination or ids
         if (!ids && !filter){
             throw new errors.IdsOrFilterWasNotSpecifiedError();
@@ -108,7 +105,6 @@ export class BaseQueryResolvers<DataType> extends ResolversManager {
         }
     }
 
-    @ResolverSaveCatch
     async getOne(
         _: any, 
         { id }: types.GetOneArgs, 
@@ -166,7 +162,6 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
         this.isIterrable = isIterrable;
     }
 
-    @ResolverSaveCatch
     async updateOne(
         _: any, 
         { id, data }: types.UpdateOneArgs, 
@@ -175,7 +170,6 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
         return (await db.updateById(this.modelname, id, data)).apiResponse;
     }
 
-    @ResolverSaveCatch
     async updateMany(
         _: any, 
         { ids, data }: types.UpdateManyArgs, 
@@ -185,7 +179,6 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     }
 
-    @ResolverSaveCatch
     async deleteOne(
         _: any, 
         { id }: { id: string }, 
@@ -194,7 +187,6 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
         return (await db.deleteById(this.modelname, id)).apiResponse;
     }
 
-    @ResolverSaveCatch
     async deleteMany(
         _: any, 
         { ids }: { ids: string[] }, 
@@ -203,7 +195,6 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
         return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
     }
 
-    @ResolverSaveCatch
     async create(
         _: any, 
         { data }: types.CreateArgs, 

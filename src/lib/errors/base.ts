@@ -6,10 +6,6 @@ import * as responses from "../responses";
 
 type LogLevel = "error" | "debug" | "info";
 
-export const DMESSAGE_403 = "Access is denied!";
-export const DMESSAGE_400 = "Request form isn't correct!";
-export const DMESSAGE_500 = "Server error! See more at logs.";
-
 interface LoggedError {
     logError (error: Error, logLevel: LogLevel): void
 }
@@ -35,7 +31,7 @@ export class Response403Error extends LoggedError implements ResponseError {
         super();
     
         this.rootError = rootError;
-        this.apiResponse = responses.f403Response(DMESSAGE_403);
+        this.apiResponse = responses.f403Response();
         this.code = 403;
 
         this.logError(rootError, logLevel);
@@ -51,7 +47,7 @@ export class Response500Error extends LoggedError implements ResponseError {
         super();
     
         this.rootError = rootError;
-        this.apiResponse = responses.f500Response(DMESSAGE_500);
+        this.apiResponse = responses.f500Response();
         this.code = 500;
 
         this.logError(rootError, logLevel);
@@ -67,8 +63,24 @@ export class Response400Error extends LoggedError implements ResponseError {
         super();
     
         this.rootError = rootError;
-        this.apiResponse = responses.f400Response(DMESSAGE_400);
+        this.apiResponse = responses.f400Response();
         this.code = 400;
+
+        this.logError(rootError, logLevel);
+    }
+}
+
+export class Response401Error extends LoggedError implements ResponseError {
+    rootError: Error;
+    apiResponse: types.APIResponse<any>;
+    code: number;
+
+    constructor(rootError: Error, logLevel: LogLevel = "error"){
+        super();
+    
+        this.rootError = rootError;
+        this.apiResponse = responses.f401Response();
+        this.code = 401;
 
         this.logError(rootError, logLevel);
     }

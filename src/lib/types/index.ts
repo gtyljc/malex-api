@@ -78,7 +78,7 @@ export type DeleteManyArgs = {
 export type CreateArgs = {
     data: Record<string, any>
 }
-export type APIResponse<ResponseType> = {
+export type APIResponse<ResponseType = any> = {
     data: ResponseType[]
     pagination?: generated.PaginationType
 } & generated.ApiResponseInterface
