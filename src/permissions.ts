@@ -32,7 +32,7 @@ const fieldsByAuthDirective = (schema: GraphQLSchema, sourceRole: string): strin
 }
 
 class Permissions {
-    role: types.Role;
+    role: types.RoleEnum;
     fieldsOn: string[]; // in schema
     basePermissions: string[]; // other permissions
     spreadingOn: string[]; // fieldsOn + basePermissions
@@ -40,7 +40,7 @@ class Permissions {
     // basePermissions is permissions that role accepted from
     // other ( for example USER has accepted permissions from GUEST )
 
-    constructor(role: types.Role, basePermissions: string[] = []){
+    constructor(role: types.RoleEnum, basePermissions: string[] = []){
         this.role = role;
         this.basePermissions = basePermissions;
         this.fieldsOn = fieldsByAuthDirective(execSchema, role);
@@ -54,31 +54,31 @@ class Permissions {
 
 class GuestPermissions extends Permissions {
     constructor(){
-        super("GUEST");
+        super(types.RoleEnum.Guest);
     }
 }
 
 class UserPermissions extends Permissions {
     constructor(guestPermissions: string[]){
-        super("USER", guestPermissions);
+        super(types.RoleEnum.User, guestPermissions);
     }
 }
 
 class AdminPermissions extends Permissions {
     constructor(userPermissions: string[]){
-        super("ADMIN", userPermissions);
+        super(types.RoleEnum.Admin, userPermissions);
     }
 }
 
 class SuperAdminPermissions extends Permissions {
     constructor(adminPermissions: string[]){
-        super("SUPERADMIN", adminPermissions);
+        super(types.RoleEnum.Superadmin, adminPermissions);
     }
 }
 
 class SuperUserPermissions extends Permissions {
     constructor(superAdminPermissions: string[]){
-        super("SUPERUSER", superAdminPermissions)
+        super(types.RoleEnum.Superuser, superAdminPermissions)
     }
 
 }
@@ -88,14 +88,14 @@ const USER_PERMISSIONS = new UserPermissions(GUEST_PERMISSIONS.spreadingOn);
 const ADMIN_PERMISSIONS = new AdminPermissions(USER_PERMISSIONS.spreadingOn);
 const SUPERADMIN_PERMISSIONS = new SuperAdminPermissions(ADMIN_PERMISSIONS.spreadingOn);
 const SUPERUSER_PERMISSIONS = new SuperUserPermissions(SUPERADMIN_PERMISSIONS.spreadingOn);
-const CORRESPONDS: Record<types.Role, Permissions> = {
-    "GUEST": GUEST_PERMISSIONS,
-    "USER": USER_PERMISSIONS,
-    "ADMIN": ADMIN_PERMISSIONS,
-    "SUPERADMIN": SUPERADMIN_PERMISSIONS,
-    "SUPERUSER": SUPERUSER_PERMISSIONS
+const CORRESPONDS: Record<types.RoleEnum, Permissions> = {
+    [ types.RoleEnum.Guest ]: GUEST_PERMISSIONS,
+    [ types.RoleEnum.User ]: USER_PERMISSIONS,
+    [ types.RoleEnum.Admin ]: ADMIN_PERMISSIONS,
+    [ types.RoleEnum.Superadmin ]: SUPERADMIN_PERMISSIONS,
+    [ types.RoleEnum.Superuser ]: SUPERUSER_PERMISSIONS
 }
 
-export function hasPermission(role: types.Role, fieldName: string): boolean {
+export function hasPermission(role: types.RoleEnum, fieldName: string): boolean {
     return CORRESPONDS[role].hasAccess(fieldName);
 }

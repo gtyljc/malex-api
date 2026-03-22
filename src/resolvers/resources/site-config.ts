@@ -6,7 +6,7 @@ import * as types from "@lib/types";
 import * as responses from "@lib/responses";
 import * as utils from "@lib/utils";
 
-const __modelname = "siteConfig";
+const __modelname = types.ResourceEnum.SiteConfig;
 
 class Query extends BaseQueryResolvers<types.SiteConfigType> {
     constructor(){

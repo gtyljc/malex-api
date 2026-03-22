@@ -4,15 +4,48 @@ import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
 import * as errors from "@lib/errors";
 
+export interface GetManyArgs {
+    ids?: string[]
+    filter?: Object,
+    pagination?: types.PaginationInput,
+    sort?: types.SortInput
+}
+
+export interface GetOneArgs {
+    id: string
+}
+
+export interface UpdateOneArgs {
+    id: string,
+    data: Record<string, any>
+}
+
+export interface UpdateManyArgs {
+    ids: string[],
+    data: Record<string, any>
+}
+
+export interface DeleteOneArgs {
+    id: string
+}
+
+export interface DeleteManyArgs {
+    ids: string[]
+}
+
+export interface CreateArgs {
+    data: Record<string, any>
+}
+
 class ResolversManager {
     // !!! if you want to use resolvers in high-defined object use "resolvers" property !!!
 
     private resolversObject: Record<string, Function> = {};
     protected mutationResolverMarker: string;
     protected queryResolverMarker: string;
-    modelname: types.Resource;
+    modelname: types.ResourceEnum;
 
-    constructor(modelname: types.Resource){
+    constructor(modelname: types.ResourceEnum){
         this.modelname = modelname;
         this.queryResolverMarker = modelname;
         this.mutationResolverMarker = utils.capitalize(modelname); // how resolvers will be marked
@@ -73,7 +106,7 @@ export class BaseQueryResolvers<DataType> extends ResolversManager {
     protected getOneName!: string;
     protected isIterrable: boolean;
 
-    constructor(modelname: types.Resource, { isIterrable = true } = {}) {
+    constructor(modelname: types.ResourceEnum, { isIterrable = true } = {}) {
         super(modelname);
 
         this.isIterrable = isIterrable;
@@ -81,7 +114,7 @@ export class BaseQueryResolvers<DataType> extends ResolversManager {
 
     async getMany(
         _: any,
-        { ids, filter, pagination, sort }: types.GetManyArgs,
+        { ids, filter, pagination, sort }: GetManyArgs,
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType> | void> {
 
@@ -107,7 +140,7 @@ export class BaseQueryResolvers<DataType> extends ResolversManager {
 
     async getOne(
         _: any, 
-        { id }: types.GetOneArgs, 
+        { id }: GetOneArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType>> {
         return (await db.getOneById(this.modelname, id)).apiResponse;   
@@ -146,7 +179,7 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
     protected isIterrable: boolean;
 
     constructor(
-        modelname: types.Resource, 
+        modelname: types.ResourceEnum, 
         { 
             isUpdatable = true, 
             isDeletable = true, 
@@ -164,7 +197,7 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     async updateOne(
         _: any, 
-        { id, data }: types.UpdateOneArgs, 
+        { id, data }: UpdateOneArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType>> {
         return (await db.updateById(this.modelname, id, data)).apiResponse;
@@ -172,7 +205,7 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     async updateMany(
         _: any, 
-        { ids, data }: types.UpdateManyArgs, 
+        { ids, data }: UpdateManyArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType>> {
         return (await db.updateManyByIds(this.modelname, ids, data)).apiResponse
@@ -181,7 +214,7 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     async deleteOne(
         _: any, 
-        { id }: { id: string }, 
+        { id }: DeleteOneArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType>> {
         return (await db.deleteById(this.modelname, id)).apiResponse;
@@ -189,7 +222,7 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     async deleteMany(
         _: any, 
-        { ids }: { ids: string[] }, 
+        { ids }: DeleteManyArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType>> {
         return (await db.deleteManyByIds(this.modelname, ids)).apiResponse;
@@ -197,7 +230,7 @@ export class BaseMutationResolvers<DataType> extends ResolversManager {
 
     async create(
         _: any, 
-        { data }: types.CreateArgs, 
+        { data }: CreateArgs, 
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<DataType>> {
         return (await db.create(this.modelname, data)).apiResponse;

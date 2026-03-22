@@ -1,8 +1,7 @@
 
 // others
 import { hasPermission } from "./permissions";
-import { decodeJwt } from "jose";
-import { validateJWT, JWT } from "@src/auth/client-auth";
+import { JWT } from "@src/auth";
 import * as types from "@lib/types";
 import * as z from "zod";
 import * as errors from "@lib/errors";
@@ -50,13 +49,9 @@ class AuthDirectiveResolver extends DirectiveResolver {
 
         // auth for backend ( SUPERUSER )
         if (req.headers.authorization){
-            const jwt = JWT.getJWTFromHeader(req.headers.authorization);
+            const jwtClaims = await JWT.getFromHeader(req.headers.authorization).validate();
 
-            await validateJWT(jwt);
-
-            const jwtClaims = decodeJwt<types.DefaultPayload>(jwt);
-
-            if(jwtClaims.aud != "SUPERUSER"){
+            if(jwtClaims.payload.aud != "SUPERUSER"){
                 throw new errors.ClientIsNotSuperUserError();
             }
 
@@ -76,12 +71,13 @@ class AuthDirectiveResolver extends DirectiveResolver {
             throw new errors.NoCredentialsAtRequestError();
         }
 
-        const jwt = parsedCookies.data.a_token;
-        const jwtClaims = decodeJwt<types.DefaultPayload>(jwt);
+        const jwtClaims = await new JWT(parsedCookies.data.a_token).validate();
 
-        if (await validateJWT(jwt) && hasPermission(jwtClaims.aud, this.fieldName)){
+        if (hasPermission(jwtClaims.payload.aud, this.fieldName)){
             return await this.runBaseResolver(...args);
         }
+
+        throw new errors.NotAuthenticatedRequestError();
     }
 }
 

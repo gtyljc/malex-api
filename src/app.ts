@@ -6,20 +6,11 @@ import * as utils from "@lib/utils"; // don't move, its important
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
 import { DBSource, CloudflareSource, RedisSource } from "./sources";
-import * as responses from "@lib/responses";
 
 // types
-import { type ResponseError } from "@lib/errors";
 import { IncomingMessage, OutgoingMessage } from "http";
 import * as types from "./lib/types/index";
 import { GraphQLSchema } from "graphql";
-import { 
-    ApolloServerPlugin, 
-    BaseContext, 
-    GraphQLRequestContextDidEncounterErrors, 
-    GraphQLRequestContextWillSendResponse, 
-    GraphQLRequestListener 
-} from "@apollo/server";
 
 // apollo server
 import { ApolloServer } from '@apollo/server';
@@ -27,7 +18,8 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { expressMiddleware } from '@as-integrations/express5';
 import http from "http";
 import { rateLimit } from 'express-rate-limit'
-import { validateATCreateRequest, validateRTCreateRequest } from "./auth/server-auth";
+import { createATMiddleware, createRTMiddleware } from "./middlewares";
+import { ChangeResponseStatusPlugin } from "./plugins";
 
 // GraphQL schema
 import schema, { addDirectives } from './schema';
@@ -50,7 +42,7 @@ const LIMITER_OPTIONS = {
 };
 const CORS_OPTIONS = {
     origin: [ env("BACKEND_ORIGIN") ],
-    methods: [ "POST" ],
+    methods: [ "POST" ], 
     allowedHeaders: [ "Authorization", "Content-Type" ],
     maxAge: 86400, // 24 hours
     credentials: true
@@ -60,40 +52,6 @@ const EXPRESS_MIDDLEWARE_OPTIONS = {
         return { req, res, dataSources: { db: DBSource, cloudflare: CloudflareSource, redis: RedisSource } }
     }
 };
-
-class ChangeResponseStatusListener implements GraphQLRequestListener<BaseContext> {
-    originalError: ResponseError | undefined;
-
-    async didEncounterErrors(requestContext: GraphQLRequestContextDidEncounterErrors<BaseContext>): Promise<void> {
-        this.originalError = requestContext.errors[0].originalError as ResponseError;
-        let code;
-
-        if (!this.originalError.code) code = 500;
-
-        requestContext.response.http.status = this.originalError.code;
-    }
-
-    async willSendResponse(requestContext: GraphQLRequestContextWillSendResponse<BaseContext>): Promise<void> {
-        if(this.originalError){
-            let apiResponse: types.APIResponse;
-
-            if (!this.originalError.apiResponse) apiResponse = responses.f500Response();
-
-            requestContext.response.body = {
-                kind: "single",
-                singleResult: {
-                    data: this.originalError.apiResponse
-                }
-            }
-        }
-    }
-}
-
-class ChangeResponseStatusPlugin implements ApolloServerPlugin {
-    async requestDidStart(): Promise<GraphQLRequestListener<BaseContext>> {    
-        return new ChangeResponseStatusListener();
-    }
-}
 
 function emptyMiddleware(_, __, next: Function){
     next();
@@ -116,13 +74,13 @@ function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloS
     app.post(
         "/rt/create",
         express.json(),
-        validateRTCreateRequest(RedisSource)
+        createRTMiddleware(RedisSource)
     )
 
     app.post(
         "/at/create",
         express.json(),
-        validateATCreateRequest(RedisSource)
+        createATMiddleware(RedisSource)
     )
 }
 
@@ -154,9 +112,13 @@ async function setUpApp(): Promise<void> {
 
     setUpMiddlewares(app, apolloServer);
 
-    httpServer.listen({ port: env("PORT"), host: env("HOSTNAME") })
+    const protocol = env("PROTOCOL");
+    const port = env("PORT");
+    const host = env("HOST");
 
-    logger.info("API successfully started at: " + `${env("PROTOCOL")}://${env("HOSTNAME")}:${env("PORT")}/graphql`);
+    httpServer.listen({ port, host })
+
+    logger.info("API successfully started at: " + `${ utils.assembleUrl({ protocol, port, host }) }/graphql`);
 }
 
 await setUpApp();

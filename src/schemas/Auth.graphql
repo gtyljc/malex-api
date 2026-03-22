@@ -6,22 +6,21 @@ extend type Query {
 
     # <ADMIN> role is required
     # checks if response has "ADMIN" jwts
-    checkAdmin: AuthResponseType! @auth(role: ADMIN)
+    checkAdmin: AuthResponseType! @auth(role: GUEST)
 
     # <GUEST> role is required
     # returns current key to access admin panel
-    adminPanelKey: AdminPanelKeyResponse! @auth(role: GUEST)
+    adminPanelKey: AdminPanelKeyResponse! @auth(role: SUPERUSER)
 }
-
 
 # -------- mutation
 
 extend type Mutation {
     
-    # <GUEST> role is required
-    # creates new auth pair with initial client crenditials
-    # can be accessed from backend and from frontend
-    createAT: AuthResponseType! @auth(role: GUEST)
+    # # <GUEST> role is required
+    # # creates new auth pair with initial client crenditials
+    # # can be accessed from backend and from frontend
+    # createAT: AuthResponseType! @auth(role: GUEST)
 
     # <GUEST> role is required
     # gets username and password and then returns new auth tokens
@@ -30,20 +29,20 @@ extend type Mutation {
     
     # <ADMIN> role is required
     # revokes admin's refresh token and gives new pair with role "GUEST"
-    adminLogout: AuthResponseType! @auth(role: ADMIN)
+    adminLogout: AuthResponseType! @auth(role: GUEST)
 }
 
 
 # -------- types
 
-type CreateRTResponseType implements APIResponseInterface {
+type CreateTokensResponseType implements APIResponseInterface {
     code: Int!
     message: String!
     success: Boolean!
-    data: [ CreateRTType ]!
+    data: [ TokensType ]!
 }
 
-type CreateRTType {
+type TokensType {
     rt: JWT,
     at: JWT
 }

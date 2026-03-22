@@ -1,12 +1,11 @@
 
 import * as responses from "@lib/responses";
 import * as types from "@lib/types";
-import * as auth from "@src/auth/client-auth";
+import * as auth from "@src/auth";
 import * as errors from "@lib/errors";
-import { decodeJwt } from "jose";
-import logger from "@lib/logger";
-import * as utils from "@lib/utils";
 import { env } from "@lib/utils";
+import { nanoid } from "nanoid";
+import * as utils from "@lib/utils";
 
 class AdminPanelKey {
     private currentValue: string;
@@ -23,19 +22,13 @@ class AdminPanelKey {
         this.currentValue = crypto.randomUUID();
     }
 
-    logCurrentValue(){
-        logger.info(`Admin Panel available at ${ env("BASE_URL") }/admin?key=${ this.currentValue }`)
-    }
-
     private init(){
-        if (utils.env("NODE_ENV") != "development"){
-            
-            // update key with specified delay in .env
-            setInterval(
-                () => { this.updateCurrentValue(); this.logCurrentValue() }, 
-                utils.env("ADMIN_PANEL_KEY_REFRESH_DELAY")
-            );
-        }
+
+        // update key with specified delay in .env
+        setInterval(
+            () => { this.updateCurrentValue() }, 
+            utils.env("ADMIN_PANEL_KEY_REFRESH_DELAY")
+        );
 
         return crypto.randomUUID();
     }
@@ -49,43 +42,57 @@ class Query {
         return responses.f200Response([ APKey.key ]);
     }
 
-    async checkAdmin(...args: any[]) {
-        return responses.f200Response();
+    async checkAdmin(_: any, __: any, { req }: types.AppContext): Promise<types.AuthResponseType> {
+        const at = new auth.JWT(req.cookies.a_token);
+        const claims = at.decode();
+
+        if (claims.aud == types.RoleEnum.Admin || claims.aud == types.RoleEnum.Superadmin) {
+            return responses.f200Response([ true ]);
+        }
+        
+        return responses.f200Response([ false ]);
     }
 }
 
 class Mutation {
 
-    async createAT(
-        _: any,
-        __: any,
-        { req, res, dataSources: { redis } }: types.AppContext
-    ): Promise<types.AuthResponseType> {
-        const rt = new auth.RefreshToken(req.cookies!.r_token, redis);
+    // async createAT(
+    //     _: any,
+    //     __: any,
+    //     { req, res, dataSources: { redis } }: types.AppContext
+    // ): Promise<types.AuthResponseType> {
+    //     const rt = new auth.RefreshToken(req.cookies!.r_token, redis);
 
-        await rt.isRegistered();
+    //     await rt.isRegistered();
 
-        await rt.revoke();
+    //     await rt.revoke();
 
-        const claims = decodeJwt<types.DefaultPayload>(rt.jwt);
+    //     const claims = rt.decode();
         
-        await auth.responseWithTokens({ res, redis, userId: claims.sub, role: claims.aud });
+    //     await auth.setNewTokensToResponse({ res, redis, userId: claims.sub, role: claims.aud });
 
-        return responses.f200Response();
-    }
+    //     return responses.f200Response();
+    // }
 
     async adminLogin(
         _: any,
         { username, password }: types.MutationAdminLoginArgs,
         { dataSources: { db, redis }, res }: types.AppContext
     ): Promise<types.AuthResponseType> {
-        const q = await db.getOneByFilter("admin", { username, password });
+        const q = await db.getOneByFilter(types.ResourceEnum.Admin, { username, password });
 
         // if admin not exist
         if(!q.qResult) throw new errors.AdminWasNotFoundError();
 
         // revoke current RT and give new one
-        await auth.responseWithTokens({ res, redis, role: "ADMIN" });
+        await auth.setNewTokensToResponse(
+            { 
+                res, 
+                redis, 
+                role: types.RoleEnum.Admin,
+                userId: nanoid(env("GUEST_ID_LENGTH"))
+            }
+        );
 
         return responses.f200Response();
     }
@@ -103,7 +110,14 @@ class Mutation {
         await rt.revoke();
 
         // revoke current RT and give new one
-        await auth.responseWithTokens({ res, redis, role: "GUEST" });
+        await auth.setNewTokensToResponse(
+            { 
+                res, 
+                redis, 
+                role: types.RoleEnum.Guest, 
+                userId: nanoid(env("GUEST_ID_LENGTH"))
+            }
+        );
 
         return responses.f200Response();
     }

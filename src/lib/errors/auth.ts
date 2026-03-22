@@ -37,17 +37,17 @@ export class RTIsNotRegisteredError extends Error {
 
         this.name = "RTIsNotRegisteredError";
 
-        return new base.Response403Error(this, "debug");
+        return new base.Response400Error(this, "debug");
     }
 }
 
-export class RTCreationError extends Error {
-    constructor(){
-        super(`Creation of RT has failed!`);
+export class TokenRequestValidationError extends Error {
+    constructor(prefix: string){
+        super(`Validation of request on creation of token with prefix ${ prefix } has failed!`);
         
-        this.name = "RTCreationError";
+        this.name = "TokenRequestValidationError";
 
-        return new base.Response500Error(this);
+        return new base.Response400Error(this);
     }
 }
 

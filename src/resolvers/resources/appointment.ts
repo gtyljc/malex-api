@@ -7,8 +7,9 @@ import { dayjs } from "@lib/utils/dayjs";
 import * as responses from "@lib/responses";
 import * as utils from "@lib/utils";
 import * as errors from "@lib/errors";
+import { type CreateArgs } from "@src/resource";
 
-const __modelname = "appointment";
+const __modelname = types.ResourceEnum.Appointment;
 
 class Query extends BaseQueryResolvers<types.AppointmentType> {
     constructor(){
@@ -97,7 +98,7 @@ class Mutation extends BaseMutationResolvers<types.AppointmentType> {
     
     async registerAppointment(
        _: any, 
-       args: types.CreateArgs, 
+       args: CreateArgs, 
        ctx: types.AppContext 
     ): Promise<types.APIResponse<types.AppointmentType>> {
         const { data } = args;

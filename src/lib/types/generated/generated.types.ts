@@ -118,18 +118,12 @@ export type BusyType = {
   date: Scalars['DateTimeISO']['output'];
 };
 
-export type CreateRtResponseType = ApiResponseInterface & {
-  __typename?: 'CreateRTResponseType';
+export type CreateTokensResponseType = ApiResponseInterface & {
+  __typename?: 'CreateTokensResponseType';
   code: Scalars['Int']['output'];
-  data: Array<Maybe<CreateRtType>>;
+  data: Array<Maybe<TokensType>>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
-};
-
-export type CreateRtType = {
-  __typename?: 'CreateRTType';
-  at?: Maybe<Scalars['JWT']['output']>;
-  rt?: Maybe<Scalars['JWT']['output']>;
 };
 
 export type FinalizeUploadImageResponseType = ApiResponseInterface & {
@@ -150,7 +144,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   adminLogin: AuthResponseType;
   adminLogout: AuthResponseType;
-  createAT: AuthResponseType;
   createWork: WorkResponseType;
   deleteManyWorks: WorkResponseType;
   deleteWork: WorkResponseType;
@@ -352,6 +345,7 @@ export type QueryWorksArgs = {
 };
 
 export enum ResourceEnum {
+  Admin = 'admin',
   Appointment = 'appointment',
   SiteConfig = 'siteConfig',
   Work = 'work'
@@ -419,6 +413,12 @@ export enum TimeUnitEnum {
   Appointment = 'APPOINTMENT',
   Day = 'DAY'
 }
+
+export type TokensType = {
+  __typename?: 'TokensType';
+  at?: Maybe<Scalars['JWT']['output']>;
+  rt?: Maybe<Scalars['JWT']['output']>;
+};
 
 export enum WorkCategoryEnum {
   Assembling = 'ASSEMBLING',
@@ -535,7 +535,7 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
     | ( AppointmentResponseType )
     | ( AuthResponseType )
     | ( BusyResponseType )
-    | ( CreateRtResponseType )
+    | ( CreateTokensResponseType )
     | ( FinalizeUploadImageResponseType )
     | ( PublicConfigResponseType )
     | ( PublicWorkResponseType )
@@ -559,8 +559,7 @@ export type ResolversTypes = {
   BusyResponseType: ResolverTypeWrapper<BusyResponseType>;
   BusyType: ResolverTypeWrapper<BusyType>;
   CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
-  CreateRTResponseType: ResolverTypeWrapper<CreateRtResponseType>;
-  CreateRTType: ResolverTypeWrapper<CreateRtType>;
+  CreateTokensResponseType: ResolverTypeWrapper<CreateTokensResponseType>;
   DateTimeISO: ResolverTypeWrapper<Scalars['DateTimeISO']['output']>;
   EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']['output']>;
   FinalizeUploadImageResponseType: ResolverTypeWrapper<FinalizeUploadImageResponseType>;
@@ -593,6 +592,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TimeUnitEnum: TimeUnitEnum;
   TimeZone: ResolverTypeWrapper<Scalars['TimeZone']['output']>;
+  TokensType: ResolverTypeWrapper<TokensType>;
   URL: ResolverTypeWrapper<Scalars['URL']['output']>;
   WorkCategoryEnum: WorkCategoryEnum;
   WorkCreateInput: WorkCreateInput;
@@ -614,8 +614,7 @@ export type ResolversParentTypes = {
   BusyResponseType: BusyResponseType;
   BusyType: BusyType;
   CountryCode: Scalars['CountryCode']['output'];
-  CreateRTResponseType: CreateRtResponseType;
-  CreateRTType: CreateRtType;
+  CreateTokensResponseType: CreateTokensResponseType;
   DateTimeISO: Scalars['DateTimeISO']['output'];
   EmailAddress: Scalars['EmailAddress']['output'];
   FinalizeUploadImageResponseType: FinalizeUploadImageResponseType;
@@ -644,6 +643,7 @@ export type ResolversParentTypes = {
   StartUploadImageType: StartUploadImageType;
   String: Scalars['String']['output'];
   TimeZone: Scalars['TimeZone']['output'];
+  TokensType: TokensType;
   URL: Scalars['URL']['output'];
   WorkCreateInput: WorkCreateInput;
   WorkResponseType: WorkResponseType;
@@ -658,7 +658,7 @@ export type AuthDirectiveArgs = {
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type ApiResponseInterfaceResolvers<ContextType = any, ParentType extends ResolversParentTypes['APIResponseInterface'] = ResolversParentTypes['APIResponseInterface']> = {
-  __resolveType: TypeResolveFn<'AdminPanelKeyResponse' | 'AppointmentResponseType' | 'AuthResponseType' | 'BusyResponseType' | 'CreateRTResponseType' | 'FinalizeUploadImageResponseType' | 'PublicConfigResponseType' | 'PublicWorkResponseType' | 'SiteConfigResponseType' | 'StartUploadImageResponseType' | 'WorkResponseType', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AdminPanelKeyResponse' | 'AppointmentResponseType' | 'AuthResponseType' | 'BusyResponseType' | 'CreateTokensResponseType' | 'FinalizeUploadImageResponseType' | 'PublicConfigResponseType' | 'PublicWorkResponseType' | 'SiteConfigResponseType' | 'StartUploadImageResponseType' | 'WorkResponseType', ParentType, ContextType>;
 };
 
 export type AdminPanelKeyResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdminPanelKeyResponse'] = ResolversParentTypes['AdminPanelKeyResponse']> = {
@@ -716,17 +716,12 @@ export interface CountryCodeScalarConfig extends GraphQLScalarTypeConfig<Resolve
   name: 'CountryCode';
 }
 
-export type CreateRtResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRTResponseType'] = ResolversParentTypes['CreateRTResponseType']> = {
+export type CreateTokensResponseTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateTokensResponseType'] = ResolversParentTypes['CreateTokensResponseType']> = {
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  data?: Resolver<Array<Maybe<ResolversTypes['CreateRTType']>>, ParentType, ContextType>;
+  data?: Resolver<Array<Maybe<ResolversTypes['TokensType']>>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CreateRtTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRTType'] = ResolversParentTypes['CreateRTType']> = {
-  at?: Resolver<Maybe<ResolversTypes['JWT']>, ParentType, ContextType>;
-  rt?: Resolver<Maybe<ResolversTypes['JWT']>, ParentType, ContextType>;
 };
 
 export interface DateTimeIsoScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTimeISO'], any> {
@@ -761,7 +756,6 @@ export interface JwtScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   adminLogin?: Resolver<ResolversTypes['AuthResponseType'], ParentType, ContextType, RequireFields<MutationAdminLoginArgs, 'password' | 'username'>>;
   adminLogout?: Resolver<ResolversTypes['AuthResponseType'], ParentType, ContextType>;
-  createAT?: Resolver<ResolversTypes['AuthResponseType'], ParentType, ContextType>;
   createWork?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, Partial<MutationCreateWorkArgs>>;
   deleteManyWorks?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<MutationDeleteManyWorksArgs, 'ids'>>;
   deleteWork?: Resolver<ResolversTypes['WorkResponseType'], ParentType, ContextType, RequireFields<MutationDeleteWorkArgs, 'id'>>;
@@ -880,6 +874,11 @@ export interface TimeZoneScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'TimeZone';
 }
 
+export type TokensTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TokensType'] = ResolversParentTypes['TokensType']> = {
+  at?: Resolver<Maybe<ResolversTypes['JWT']>, ParentType, ContextType>;
+  rt?: Resolver<Maybe<ResolversTypes['JWT']>, ParentType, ContextType>;
+};
+
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
   name: 'URL';
 }
@@ -910,8 +909,7 @@ export type Resolvers<ContextType = any> = {
   BusyResponseType?: BusyResponseTypeResolvers<ContextType>;
   BusyType?: BusyTypeResolvers<ContextType>;
   CountryCode?: GraphQLScalarType;
-  CreateRTResponseType?: CreateRtResponseTypeResolvers<ContextType>;
-  CreateRTType?: CreateRtTypeResolvers<ContextType>;
+  CreateTokensResponseType?: CreateTokensResponseTypeResolvers<ContextType>;
   DateTimeISO?: GraphQLScalarType;
   EmailAddress?: GraphQLScalarType;
   FinalizeUploadImageResponseType?: FinalizeUploadImageResponseTypeResolvers<ContextType>;
@@ -934,6 +932,7 @@ export type Resolvers<ContextType = any> = {
   StartUploadImageResponseType?: StartUploadImageResponseTypeResolvers<ContextType>;
   StartUploadImageType?: StartUploadImageTypeResolvers<ContextType>;
   TimeZone?: GraphQLScalarType;
+  TokensType?: TokensTypeResolvers<ContextType>;
   URL?: GraphQLScalarType;
   WorkResponseType?: WorkResponseTypeResolvers<ContextType>;
   WorkType?: WorkTypeResolvers<ContextType>;

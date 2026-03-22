@@ -16,6 +16,18 @@ import { createClient } from "redis";
 import { PrismaClient } from "@src/lib/prisma/generated/client";
 import { Prisma } from "@src/lib/prisma/generated";
 
+type DBMethod = (
+    "findUnique" |
+    "findFirst" | 
+    "findMany" | 
+    "update" |
+    "updateMany" | 
+    "delete" | 
+    "deleteMany" |
+    "count" |
+    "create"
+);
+
 class DatabaseConnection {
     isTryingToConnect = false;
     client: any;
@@ -64,17 +76,17 @@ class DatabaseConnection {
 class DBQuery<RequestResultType> {
     queryId: string;
     errorHandlers: Map<string, Function>;
-    method: types.DBMethod;
+    method: DBMethod;
     queryBody: Record<any, any>;
-    modelname: types.Resource;
+    modelname: types.ResourceEnum;
     success = false;
     qResult!: RequestResultType;
     errorInstance!: Error; // in case query has failed
     apiResponse!: types.APIResponse<any>;
 
     constructor(
-        modelname: types.Resource,
-        method: types.DBMethod,
+        modelname: types.ResourceEnum,
+        method: DBMethod,
         queryBody: Record<any, any> = {}
     ){
         this.queryId = nanoid(10);
@@ -111,13 +123,13 @@ class DBQuery<RequestResultType> {
             );
         }
         else {
-            return responses.f500Response(errors.DMESSAGE_500);
+            return responses.f500Response();
         }
     }
 
     async send(): Promise<this> {
         try {
-            logger.debug(`Executing query with method ${ this.method } on model ${ this.modelname } with ID ${ this.queryId }`)
+            logger.debug(`Executing query with method ${ this.method } on model ${ this.modelname }`)
 
             const r = await DBConnection.client[this.modelname][this.method](this.queryBody);
 
@@ -125,8 +137,6 @@ class DBQuery<RequestResultType> {
             this.qResult = r;
             this.success = true;
             this.apiResponse = this.wrapQResult();
-
-            logger.debug(`Query with method ${ this.method } on model ${ this.modelname } with ID ${ this.queryId } is successfully finished`)
         }
         catch (error: any) {
             this.success = false;
@@ -174,15 +184,15 @@ export class DatabaseSource {
         return { orderBy: { [ field ]: method.toLowerCase() } }
     }
 
-    async getOneById(modelname: types.Resource, id: string) {
+    async getOneById(modelname: types.ResourceEnum, id: string) {
         return await new DBQuery<any>(modelname, "findUnique", { where: { id: parseInt(id) } }).send();
     }
 
-    async getOneByFilter(modelname: types.Resource, filter: Object) {
+    async getOneByFilter(modelname: types.ResourceEnum, filter: Object) {
         return await new DBQuery<any>(modelname, "findFirst", { where: filter }).send();
     }
 
-    async getManyByIds(modelname: types.Resource, ids: string[], sort?: types.SortInput) {
+    async getManyByIds(modelname: types.ResourceEnum, ids: string[], sort?: types.SortInput) {
         return await new DBQuery<Array<any>>(
             modelname, 
             "findMany", 
@@ -193,7 +203,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async getManyByFilter(modelname: types.Resource, filter: Object, pagination?: types.PaginationInput, sort?: types.SortInput){
+    async getManyByFilter(modelname: types.ResourceEnum, filter: Object, pagination?: types.PaginationInput, sort?: types.SortInput){
 
         // if pagination was specified
         const skip = pagination && pagination.perPage * (pagination.page - 1);
@@ -227,7 +237,7 @@ export class DatabaseSource {
         return endQ;
     }
 
-    async updateById(modelname: types.Resource, id: string, data: Object) {
+    async updateById(modelname: types.ResourceEnum, id: string, data: Object) {
         return await new DBQuery<any>(
             modelname, 
             "update", 
@@ -235,7 +245,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async updateByFilter(modelname: types.Resource, filter: Object, data: Object) {
+    async updateByFilter(modelname: types.ResourceEnum, filter: Object, data: Object) {
         return await new DBQuery<any>(
             modelname, 
             "update", 
@@ -243,7 +253,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async updateManyByIds(modelname: types.Resource, ids: string[], data: Object) {
+    async updateManyByIds(modelname: types.ResourceEnum, ids: string[], data: Object) {
         return await new DBQuery<Array<any>>(
             modelname, 
             "updateMany", 
@@ -251,7 +261,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async updateManyByFilter(modelname: types.Resource, filter: Object, data: Object) {
+    async updateManyByFilter(modelname: types.ResourceEnum, filter: Object, data: Object) {
         return await new DBQuery<Array<any>>(
             modelname,
             "updateMany",
@@ -259,7 +269,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async deleteById(modelname: types.Resource, id: string) {
+    async deleteById(modelname: types.ResourceEnum, id: string) {
         return await new DBQuery<any>(
             modelname,
             "delete",
@@ -267,7 +277,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async deleteByFilter(modelname: types.Resource, filter: Object) {
+    async deleteByFilter(modelname: types.ResourceEnum, filter: Object) {
         return await new DBQuery<any>(
             modelname,
             "delete",
@@ -275,7 +285,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async deleteManyByIds(modelname: types.Resource, ids: string[]) {
+    async deleteManyByIds(modelname: types.ResourceEnum, ids: string[]) {
         return await new DBQuery<Array<any>>(
             modelname,
             "deleteMany",
@@ -283,7 +293,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async deleteManyByFilter(modelname: types.Resource, filter: Object) {
+    async deleteManyByFilter(modelname: types.ResourceEnum, filter: Object) {
         return await new DBQuery<Array<any>>(
             modelname,
             "deleteMany",
@@ -291,7 +301,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async create(modelname: types.Resource, data: Object) {
+    async create(modelname: types.ResourceEnum, data: Object) {
         return await new DBQuery<any>(
             modelname,
             "create",
@@ -299,7 +309,7 @@ export class DatabaseSource {
         ).send();
     }
 
-    async count(modelname: types.Resource) {
+    async count(modelname: types.ResourceEnum) {
         return await new DBQuery<any>(modelname, "count").send()
     }
 }

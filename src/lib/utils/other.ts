@@ -2,6 +2,7 @@
 import { DatabaseSource } from "@src/sources";
 import { parsedEnv } from "./env";
 import * as errors from "./errors";
+import * as types from "@lib/types";
 
 // returns new string with capitalized first letter
 export function capitalize(str: string): string {
@@ -64,7 +65,7 @@ export function env(valueName: string): any | undefined {
 }
 
 export async function getSiteConfig(db: DatabaseSource): Promise<Record<any, any>> {
-    return (await db.getOneById("siteConfig", "1")).qResult;
+    return (await db.getOneById(types.ResourceEnum.SiteConfig, "1")).qResult;
 }
 
 type CookieOptions = {
@@ -93,4 +94,18 @@ export function serializeCookie(
     if (options.expires) parts.push(`Expires=${options.expires.toUTCString()}`);
 
     return parts.join("; ");
+}
+
+export function lowerFirst(str: string): string {
+  return str[0].toLowerCase() + str.slice(1);
+}
+
+interface AssembleUrtParams {
+    port: number,
+    protocol: "http" | "https",
+    host: string
+}
+
+export function assembleUrl({ port, protocol, host }: AssembleUrtParams): URL {
+    return new URL(`${ protocol }://${ host }:${ port }`);
 }

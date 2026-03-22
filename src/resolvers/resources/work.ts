@@ -6,8 +6,9 @@ import * as types from "@lib/types";
 import * as errors from "@lib/errors";
 import * as responses from "@lib/responses";
 import { env } from "@lib/utils";
+import { type CreateArgs } from "@src/resource";
 
-const __modelname = "work";
+const __modelname = types.ResourceEnum.Work;
 
 class Query extends BaseQueryResolvers<types.WorkType> {
     constructor(){
@@ -68,7 +69,7 @@ class Mutation extends BaseMutationResolvers<types.WorkType> {
 
     async create(
         _: any, 
-        args: types.CreateArgs, 
+        args: CreateArgs, 
         ctx: types.AppContext,
     ): Promise<types.APIResponse<types.WorkType>> {
         const { data } = args;

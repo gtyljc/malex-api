@@ -70,7 +70,8 @@ enum OrderEnum {
 enum ResourceEnum {
     appointment
     siteConfig,
-    work
+    work,
+    admin
 }
 
 # -------- inputs
