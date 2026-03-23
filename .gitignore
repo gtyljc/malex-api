@@ -136,3 +136,6 @@ dist
 .pnp.*
 
 /prisma/generated/prisma
+
+# ignore compilated
+dist/*

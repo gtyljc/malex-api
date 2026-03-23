@@ -11,12 +11,12 @@ export default pino(
         level: env("LOG_LEVEL"),
         transport: {
             target: "pino-pretty",
-            translateTime: "SYS:standard",
-            ignore: "pid,hostname",
-            singleLine: true,
+            options: {
+                translateTime: "SYS:standard",
+                ignore: "pid,hostname",
+                singleLine: true,
+                destination: path.join(BASE_DIR, env("LOG_PATH"))
+            },
         }
-    },
-    pino.destination(
-        { dest: path.join(BASE_DIR, env("LOG_PATH")) }
-    )
+    }
 );

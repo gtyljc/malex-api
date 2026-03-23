@@ -1,10 +1,11 @@
 {
   "name": "malex-api",
-  "version": "0.0.1jb",
+  "version": "0.0.1kf",
   "description": "Malex API",
   "scripts": {
+    "build": "",
+    "start": "node ./dist/app.js",
     "dev": "npx tsx watch --env-file .env src/app.ts --no-cache",
-    "cli": "npx tsx --env-file=.env src/cli.ts",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "keywords": [],
@@ -48,7 +49,9 @@
     "@graphql-codegen/typescript": "5.0.7",
     "@graphql-codegen/typescript-resolvers": "5.1.5",
     "@types/node": "^24.10.1",
+    "esbuild": "^0.27.4",
     "prisma": "^7.5.0",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   }
 }

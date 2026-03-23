@@ -10,7 +10,6 @@ import * as auth from "@src/auth";
 import * as types from "@lib/types";
 import { type SetUpPayloadParams } from "@src/auth";
 import { nanoid } from "nanoid";
-import logger from "@lib/logger";
 
 async function hashRaw(raw: string){
     const encoder = new TextEncoder();
@@ -95,31 +94,6 @@ async function validateCreateRequest<ResponseBodyType>(
 }
 
 interface CreateNewTokensParams extends Omit<SetUpPayloadParams, "type"> {}
-
-function catchError (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-){
-    const original = descriptor.value;
-
-    descriptor.value = async function (...args: any[]){
-        try {
-
-            // except directives
-            original.name != "resolve" && logger.debug(`Got request on ${ original.name }`);
-
-            return await original.apply(this, args);
-        }
-        catch (error: any) {
-            if (error.apiResponse){
-                return error.apiResponse;
-            };
-
-            return responses.f500Response();
-        }
-    }
-}
 
 async function createNewTokens(
     redis: types.AppContext["dataSources"]["redis"], 

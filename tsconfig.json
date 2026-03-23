@@ -1,18 +1,24 @@
 {
+	"include": [ "./src/**/*.ts" ],
+	"exclude": [ "./src/lib/*" ],
 	"compilerOptions": {
+		"removeComments": true,
+		"rootDir": "./src",
+		"outDir": "./dist",
 		"moduleDetection": "force",
 		"module": "Preserve",
 		"resolveJsonModule": true,
 		"allowJs": true,
 		"esModuleInterop": true,
 		"isolatedModules": true,
-		"target": "es2017",		
+		"target": "es2024",		
 		"baseUrl": ".",
 		"paths": {
 			"@lib/*": [ "./src/lib/*" ],
 			"@src/*": [ "./src/*" ],
 		},
 		"experimentalDecorators": true,
-		"noEmitOnError": true
+		"noEmitOnError": true,
+		"skipLibCheck": true
 	},
 }
