@@ -1,7 +1,7 @@
 
 import pino from "pino";
 import { env } from "./utils";
-import path from "node:path";
+import { join } from "node:path";
 
 const BASE_DIR = process.cwd();
 
@@ -15,7 +15,7 @@ export default pino(
                 translateTime: "SYS:standard",
                 ignore: "pid,hostname",
                 singleLine: true,
-                destination: path.join(BASE_DIR, env("LOG_PATH"))
+                // destination: join(BASE_DIR, env("LOG_PATH"))
             },
         }
     }

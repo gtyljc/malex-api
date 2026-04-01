@@ -5,7 +5,11 @@ import "dotenv/config";
 import * as utils from "@lib/utils"; // don't move, its important
 import { env } from "@lib/utils";
 import logger from "@lib/logger";
-import { DBSource, CloudflareSource, RedisSource } from "./sources";
+import * as sources from "./sources";
+
+// GraphQL schema
+import directives from "./directives";
+import execSchema from "./schema";
 
 // types
 import { IncomingMessage, OutgoingMessage } from "http";
@@ -20,10 +24,6 @@ import http from "http";
 import { rateLimit } from 'express-rate-limit'
 import { createATMiddleware, createRTMiddleware } from "./middlewares";
 import { ChangeResponseStatusPlugin } from "./plugins";
-
-// GraphQL schema
-import schema, { addDirectives } from './schema';
-import directives from "./directives";
 
 // express
 import express from "express";
@@ -49,76 +49,85 @@ const CORS_OPTIONS = {
 };
 const EXPRESS_MIDDLEWARE_OPTIONS = {
     context: async ({ req, res }: { req: IncomingMessage, res: OutgoingMessage }) => {
-        return { req, res, dataSources: { db: DBSource, cloudflare: CloudflareSource, redis: RedisSource } }
+        return { 
+            req, 
+            res, 
+            dataSources: { 
+                db: sources.DBSource, 
+                cloudflare: sources.CloudflareSource, 
+                redis: sources.RedisSource 
+            } 
+        }
     }
 };
+
+logger.info("App is starting...");
+
+logger.info("Loading schemas...");
+
+// schema packer, loocking into schemas and resolver directories
+
+function addDirectives(schema: GraphQLSchema, schemaMappers: Function[]){
+    let temporarySchema = schema;
+    
+    for (let mapper of schemaMappers){
+        temporarySchema = mapper(schema) 
+    }
+
+    return temporarySchema;
+};
+
+addDirectives(execSchema, directives);
+
+logger.info("Setting up timezone to server...");
+
+// set default timezone to server
+utils.dayjs.tz.setDefault((await utils.getSiteConfig(sources.DBSource)).timezone);
+
+// initiating server and configure express app with middlewares
+logger.info("Setting up express app...")
+
+const exApp = express();
+const httpServer = http.createServer(exApp);
+const apolloServer = new ApolloServer<types.AppContext>(
+    { 
+        schema: execSchema,
+        logger,
+        plugins: [
+            ApolloServerPluginDrainHttpServer({ httpServer }),
+            new ChangeResponseStatusPlugin()
+        ],
+    }
+);
 
 function emptyMiddleware(_, __, next: Function){
     next();
 }
 
-function setUpMiddlewares(app: ReturnType<typeof express>, apolloServer: ApolloServer<any>): void {
-    const limiter = env("RATE_LIMITER") ? rateLimit(LIMITER_OPTIONS): emptyMiddleware;
+await apolloServer.start();
 
-    // to apollo server
-    app.use(
-        "/graphql",
-        cors(CORS_OPTIONS),
-        cookiesParser(),
-        limiter,
-        express.json(),
-        expressMiddleware(apolloServer, EXPRESS_MIDDLEWARE_OPTIONS)
-    )
+exApp.use(
+    "/graphql",
+    cors(CORS_OPTIONS),
+    cookiesParser(),
+    env("RATE_LIMITER") ? rateLimit(LIMITER_OPTIONS): emptyMiddleware,
+    express.json(),
+    expressMiddleware(apolloServer, EXPRESS_MIDDLEWARE_OPTIONS)
+)
 
-    // to create RT
-    app.post(
-        "/rt/create",
-        express.json(),
-        createRTMiddleware(RedisSource)
-    )
+// to create RT
+exApp.post(
+    "/rt/create",
+    express.json(),
+    createRTMiddleware(sources.RedisSource)
+)
 
-    app.post(
-        "/at/create",
-        express.json(),
-        createATMiddleware(RedisSource)
-    )
-}
+exApp.post(
+    "/at/create",
+    express.json(),
+    createATMiddleware(sources.RedisSource)
+)
 
-function setUpSchema(schema: GraphQLSchema): GraphQLSchema {
-    return addDirectives(schema, directives);
-}
+httpServer.listen({ host: env("HOST"), port: env("PORT") });
 
-async function setUpApp(): Promise<void> {
-    logger.info("Initializing API...")
-
-    // set default timezone to server
-    utils.dayjs.tz.setDefault((await utils.getSiteConfig(DBSource)).timezone);
-
-    // run server
-    const app = express();
-    const httpServer = http.createServer(app);
-    const apolloServer = new ApolloServer<types.AppContext>(
-        { 
-            schema: setUpSchema(schema),
-            logger,
-            plugins: [
-                ApolloServerPluginDrainHttpServer({ httpServer }),
-                new ChangeResponseStatusPlugin()
-            ],
-        }
-    );
-
-    await apolloServer.start();
-
-    setUpMiddlewares(app, apolloServer);
-
-    const protocol = env("PROTOCOL");
-    const port = env("PORT");
-    const host = env("HOST");
-
-    httpServer.listen({ port, host })
-
-    logger.info("API successfully started at: " + `${ utils.assembleUrl({ protocol, port, host }) }/graphql`);
-}
-
-await setUpApp();
+logger.info("App is ready to use!");

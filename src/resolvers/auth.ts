@@ -43,7 +43,7 @@ class Query {
     }
 
     async checkAdmin(_: any, __: any, { req }: types.AppContext): Promise<types.AuthResponseType> {
-        const at = new auth.JWT(req.cookies.a_token);
+        const at = new auth.JWT(req.cookies!.a_token);
         const claims = at.decode();
 
         if (claims.aud == types.RoleEnum.Admin || claims.aud == types.RoleEnum.Superadmin) {

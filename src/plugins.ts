@@ -39,7 +39,7 @@ class ChangeResponseStatusListener implements GraphQLRequestListener<BaseContext
             requestContext.response.body = {
                 kind: "single",
                 singleResult: {
-                    data: { [ utils.lowerFirst(requestContext.request.operationName) ]: apiResponse }
+                    data: { [ utils.lowerFirst(requestContext.request.operationName!) ]: apiResponse }
                 }
             }
         }

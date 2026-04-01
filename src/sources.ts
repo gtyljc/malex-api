@@ -13,8 +13,8 @@ import Cloudflare from "cloudflare";
 import { createClient } from "redis";
 
 // db
-import { PrismaClient } from "@src/lib/prisma/generated/client";
-import { Prisma } from "@src/lib/prisma/generated";
+import { PrismaClient } from "@lib/prisma/generated/client.js";
+import { Prisma } from "@lib/prisma/generated/index.js";
 
 type DBMethod = (
     "findUnique" |

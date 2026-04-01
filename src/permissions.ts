@@ -2,11 +2,11 @@
 // hierarchy of roles and their permissions
 
 import * as types from "./lib/types";
-import execSchema from "./schema";
 import { GraphQLSchema } from 'graphql'
 import { getDirective, mapSchema, MapperKind } from '@graphql-tools/utils'
+import execSchema from "./schema";
 
-const fieldsByAuthDirective = (schema: GraphQLSchema, sourceRole: string): string[] => {
+const getFieldsByAuthDirective = (schema: GraphQLSchema, sourceRole: string): string[] => {
     const out: string[] = [];
 
     mapSchema(
@@ -43,7 +43,7 @@ class Permissions {
     constructor(role: types.RoleEnum, basePermissions: string[] = []){
         this.role = role;
         this.basePermissions = basePermissions;
-        this.fieldsOn = fieldsByAuthDirective(execSchema, role);
+        this.fieldsOn = getFieldsByAuthDirective(execSchema, role);
         this.spreadingOn = this.fieldsOn.concat(basePermissions)
     }
 

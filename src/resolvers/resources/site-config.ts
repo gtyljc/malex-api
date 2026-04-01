@@ -5,6 +5,7 @@ import { BaseQueryResolvers, BaseMutationResolvers } from "@src/resource";
 import * as types from "@lib/types";
 import * as responses from "@lib/responses";
 import * as utils from "@lib/utils";
+import logger from "@lib/logger";
 
 const __modelname = types.ResourceEnum.SiteConfig;
 
@@ -19,7 +20,11 @@ class Query extends BaseQueryResolvers<types.SiteConfigType> {
         __: any,
         { dataSources: { db } }: types.AppContext
     ): Promise<types.APIResponse<types.PublicConfigResponseType>> {
+        logger.info("sosi")
+        
         const config = await utils.getSiteConfig(db);
+
+        logger.info(config);
 
         return responses.f200Response(
             [

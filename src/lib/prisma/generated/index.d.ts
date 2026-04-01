@@ -330,8 +330,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.4.2
-   * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
+   * Prisma Client JS version: 7.5.0
+   * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
    */
   export type PrismaVersion = {
     client: string
@@ -2293,6 +2293,11 @@ export namespace Prisma {
      * Skip the first `n` Appointments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
     distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[]
     relationLoadStrategy?: RelationLoadStrategy
   }
@@ -3331,6 +3336,11 @@ export namespace Prisma {
      * Skip the first `n` Works.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Works.
+     */
     distinct?: WorkScalarFieldEnum | WorkScalarFieldEnum[]
     relationLoadStrategy?: RelationLoadStrategy
   }
@@ -4412,6 +4422,11 @@ export namespace Prisma {
      * Skip the first `n` SiteConfigs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteConfigs.
+     */
     distinct?: SiteConfigScalarFieldEnum | SiteConfigScalarFieldEnum[]
     relationLoadStrategy?: RelationLoadStrategy
   }
@@ -5427,6 +5442,11 @@ export namespace Prisma {
      * Skip the first `n` SuperAdmins.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuperAdmins.
+     */
     distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
     relationLoadStrategy?: RelationLoadStrategy
   }
@@ -6573,6 +6593,11 @@ export namespace Prisma {
      * Skip the first `n` Admins.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
     distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
     relationLoadStrategy?: RelationLoadStrategy
   }
@@ -7729,6 +7754,11 @@ export namespace Prisma {
      * Skip the first `n` Users.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
     relationLoadStrategy?: RelationLoadStrategy
   }

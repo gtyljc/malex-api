@@ -37,7 +37,7 @@ interface JWTParts {
 }
 
 export class JWT {
-    jwt: string | undefined;
+    jwt: string;
     validationOptions: ValidationOptions = {
         algorithms: [ "HS256" ],
         issuer: env("JWT_DEFAULT_ISSUER"),
@@ -53,9 +53,9 @@ export class JWT {
         type: [ TokenTypeEnum.AccessToken, TokenTypeEnum.AccessToken ]
     };
     jwtHeader: jose.JWTHeaderParameters = { "alg": "HS256" };
-    jwtSecret: CryptoKey;
+    jwtSecret!: CryptoKey;
 
-    constructor(jwt?: string){
+    constructor(jwt: string){
         this.jwt = jwt;
     }
 
@@ -116,10 +116,10 @@ export class JWT {
     }
 
     static async generate({ userId, role, type }: SetUpPayloadParams): Promise<JWT> {
-        const jwtIns = new JWT();
-        const token = await new jose.SignJWT(
-            jwtIns.setUpPayload({ userId, role, type })
-        ).setProtectedHeader(jwtIns.jwtHeader).sign(await jwtIns.importSecret());
+        const jwtIns = new JWT("");
+        const token = await new jose.SignJWT(jwtIns.setUpPayload({ userId, role, type }))
+            .setProtectedHeader(jwtIns.jwtHeader)
+            .sign(await jwtIns.importSecret());
 
         jwtIns.jwt = token;
 
